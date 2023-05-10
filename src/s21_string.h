@@ -5,7 +5,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "s21_errno.h"
+
+#define s21_NULL (void*)0
+
 typedef long unsigned s21_size_t;
+
 
 void *s21_memchr(const void *str, int c,
                  s21_size_t n);  // Выполняет поиск первого вхождения символа c
