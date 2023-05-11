@@ -5,77 +5,34 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "s21_errno.h"
 
-#define s21_NULL (void*)0
+
+#define S21_NULL (void*)0
 
 typedef long unsigned s21_size_t;
 
 
-void *s21_memchr(const void *str, int c,
-                 s21_size_t n);  // Выполняет поиск первого вхождения символа c
-                                 // (беззнаковый тип) в первых n байтах строки,
-                                 // на которую указывает аргумент str.
-int s21_memcmp(const void *str1, const void *str2,
-               s21_size_t n);  // Сравнивает первые n байтов str1 и str2
-void *s21_memcpy(void *dest, const void *src,
-                 s21_size_t n);  //	Копирует n символов из src в dest
-void *s21_memset(
-    void *str, int c,
-    s21_size_t n);  // Копирует символ c (беззнаковый тип) в первые n символов
-                    // строки, на которую указывает аргумент str
-char *s21_strncat(
-    char *dest, const char *src,
-    s21_size_t n);  // Добавляет строку, на которую указывает src, в конец
-                    // строки, на которую указывает dest, длиной до n символов
-char *s21_strncat(
-    char *dest, const char *src,
-    s21_size_t n);  // Добавляет строку, на которую указывает src, в конец
-                    // строки, на которую указывает dest, длиной до n символов
-char *s21_strchr(
-    const char *str,
-    int c);  // Выполняет поиск первого вхождения символа c (беззнаковый тип) в
-             // строке, на которую указывает аргумент str
-int s21_strncmp(
-    const char *str1, const char *str2,
-    s21_size_t n);  // (DONE) Сравнивает не более первых n байтов str1 и str2
-char *s21_strncpy(char *dest, const char *src,
-                  s21_size_t n);  // Копирует до n символов из строки, на
-                                  // которую указывает src, в dest
-s21_size_t s21_strcspn(
-    const char *str1,
-    const char *str2);  // Вычисляет длину начального сегмента str1, который
-                        // полностью состоит из символов, не входящих в str2
-char *ss21_trerror(
-    int errnum);  // Выполняет поиск во внутреннем массиве номера ошибки errnum
-                  // и возвращает указатель на строку с сообщением об ошибке.
-                  // Нужно объявить макросы, содержащие массивы сообщений об
-                  // ошибке для операционных систем mac и linux. Описания ошибок
-                  // есть в оригинальной библиотеке. Проверка текущей ОС
-                  // осуществляется с помощью директив
-s21_size_t s21_strlen(
-    const char *str);  // (DONE) Вычисляет длину строки str, не включая
-                       // завершающий нулевой символ
-char *s21_strpbrk(
-    const char *str1,
-    const char *str2);  // Находит первый символ в строке str1, который
-                        // соответствует любому символу, указанному в str2
-char *s21_strrchr(
-    const char *str,
-    int c);  // Выполняет поиск последнего вхождения символа c (беззнаковый тип)
-             // в строке, на которую указывает аргумент str
-char *s21_strstr(
-    const char *haystack,
-    const char *needle);  // Находит первое вхождение всей строки needle (не
-                          // включая завершающий нулевой символ), которая
-                          // появляется в строке haystack
-char *s21_strtok(char *str, const char *delim);  // Разбивает строку str на ряд
-                                                 // токенов, разделенных delim
+void *s21_memchr(const void *str, int c,s21_size_t n);              // Done
+int s21_memcmp(const void *str1, const void *str2, s21_size_t n);   // Done
+void *s21_memcpy(void *dest, const void *src, s21_size_t n);        // Done
+void *s21_memset(void *str, int c, s21_size_t n);                   // Done
+s21_size_t s21_strlen(const char *str);                             // Done
+char *s21_strncat(char *dest, const char *src, s21_size_t n);       // Done
+char *s21_strchr(const char *str, int c);                           // Done
+int s21_strncmp(const char *str1, const char *str2, s21_size_t n);  // Done
+char *s21_strncpy(char *dest, const char *src, s21_size_t n);       // Done
+s21_size_t s21_strcspn(const char *str1, const char *str2);         // Done
+s21_size_t s21_strspn(const char *str1, const char *str2);          // Done
+char *s21_strerror(int errnum);                                     // in progress
+char *s21_strstr(const char *haystack, const char *needle);         // Done
+char *s21_strpbrk(const char *str1, const char *str2);              // Done
+char *s21_strrchr(const char *str, int c);                          // Done
+char *s21_strtok(char *str, const char *delim);                     // Done
 
-/* дополнительные в бассейне */
-int s21_strcmp(const char *s1, const char *s2);
-char *s21_strcpy(char *dest, const char *src);
-char *s21_strcat(char *dest, const char *src);
+/* дополнительные были бассейне */
+int s21_strcmp(const char *s1, const char *s2);                      // Done
+char *s21_strcpy(char *dest, const char *src);                       // Done
+char *s21_strcat(char *dest, const char *src);                        // Done
 
 int s21_sscanf(const char *str, const char *format,
                ...);  // считывает форматированный ввод из строки.
