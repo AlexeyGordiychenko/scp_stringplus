@@ -1,4 +1,4 @@
-#include "test_s21_string.h"
+#include "test_me.h"
 
 START_TEST(strstr_1) {
   char s1[] = "Hello, world!";

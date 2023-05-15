@@ -1,4 +1,4 @@
-#include "test_s21_string.h"
+#include "test_me.h"
 
 START_TEST(memchr_1) {
   char str[] = "Hello, world!";

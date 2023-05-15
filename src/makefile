@@ -1,0 +1,43 @@
+CC = gcc
+CFLAGS := -Wall -Wextra -Werror -g --coverage
+LDFLAGS := -lm -lcheck -pthread
+SRC_DIR := src
+OBJ_DIR := obj
+GCOV_DIR := gcov
+TEST_DIR := tests
+
+SRCS := $(wildcard $(SRC_DIR)/*.c)
+OBJS := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
+TEST_SRCS := $(wildcard $(TEST_DIR)/*.c)
+TEST_OBJS := $(patsubst $(TEST_DIR)/%.c,$(OBJ_DIR)/%.o,$(TEST_SRCS))
+LIB := s21_string.a
+EXECUTABLE := test
+
+.PHONY: all test s21_string.a gcov_report clean
+
+all: s21_string.a
+
+test: $(TEST_OBJS) $(LIB)
+	$(CC) $(CFLAGS) $(TEST_OBJS) $(LIB) $(LDFLAGS) -o $(EXECUTABLE)
+	./test
+
+s21_string.a: $(OBJS)
+	ar rcs $(LIB) $(OBJS)
+
+gcov_report: test
+	mkdir -p $(GCOV_DIR)
+	gcovr --html-details -o $(GCOV_DIR)/index.html
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/%.o: $(TEST_DIR)/%.c
+	mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	rm -rf $(OBJ_DIR) $(TEST_OBJS) $(GCOV_DIR) $(EXECUTABLE) $(LIB)
+
+rebuild: clean all
+

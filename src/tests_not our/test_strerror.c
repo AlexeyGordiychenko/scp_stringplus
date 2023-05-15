@@ -1,4 +1,4 @@
-#include "test_s21_string.h"
+#include "test_me.h"
 
 START_TEST(strerror_1) {
   for (int i = 0; i < 150; i++) {

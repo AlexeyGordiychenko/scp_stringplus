@@ -1,4 +1,4 @@
-#include "test_s21_string.h"
+#include "test_me.h"
 
 START_TEST(strlen_1) {
   char str[] = "Hello, world!";
@@ -7,7 +7,9 @@ START_TEST(strlen_1) {
 END_TEST
 
 START_TEST(strlen_2) {
-  char str[] = "213145346758697808-9704=3524-1309876289403-5=6576=432=-31044253=60931 ""21";
+  char str[] =
+      "213145346758697808-9704=3524-1309876289403-5=6576=432=-31044253=60931 "
+      "21";
   ck_assert_int_eq(strlen(str), s21_strlen(str));
 }
 END_TEST
@@ -25,7 +27,8 @@ START_TEST(strlen_4) {
 END_TEST
 
 START_TEST(strlen_5) {
-  char str[] ="I hate doing tests, it's not funny at all!!!!!!!!!!!!!!!!!!!!!!!!!";
+  char str[] =
+      "I hate doing tests, it's not funny at all!!!!!!!!!!!!!!!!!!!!!!!!!";
   ck_assert_int_eq(strlen(str), s21_strlen(str));
 }
 END_TEST
