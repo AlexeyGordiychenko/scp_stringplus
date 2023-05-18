@@ -1,4 +1,4 @@
-#include "s21_string.h"
+#include "../s21_string.h"
 
 char *s21_strrchr(const char *str, int c) {
   /* Выполняет поиск последнего вхождения символа c (беззнаковый тип) в строке,

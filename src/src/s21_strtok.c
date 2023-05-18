@@ -1,4 +1,4 @@
-#include "s21_string.h"
+#include "../s21_string.h"
 
 char *s21_strtok(char *str, const char *delim) {
   /* Разбивает строку str на ряд токенов, разделенных delim */

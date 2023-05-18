@@ -1,4 +1,4 @@
-#include "s21_string.h"
+#include "../s21_string.h"
 
 char *s21_strncat(char *dest, const char *src, s21_size_t n) {
   /* Добавляет строку, на которую указывает src, в конец строки, на которую

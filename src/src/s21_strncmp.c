@@ -1,4 +1,4 @@
-#include "s21_string.h"
+#include "../s21_string.h"
 
 int s21_strncmp(const char *s1, const char *s2, s21_size_t n) {
   /* Сравнивает не более первых n байтов str1 и str2 */

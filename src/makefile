@@ -1,5 +1,5 @@
-CC = gcc
-CFLAGS := -Wall -Wextra -Werror -g --coverage
+CC := gcc
+CFLAGS := -Wall -Wextra -Werror -std=c11 --coverage
 LDFLAGS := -lm -lcheck -pthread
 SRC_DIR := src
 OBJ_DIR := obj
@@ -13,7 +13,7 @@ TEST_OBJS := $(patsubst $(TEST_DIR)/%.c,$(OBJ_DIR)/%.o,$(TEST_SRCS))
 LIB := s21_string.a
 EXECUTABLE := test
 
-.PHONY: all test s21_string.a gcov_report clean
+.PHONY: all test s21_string.a gcov_report clean rebuild clang_n clang_i valgrind
 
 all: s21_string.a
 
@@ -24,16 +24,16 @@ test: $(TEST_OBJS) $(LIB)
 s21_string.a: $(OBJS)
 	ar rcs $(LIB) $(OBJS)
 
-gcov_report: test
+gcov_report:
 	mkdir -p $(GCOV_DIR)
-	gcovr --html-details -o $(GCOV_DIR)/index.html
+	gcovr --html-details -o $(GCOV_DIR)/index.html --filter "src/*"
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	mkdir -p $(OBJ_DIR)
+	@mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ_DIR)/%.o: $(TEST_DIR)/%.c
-	mkdir -p $(OBJ_DIR)
+	@mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
@@ -41,3 +41,11 @@ clean:
 
 rebuild: clean all
 
+clang_n:
+	clang-format -n --style=Google src/*.[ch] tests/*.[ch]
+
+clang_i:
+	clang-format -i --style=Google src/*.[ch] tests/*.[ch]
+
+valgrind:
+	valgrind --tool=memcheck --leak-check=yes ./test

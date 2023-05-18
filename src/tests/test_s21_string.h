@@ -8,7 +8,7 @@
 #include <string.h>
 #include <wchar.h>
 
-#include "../src/s21_string.h"
+#include "../s21_string.h"
 
 Suite *test_memchr(void);
 Suite *test_memcmp(void);

@@ -1,4 +1,4 @@
-#include "s21_string.h"
+#include "../s21_string.h"
 
 char *s21_strstr(const char *haystack, const char *needle) {
   /* Находит первое вхождение всей строки needle (не включая завершающий нулевой

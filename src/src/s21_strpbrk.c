@@ -1,4 +1,4 @@
-#include "s21_string.h"
+#include "../s21_string.h"
 
 char *s21_strpbrk(const char *str1, const char *str2) {
   /* Находит первый символ в строке str1, который соответствует любому символу,
