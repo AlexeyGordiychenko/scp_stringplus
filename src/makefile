@@ -1,6 +1,9 @@
 CC := gcc
 CFLAGS := -Wall -Wextra -Werror -std=c11 --coverage
-LDFLAGS := -lm -lcheck -pthread
+LDFLAGS := -lcheck -pthread -lm
+ifeq ($(shell uname), Linux)
+	LDFLAGS += -lsubunit -lgcov
+endif
 SRC_DIR := src
 OBJ_DIR := obj
 GCOV_DIR := gcov
