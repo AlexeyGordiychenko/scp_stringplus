@@ -12,6 +12,7 @@ typedef struct {
     int zero;
     int width;
     int precision;
+    char length;
     char spec;
 } Flag;
 
@@ -77,13 +78,18 @@ void parse_spec(const char *format, int *ind, Flag *flags) {
         }
         (*ind)++;        
     }
+
     // парсим ширину
     if (format[*ind] >= '1' && format[*ind] <= '9') {
         while (format[*ind] >= '0' && format[*ind] <= '9') {
             flags->width = flags->width * 10 + (format[*ind] - '0');
             (*ind)++;
         }
+    } else if (format[*ind] == '*') {
+        flags->width = -1; // значение для считывание из аргумента
+        (*ind)++;
     }
+
     // парсим точность
     if (format[*ind] == '.') {
         (*ind)++;
@@ -93,7 +99,21 @@ void parse_spec(const char *format, int *ind, Flag *flags) {
                 (*ind)++;
             }
         }
+    } else if (format[*ind] == '*') {
+        flags->precision = -1; // значение для считывание из аргумента
+        (*ind)++;
     }
+
+    // Парсим длину
+    switch (format[*ind]) {
+        case 'h':
+        case 'l':
+        case 'L':        
+            flags->length = format[*ind];
+            (*ind)++;
+            break;
+    }
+
     // Парсим спецификатор
     switch (format[*ind]) {
         case 'c':
