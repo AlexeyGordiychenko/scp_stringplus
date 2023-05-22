@@ -20,14 +20,14 @@ int s21_sprintf(char *str, const char *format, ...);
 void parse_spec(const char *format, int *ind, Flag *flags);
 
 
-
+/*
 int main() {
     char str1[100], str2[100]; 
     //sprintf(str1, "hello friend");
     s21_sprintf(str2, "hello%-2f friend %+-2.3d");
     //printf("Строка:%s\nДлина:%d\nСтрока:%s\nДлина:%d\n", str1, (int)strlen(str1), str2, (int)strlen(str2));
 }
-
+*/
 int s21_sprintf(char *str, const char *format, ...){
 
     va_list args;
