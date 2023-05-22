@@ -67,11 +67,11 @@ void parse_spec(const char *format, int *ind, Flag *flags) {
             flags->minus = 1;
         } else if (format[*ind] == '+') {
             flags->sign = 1;
-        } else if (format[*ind] == ' ') {
+        } else if (format[*ind] == ' ' && !flags->sign) {
             flags->space = 1;
         } else if (format[*ind] == '#') {
             flags->prefix = 1;
-        } else if (format[*ind] == '0') {
+        } else if (format[*ind] == '0' && !flags->minus) {
             flags->zero = 1;
         } else {
             break;
