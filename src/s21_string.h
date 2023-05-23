@@ -2,12 +2,27 @@
 #define S21_STRING_H
 
 #include <limits.h>
+#include <stdarg.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+// #include <string.h>
+#include <math.h>
 
 #define S21_NULL (void *)0
+#define s21_size_t unsigned long long
 
-typedef long unsigned s21_size_t;
+typedef struct {
+  int minus;
+  int sign;
+  int space;
+  int prefix;
+  int zero;
+  int width;
+  int precision;
+  char length;
+  char spec;
+} Flag;
 
 void *s21_memchr(const void *str, int c, s21_size_t n);             // Done
 int s21_memcmp(const void *str1, const void *str2, s21_size_t n);   // Done
@@ -19,7 +34,7 @@ int s21_strncmp(const char *str1, const char *str2, s21_size_t n);  // Done
 char *s21_strncpy(char *dest, const char *src, s21_size_t n);       // Done
 s21_size_t s21_strspn(const char *str1, const char *str2);
 s21_size_t s21_strcspn(const char *str1, const char *str2);  // Done
-char *s21_strerror(int errnum);                              // in progress
+char *s21_strerror(int errnum);                              // Done
 s21_size_t s21_strlen(const char *str);                      // Done
 char *s21_strpbrk(const char *str1, const char *str2);       // Done
 char *s21_strrchr(const char *str, int c);                   // Done
@@ -60,4 +75,17 @@ void *s21_trim(
                        // символов (trim_chars) из данной строки (src). В случае
                        // какой-либо ошибки следует вернуть значение NULL
 
+void parse_spec(const char *format, int *ind, Flag *flags);
+
+void reverse_string(char *str);
+void int_to_string(int number, char *str);
+void double_to_string(double number, char *str, int precision);
+void string_to_int(char *str, int *number);
+void string_to_double(char *str, double *number);
+void int_to_hex(int number, char *hex, int reg);
+void input_char(char *str, char ch);
+
+void execute_x(char *str, int *ind, int number);
+void execute_percent(char *str, int *ind);
+void execute_n(int *ind, int *count);
 #endif

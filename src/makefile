@@ -24,6 +24,11 @@ test: $(TEST_OBJS) $(LIB)
 	$(CC) $(CFLAGS) $(TEST_OBJS) $(LIB) $(LDFLAGS) -o $(EXECUTABLE)
 	./test
 
+vlad: $(TEST_OBJS) $(LIB)
+	$(CC) $(CFLAGS) vlad.c $(LIB) $(LDFLAGS) -o vlad -g
+	./vlad
+
+
 s21_string.a: $(OBJS)
 	ar rcs $(LIB) $(OBJS)
 
