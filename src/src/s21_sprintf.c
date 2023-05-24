@@ -13,23 +13,25 @@ int s21_sprintf(char *str, const char *format, ...) {
       parse_spec(format, &f_ind, &flags);
 
       // тестовый вывод напарсенных структур
-      /*
-      printf(
+/*      printf(
           "minus = %d, sign = %d, space = %d, prefix = %d, zero = %d, width = "
           "%d, precison = %d, spec = %c\n",
           flags.minus, flags.sign, flags.space, flags.prefix, flags.zero,
           flags.width, flags.precision, flags.spec);
-      */
+*/
       // обработка спецификатора и аргумента
       switch (flags.spec) {
         case '%':
-          execute_percent(str, &s_ind);
+          execute_percent(str, &s_ind, &flags);
           break;
         case 'n':
           execute_n(&s_ind, va_arg(args, int *));
           break;
+        case 'x':
+          execute_x(str, &s_ind, va_arg(args, int), &flags);
+          break;
         case 'X':
-          execute_X(str, &s_ind, va_arg(args, int), &flags);
+          execute_x(str, &s_ind, va_arg(args, int), &flags);
           break;
       }
       (s_ind)--;
@@ -40,7 +42,8 @@ int s21_sprintf(char *str, const char *format, ...) {
 
     f_ind++;
     s_ind++;
-    str[s_ind] = '\0';
+    str[s_ind] = '\0';  // делаем строку каждый раз "правильной", чтобы
+                        // срабатывали функции
   }
   str[s_ind] = '\0';  // Добавляем нулевой символ в конце строки
 
@@ -61,7 +64,7 @@ void parse_spec(const char *format, int *ind, Flag *flags) {
       flags->space = 1;
     } else if (format[*ind] == '#') {
       flags->prefix = 1;
-    } else if (format[*ind] == '0' && !flags->minus) {
+    } else if (format[*ind] == '0') {
       flags->zero = 1;
     } else {
       break;
@@ -213,10 +216,6 @@ void double_to_string(double number, char *str, int precision) {
   str[i] = '\0';
 }
 
-void execute_percent(char *str, int *ind) { str[*ind] = '%'; }
-
-void execute_n(int *ind, int *count) { *count = *ind; }
-
 void string_to_int(char *str, int *number) {
   // проверка на то является ли строка целым числом
   int i = 0;
@@ -331,13 +330,15 @@ void input_char(char *str, char ch) {
   str[0] = ch;
 }
 
-void execute_X(char *str, int *ind, int number, Flag *flags) {
-  char hex[100];
-  int_to_hex(number, hex, 1);
+void execute_x(char *str, int *ind, int number, Flag *flags) {
+  char hex[1000];
+  if (flags->spec == 'x') int_to_hex(number, hex, 0);
+  if (flags->spec == 'X') int_to_hex(number, hex, 1);
 
   // обработка флагов
   if (flags->prefix) {  // флаг #
-    input_char(hex, 'X');
+    if (flags->spec == 'x') input_char(hex, 'x');
+    if (flags->spec == 'X') input_char(hex, 'X');
     input_char(hex, '0');
   }
 
@@ -360,31 +361,24 @@ void execute_X(char *str, int *ind, int number, Flag *flags) {
   *ind = *ind + hex_len;
 }
 
-void execute_X(char *str, int *ind, int number, Flag *flags) {
-  char hex[100];
-  int_to_hex(number, hex, 1);
-
-  // обработка флагов
-  if (flags->prefix) {  // флаг #
-    input_char(hex, 'X');
-    input_char(hex, '0');
-  }
+void execute_percent(char *str, int *ind, Flag *flags) {
+  char percent[1000] = "%";
 
   if (flags->precision != 0) {  // точность, дополняем нулями слева
-    while ((int)s21_strlen(hex) < flags->precision) {
-      input_char(hex, '0');
+    while ((int)s21_strlen(percent) < flags->precision) {
+      input_char(percent, '0');
     }
   }
-
   if (flags->width != 0 && !flags->minus) {
     char ch = ' ';
     if (flags->zero) ch = '0';
-    while ((int)s21_strlen(hex) < flags->width) {
-      input_char(hex, ch);
+    while ((int)s21_strlen(percent) < flags->width) {
+      input_char(percent, ch);
     }
   }
-
-  int hex_len = (int)s21_strlen(hex);
-  s21_strncat(str, hex, hex_len + 1);
-  *ind = *ind + hex_len;
+  int percent_len = (int)s21_strlen(percent);
+  s21_strncat(str, percent, percent_len + 1);
+  *ind = *ind + percent_len;
 }
+
+void execute_n(int *ind, int *count) { *count = *ind; }
