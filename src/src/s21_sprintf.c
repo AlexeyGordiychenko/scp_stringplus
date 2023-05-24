@@ -359,3 +359,32 @@ void execute_X(char *str, int *ind, int number, Flag *flags) {
   s21_strncat(str, hex, hex_len + 1);
   *ind = *ind + hex_len;
 }
+
+void execute_X(char *str, int *ind, int number, Flag *flags) {
+  char hex[100];
+  int_to_hex(number, hex, 1);
+
+  // обработка флагов
+  if (flags->prefix) {  // флаг #
+    input_char(hex, 'X');
+    input_char(hex, '0');
+  }
+
+  if (flags->precision != 0) {  // точность, дополняем нулями слева
+    while ((int)s21_strlen(hex) < flags->precision) {
+      input_char(hex, '0');
+    }
+  }
+
+  if (flags->width != 0 && !flags->minus) {
+    char ch = ' ';
+    if (flags->zero) ch = '0';
+    while ((int)s21_strlen(hex) < flags->width) {
+      input_char(hex, ch);
+    }
+  }
+
+  int hex_len = (int)s21_strlen(hex);
+  s21_strncat(str, hex, hex_len + 1);
+  *ind = *ind + hex_len;
+}
