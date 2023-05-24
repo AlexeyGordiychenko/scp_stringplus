@@ -13,12 +13,13 @@ int s21_sprintf(char *str, const char *format, ...) {
       parse_spec(format, &f_ind, &flags);
 
       // тестовый вывод напарсенных структур
+      /*
       printf(
           "minus = %d, sign = %d, space = %d, prefix = %d, zero = %d, width = "
           "%d, precison = %d, spec = %c\n",
           flags.minus, flags.sign, flags.space, flags.prefix, flags.zero,
           flags.width, flags.precision, flags.spec);
-
+      */
       // обработка спецификатора и аргумента
       switch (flags.spec) {
         case '%':
@@ -27,16 +28,19 @@ int s21_sprintf(char *str, const char *format, ...) {
         case 'n':
           execute_n(&s_ind, va_arg(args, int *));
           break;
-          /*case 'x':
-              execute_x(str, &s_ind, va_arg(args, int *));
-              break;*/
+        case 'X':
+          execute_X(str, &s_ind, va_arg(args, int), &flags);
+          break;
       }
+      (s_ind)--;
       // вывод результата в строку
     } else {
       str[s_ind] = format[f_ind];
     }
+
     f_ind++;
     s_ind++;
+    str[s_ind] = '\0';
   }
   str[s_ind] = '\0';  // Добавляем нулевой символ в конце строки
 
@@ -211,10 +215,7 @@ void double_to_string(double number, char *str, int precision) {
 
 void execute_percent(char *str, int *ind) { str[*ind] = '%'; }
 
-void execute_n(int *ind, int *count) {
-  *count = *ind;
-  (*ind)--;
-}
+void execute_n(int *ind, int *count) { *count = *ind; }
 
 void string_to_int(char *str, int *number) {
   // проверка на то является ли строка целым числом
@@ -330,8 +331,31 @@ void input_char(char *str, char ch) {
   str[0] = ch;
 }
 
-/*
-execute_x(char *str, int *ind, int number) {
-    str[*ind] = '%';
+void execute_X(char *str, int *ind, int number, Flag *flags) {
+  char hex[100];
+  int_to_hex(number, hex, 1);
+
+  // обработка флагов
+  if (flags->prefix) {  // флаг #
+    input_char(hex, 'X');
+    input_char(hex, '0');
+  }
+
+  if (flags->precision != 0) {  // точность, дополняем нулями слева
+    while ((int)s21_strlen(hex) < flags->precision) {
+      input_char(hex, '0');
+    }
+  }
+
+  if (flags->width != 0 && !flags->minus) {
+    char ch = ' ';
+    if (flags->zero) ch = '0';
+    while ((int)s21_strlen(hex) < flags->width) {
+      input_char(hex, ch);
+    }
+  }
+
+  int hex_len = (int)s21_strlen(hex);
+  s21_strncat(str, hex, hex_len + 1);
+  *ind = *ind + hex_len;
 }
-*/

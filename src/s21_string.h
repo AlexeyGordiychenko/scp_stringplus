@@ -85,7 +85,8 @@ void string_to_double(char *str, double *number);
 void int_to_hex(int number, char *hex, int reg);
 void input_char(char *str, char ch);
 
-void execute_x(char *str, int *ind, int number);
+void execute_X(char *str, int *ind, int number, Flag *flags);
 void execute_percent(char *str, int *ind);
 void execute_n(int *ind, int *count);
+
 #endif
