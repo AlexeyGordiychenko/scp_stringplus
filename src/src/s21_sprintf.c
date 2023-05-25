@@ -22,7 +22,7 @@ void string_to_double(char *str, double *number);
 void int_to_hex(int number, char *hex, int reg);
 void input_char(char *str, char ch);
 
-void execute_x(char **str, int number, Flag *flags);
+void execute_x(char **p, int number, Flag flags);
 void execute_percent(char **str);
 void execute_n(int *var, int count);
 
@@ -55,7 +55,7 @@ int s21_sprintf(char *str, const char *format, ...) {
           break;
         case 'x':
         case 'X':
-          execute_x(&str_p, va_arg(args, int), &flags);
+          execute_x(&str_p, va_arg(args, int), flags);
           break;
       }
       // вывод результата в строку
@@ -349,28 +349,28 @@ void input_char(char *str, char ch) {
   str[0] = ch;
 }
 
-void execute_x(char **p, int number, Flag *flags) {
+void execute_x(char **p, int number, Flag flags) {
   char hex[1000];
-  if (flags->spec == 'x') int_to_hex(number, hex, 0);
-  if (flags->spec == 'X') int_to_hex(number, hex, 1);
+  if (flags.spec == 'x') int_to_hex(number, hex, 0);
+  if (flags.spec == 'X') int_to_hex(number, hex, 1);
 
   // обработка флагов
-  if (flags->prefix) {  // флаг #
-    if (flags->spec == 'x') input_char(hex, 'x');
-    if (flags->spec == 'X') input_char(hex, 'X');
+  if (flags.prefix) {  // флаг #
+    if (flags.spec == 'x') input_char(hex, 'x');
+    if (flags.spec == 'X') input_char(hex, 'X');
     input_char(hex, '0');
   }
 
-  if (flags->precision != 0) {  // точность, дополняем нулями слева
-    while ((int)s21_strlen(hex) < flags->precision) {
+  if (flags.precision != 0) {  // точность, дополняем нулями слева
+    while ((int)s21_strlen(hex) < flags.precision) {
       input_char(hex, '0');
     }
   }
 
-  if (flags->width != 0 && !flags->minus) {
+  if (flags.width != 0 && !flags.minus) {
     char ch = ' ';
-    if (flags->zero) ch = '0';
-    while ((int)s21_strlen(hex) < flags->width) {
+    if (flags.zero) ch = '0';
+    while ((int)s21_strlen(hex) < flags.width) {
       input_char(hex, ch);
     }
   }
