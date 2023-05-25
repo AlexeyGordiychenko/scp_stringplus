@@ -16,6 +16,7 @@ void parse_spec(const char **p, Flag *flags, va_list args);
 
 void reverse_string(char *str);
 void int_to_string(int number, char *str);
+int int_to_str_min_len(long int number, char *str, bool sign, int min_len);
 void double_to_string(double number, char *str, int precision);
 void string_to_int(char *str, int *number);
 void string_to_double(char *str, double *number);
@@ -25,6 +26,7 @@ void input_char(char *str, char ch);
 void execute_x(char **p, int number, Flag flags);
 void execute_percent(char **str);
 void execute_n(int *var, int count);
+void process_d_spec(Flag flags, va_list args, char **p);
 
 int s21_sprintf(char *str, const char *format, ...) {
   va_list args;
@@ -57,6 +59,8 @@ int s21_sprintf(char *str, const char *format, ...) {
         case 'X':
           execute_x(&str_p, va_arg(args, int), flags);
           break;
+        case 'd':
+          process_d_spec(flags, args, &str_p);
       }
       // вывод результата в строку
     } else {
@@ -413,3 +417,98 @@ void execute_percent(char **p) {
 }
 
 void execute_n(int *var, int count) { *var = count; }
+
+int int_to_str_min_len(long int number, char *str, bool sign, int min_len) {
+  char *p = str;
+  int len = 0;
+  int spec_case = number == LONG_MIN;
+  if (number < 0) {
+    if (sign) {
+      *p++ = '-';
+      len++;
+    }
+    number = (spec_case) ? LONG_MAX : -number;
+  }
+
+  long int temp = number;
+  do {
+    p++;
+    temp /= 10;
+  } while (temp);
+
+  int leading_zeros = min_len - (p - str);
+  if (leading_zeros > 0) {
+    p += leading_zeros;
+  } else {
+    leading_zeros = 0;
+  }
+
+  *p = '\0';
+
+  do {
+    *--p = '0' + (number % 10) + spec_case;
+    spec_case = 0;
+    number /= 10;
+    len++;
+  } while (number);
+
+  len += leading_zeros;
+
+  while (leading_zeros > 0) {
+    *--p = '0';
+    leading_zeros--;
+  }
+
+  return len;
+}
+
+void process_d_spec(Flag flags, va_list args, char **p) {
+  long int value;
+  if (flags.length == 'l') {
+    value = va_arg(args, long int);
+
+  } else if (flags.length == 'h') {
+    value = (short)va_arg(args, int);
+  } else {
+    value = va_arg(args, int);
+  }
+
+  // approximately 20 signs for the long int number (with sign) plus \0
+  // plus precision, plus some margin
+  int temp_size = 25 + ((flags.precision < 0) ? 0 : flags.precision);
+  char temp[temp_size];
+  s21_memset(temp, '\0', temp_size);
+  int len = 0;
+  if (flags.precision != 0 || value != 0) {
+    len = int_to_str_min_len(value, temp, false, flags.precision);
+  }
+  char sign = '\0';
+  if (flags.sign || value < 0) {
+    len++;
+    sign = (value < 0) ? '-' : '+';
+  } else if (flags.space) {
+    len++;
+    sign = ' ';
+  }
+
+  if (flags.zero && sign != '\0') {
+    **p = sign;
+    (*p)++;
+  }
+  if (flags.width > len && !flags.minus) {
+    s21_memset(*p, (flags.zero) ? '0' : ' ', flags.width - len);
+    (*p) += flags.width - len;
+  }
+
+  if (!flags.zero && sign != '\0') {
+    **p = sign;
+    (*p)++;
+  }
+
+  s21_strncpy(*p, temp, temp_size);
+  (*p) += len - ((sign == '\0') ? 0 : 1);
+  if (flags.width > len && flags.minus) {
+    s21_memset(*p, ' ', flags.width - len);
+    (*p) += flags.width - len;
+  }
+}
