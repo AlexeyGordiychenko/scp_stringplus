@@ -1,5 +1,31 @@
 #include "../s21_string.h"
 
+typedef struct {
+  int minus;
+  int sign;
+  int space;
+  int prefix;
+  int zero;
+  int width;
+  int precision;
+  char length;
+  char spec;
+} Flag;
+
+void parse_spec(const char *format, int *ind, Flag *flags);
+
+void reverse_string(char *str);
+void int_to_string(int number, char *str);
+void double_to_string(double number, char *str, int precision);
+void string_to_int(char *str, int *number);
+void string_to_double(char *str, double *number);
+void int_to_hex(int number, char *hex, int reg);
+void input_char(char *str, char ch);
+
+void execute_x(char *str, int *ind, int number, Flag *flags);
+void execute_percent(char *str, int *ind, Flag *flags);
+void execute_n(int *ind, int *count);
+
 int s21_sprintf(char *str, const char *format, ...) {
   va_list args;
   va_start(args, format);
@@ -13,12 +39,13 @@ int s21_sprintf(char *str, const char *format, ...) {
       parse_spec(format, &f_ind, &flags);
 
       // тестовый вывод напарсенных структур
-/*      printf(
-          "minus = %d, sign = %d, space = %d, prefix = %d, zero = %d, width = "
-          "%d, precison = %d, spec = %c\n",
-          flags.minus, flags.sign, flags.space, flags.prefix, flags.zero,
-          flags.width, flags.precision, flags.spec);
-*/
+      /*      printf(
+                "minus = %d, sign = %d, space = %d, prefix = %d, zero = %d,
+         width = "
+                "%d, precison = %d, spec = %c\n",
+                flags.minus, flags.sign, flags.space, flags.prefix, flags.zero,
+                flags.width, flags.precision, flags.spec);
+      */
       // обработка спецификатора и аргумента
       switch (flags.spec) {
         case '%':

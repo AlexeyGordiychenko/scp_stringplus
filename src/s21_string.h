@@ -2,27 +2,14 @@
 #define S21_STRING_H
 
 #include <limits.h>
+#include <math.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-// #include <string.h>
-#include <math.h>
 
 #define S21_NULL (void *)0
 #define s21_size_t unsigned long long
-
-typedef struct {
-  int minus;
-  int sign;
-  int space;
-  int prefix;
-  int zero;
-  int width;
-  int precision;
-  char length;
-  char spec;
-} Flag;
 
 void *s21_memchr(const void *str, int c, s21_size_t n);             // Done
 int s21_memcmp(const void *str1, const void *str2, s21_size_t n);   // Done
@@ -74,19 +61,5 @@ void *s21_trim(
                        // начальные и конечные вхождения набора заданных
                        // символов (trim_chars) из данной строки (src). В случае
                        // какой-либо ошибки следует вернуть значение NULL
-
-void parse_spec(const char *format, int *ind, Flag *flags);
-
-void reverse_string(char *str);
-void int_to_string(int number, char *str);
-void double_to_string(double number, char *str, int precision);
-void string_to_int(char *str, int *number);
-void string_to_double(char *str, double *number);
-void int_to_hex(int number, char *hex, int reg);
-void input_char(char *str, char ch);
-
-void execute_X(char *str, int *ind, int number, Flag *flags);
-void execute_percent(char *str, int *ind);
-void execute_n(int *ind, int *count);
 
 #endif
