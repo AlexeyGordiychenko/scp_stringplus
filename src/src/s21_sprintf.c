@@ -12,7 +12,7 @@ typedef struct {
   char spec;
 } Flag;
 
-void parse_spec(const char **p, Flag *flags);
+void parse_spec(const char **p, Flag *flags, va_list args);
 
 void reverse_string(char *str);
 void int_to_string(int number, char *str);
@@ -35,7 +35,7 @@ int s21_sprintf(char *str, const char *format, ...) {
     Flag flags = {0};  // ининциализируем или обнуляем структуру флагов
     if (*p == '%') {
       /* парсинг спецификатора */
-      parse_spec(&p, &flags);
+      parse_spec(&p, &flags, args);
 
       // тестовый вывод напарсенных структур
       /*      printf(
@@ -70,7 +70,10 @@ int s21_sprintf(char *str, const char *format, ...) {
   return str_p - str;
 }
 
-void parse_spec(const char **p, Flag *flags) {
+void parse_spec(const char **p, Flag *flags, va_list args) {
+  // первоначальное значение -1, т.к. 0 - валидное значение
+  flags->precision = -1;
+
   // парсим флаги
   (*p)++;
   while (true) {
@@ -97,22 +100,24 @@ void parse_spec(const char **p, Flag *flags) {
       (*p)++;
     }
   } else if (**p == '*') {
-    flags->width = -1;  // значение для считывание из аргумента
+    flags->width = va_arg(args, int);  // значение для считывание из аргумента
     (*p)++;
   }
 
   // парсим точность
   if (**p == '.') {
     (*p)++;
-    if (**p >= '1' && **p <= '9') {
+    flags->precision = 0;
+    if (**p >= '0' && **p <= '9') {
       while (**p >= '0' && **p <= '9') {
         flags->precision = flags->precision * 10 + (**p - '0');
         (*p)++;
       }
+    } else if (**p == '*') {
+      flags->precision =
+          va_arg(args, int);  // значение для считывание из аргумента
+      (*p)++;
     }
-  } else if (**p == '*') {
-    flags->precision = -1;  // значение для считывание из аргумента
-    (*p)++;
   }
 
   // Парсим длину
