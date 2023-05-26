@@ -26,7 +26,7 @@ void input_char(char *str, char ch);
 void execute_x(char **p, int number, Flag flags);
 void execute_percent(char **str);
 void execute_n(int *var, int count);
-void process_d_spec(Flag flags, va_list args, char **p);
+void process_d_spec(Flag flags, va_list *args, char **p);
 
 int s21_sprintf(char *str, const char *format, ...) {
   va_list args;
@@ -60,7 +60,7 @@ int s21_sprintf(char *str, const char *format, ...) {
           execute_x(&str_p, va_arg(args, int), flags);
           break;
         case 'd':
-          process_d_spec(flags, args, &str_p);
+          process_d_spec(flags, &args, &str_p);
       }
       // вывод результата в строку
     } else {
@@ -462,15 +462,15 @@ int int_to_str_min_len(long int number, char *str, bool sign, int min_len) {
   return len;
 }
 
-void process_d_spec(Flag flags, va_list args, char **p) {
+void process_d_spec(Flag flags, va_list *args, char **p) {
   long int value;
   if (flags.length == 'l') {
-    value = va_arg(args, long int);
+    value = va_arg(*args, long int);
 
   } else if (flags.length == 'h') {
-    value = (short)va_arg(args, int);
+    value = (short)va_arg(*args, int);
   } else {
-    value = va_arg(args, int);
+    value = va_arg(*args, int);
   }
 
   // approximately 20 signs for the long int number (with sign) plus \0

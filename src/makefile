@@ -31,6 +31,10 @@ vlad: $(TEST_OBJS) $(LIB)
 
 s21_string.a: $(OBJS)
 	ar rcs $(LIB) $(OBJS)
+	
+vlad: $(TEST_OBJS) $(LIB)
+	$(CC) $(CFLAGS) vlad.c $(LIB) $(LDFLAGS) -o vlad -g
+	./vlad
 
 gcov_report:
 	mkdir -p $(GCOV_DIR)
