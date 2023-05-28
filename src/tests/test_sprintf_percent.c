@@ -3,7 +3,7 @@
 START_TEST(sprintf_1_percent) {
   char str1[100] = "";
   char str2[100] = "";
-  char *str3 = "%%Test %o Test";
+  char *str3 = "%%Test %% Test";
   int val = 012;
   ck_assert_int_eq(sprintf(str1, str3, val), s21_sprintf(str2, str3, val));
   ck_assert_pstr_eq(str1, str2);
@@ -13,7 +13,7 @@ END_TEST
 START_TEST(sprintf_2_percent) {
   char str1[100];
   char str2[100];
-  char *str3 = "Test %o Tes%%%%t %o";
+  char *str3 = "Test %% Tes%%%%t %%";
   int val = 012;
   int val2 = 017;
   ck_assert_int_eq(sprintf(str1, str3, val, val2),
@@ -25,7 +25,7 @@ END_TEST
 START_TEST(sprintf_3_percent) {
   char str1[100];
   char str2[100];
-  char *str3 = "%o Te%%st %o Test %o";
+  char *str3 = "%%%%%%%%%%%% Te%%st %%%%%%%%%%";
   int val = 3015;
   int val2 = 712;
   int val3 = 99;
