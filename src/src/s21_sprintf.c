@@ -15,7 +15,7 @@ typedef struct {
 void parse_spec(const char **p, Flag *flags, va_list *args);
 
 void reverse_string(char *str);
-void int_to_string(int number, char *str);
+void int_to_string(long long unsigned int number, char *str);
 int int_to_str_min_len(long int number, char *str, bool sign, int min_len);
 void double_to_string(double number, char *str, int precision);
 void string_to_int(char *str, int *number);
@@ -24,9 +24,11 @@ void int_to_hex(unsigned long int number, char *hex, int reg);
 void input_char_left(char *str, char ch);
 
 void execute_x(char **p, va_list *args, Flag flags);
+void execute_u(char **p, va_list *args, Flag flags);
 void execute_percent(char **str);
 void execute_n(int *var, int count);
 void process_d_spec(Flag flags, va_list *args, char **p);
+void apply_flags(char *str, Flag flags);
 
 int s21_sprintf(char *str, const char *format, ...) {
   va_list args;
@@ -55,6 +57,9 @@ int s21_sprintf(char *str, const char *format, ...) {
         case 'n':
           execute_n(va_arg(args, int *), (str_p - str));
           break;
+        case 'u':
+          execute_u(&str_p, &args, flags);
+        break;
         case 'x':
         case 'X':
           execute_x(&str_p, &args, flags);
@@ -171,7 +176,7 @@ void reverse_string(char *str) {
   }
 }
 
-void int_to_string(int number, char *str) {
+void int_to_string(long long unsigned int number, char *str) {
   if (number == 0) {
     str[0] = '0';
     str[1] = '\0';
@@ -368,37 +373,7 @@ void execute_x(char **p, va_list *args, Flag flags) {
   if (flags.spec == 'x') int_to_hex(number, hex, 0);
   if (flags.spec == 'X') int_to_hex(number, hex, 1);
 
-  // обработка флагов
-  if (flags.precision != -1) {  // точность, дополняем нулями слева
-    if (flags.precision == 0 && number == 0) {
-      hex[0] = '\0';
-    } else {
-      while ((int)s21_strlen(hex) < flags.precision) {
-        input_char_left(hex, '0');
-      }
-    }
-  }
-
-  if (flags.prefix && number != 0) {  // флаг #
-    if (flags.spec == 'x') input_char_left(hex, 'x');
-    if (flags.spec == 'X') input_char_left(hex, 'X');
-    input_char_left(hex, '0');
-  }
-
-  if (flags.width != 0 && !flags.minus) {
-    char ch = ' ';
-     if (flags.zero) ch = '0';
-    while ((int)s21_strlen(hex) < flags.width) {
-      input_char_left(hex, ch);
-    }
-
-  } else if (flags.width != 0 && flags.minus) {
-    while ((int)s21_strlen(hex) < flags.width) {
-      int len = (int)s21_strlen(hex);
-      hex[len] = ' ';
-      hex[len + 1] = '\0';
-    }
-  }
+  apply_flags(hex, flags);
 
   int hex_len = (int)s21_strlen(hex);
   s21_strncpy(*p, hex, hex_len);
@@ -527,4 +502,66 @@ void process_d_spec(Flag flags, va_list *args, char **p) {
     s21_memset(*p, ' ', flags.width - len);
     (*p) += flags.width - len;
   }
+}
+
+void apply_flags(char *str, Flag flags) {
+  // обработка флагов
+  if (flags.precision != -1) {  // точность, дополняем нулями слева
+    if (flags.precision == 0 && !s21_strncmp(str, "0", 1)) {
+      str[0] = '\0';
+    } else {
+      while ((int)s21_strlen(str) < flags.precision) {
+        input_char_left(str, '0');
+      }
+    }
+  }
+
+  if (flags.prefix && s21_strncmp(str, "0", 2) && str[0] != '\0') {  // флаг #
+    if (flags.spec == 'x') {
+      input_char_left(str, 'x');
+      input_char_left(str, '0');
+    }
+    if (flags.spec == 'X') {
+      input_char_left(str, 'X');
+      input_char_left(str, '0');
+    }
+  }
+
+  if (flags.width != 0 && !flags.minus) {
+    char ch = ' ';
+    if (flags.zero) ch = '0';
+    while ((int)s21_strlen(str) < flags.width) {
+      input_char_left(str, ch);
+    }
+
+  } else if (flags.width != 0 && flags.minus) {
+    while ((int)s21_strlen(str) < flags.width) {
+      int len = (int)s21_strlen(str);
+      str[len] = ' ';
+      str[len + 1] = '\0';
+    }
+  }
+}
+
+void execute_u(char **p, va_list *args, Flag flags) {
+  char udigit[50];
+
+  long unsigned int number;
+  // обрабатываем длину
+  if (flags.length == 'l') {
+    number = va_arg(*args, long unsigned int);
+  } else if (flags.length == 'h') {
+    number = (unsigned short int)va_arg(*args, int);
+  } else {
+    number = (unsigned int)va_arg(*args, int);
+  }
+
+  // переводим в 10ый формат и записываем в строку
+  int_to_string(number, udigit);
+
+  apply_flags(udigit, flags);
+
+  int udigit_len = (int)s21_strlen(udigit);
+  s21_strncpy(*p, udigit, udigit_len);
+  (*p) += udigit_len;
 }

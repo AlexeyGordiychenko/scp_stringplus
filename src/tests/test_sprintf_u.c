@@ -1,4 +1,4 @@
-#include "test_me.h"
+#include "test_s21_string.h"
 
 // One parameter unsigned
 START_TEST(sprintf_1_unsigned) {
@@ -253,8 +253,8 @@ START_TEST(sprintf_17_unsigned) {
   ck_assert_pstr_eq(str1, str2);
 }
 END_TEST
-Suite *test_sprintf_unsigned(void) {
-  Suite *s = suite_create("\033[45m-=S21_SPRINTF_UNSIGNED=-\033[0m");
+Suite *test_sprintf_u(void) {
+  Suite *s = suite_create("\033[45m-=S21_SPRINTF_U=-\033[0m");
   TCase *tc = tcase_create("sprintf_tc");
 
   tcase_add_test(tc, sprintf_1_unsigned);
