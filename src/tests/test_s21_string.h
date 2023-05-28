@@ -26,10 +26,13 @@ Suite *test_strrchr(void);
 Suite *test_strstr(void);
 Suite *test_strtok(void);
 
+<<<<<<< HEAD
 Suite *test_sprintf_signed(void);
 Suite *test_sprintf_hex(void);
 Suite *test_sprintf_HEX(void);
 Suite *test_sprintf_n(void);
 Suite *test_sprintf_percent(void);
 
+=======
+>>>>>>> 59c3dac97c6954adb6728af20080dc1213f5a670
 #endif  // SRC_TESTS_ME_H

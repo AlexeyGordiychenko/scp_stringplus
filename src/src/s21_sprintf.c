@@ -1,5 +1,6 @@
 #include "../s21_string.h"
 
+<<<<<<< HEAD
 typedef struct {
   int minus;
   int sign;
@@ -46,10 +47,32 @@ int s21_sprintf(char *str, const char *format, ...) {
                 "%d, precison = %d, spec = %c\n",
                 flags.minus, flags.sign, flags.space, flags.prefix, flags.zero,
                 flags.width, flags.precision, flags.spec);
+=======
+int s21_sprintf(char *str, const char *format, ...) {
+  va_list args;
+  va_start(args, format);
+  int f_ind = 0;  // переменная для отслеживания форматной строки
+  int s_ind = 0;  // переменная для отслеживания строки вывода
+
+  while (format[f_ind] != '\0') {
+    Flag flags = {0};  // ининциализируем или обнуляем структуру флагов
+    if (format[f_ind] == '%') {
+      /* парсинг спецификатора */
+      parse_spec(format, &f_ind, &flags);
+
+      // тестовый вывод напарсенных структур
+      /*
+      printf(
+          "minus = %d, sign = %d, space = %d, prefix = %d, zero = %d, width = "
+          "%d, precison = %d, spec = %c\n",
+          flags.minus, flags.sign, flags.space, flags.prefix, flags.zero,
+          flags.width, flags.precision, flags.spec);
+>>>>>>> 59c3dac97c6954adb6728af20080dc1213f5a670
       */
       // обработка спецификатора и аргумента
       switch (flags.spec) {
         case '%':
+<<<<<<< HEAD
           execute_percent(&str_p);
           break;
         case 'n':
@@ -90,10 +113,52 @@ void parse_spec(const char **p, Flag *flags, va_list *args) {
     } else if (**p == '#') {
       flags->prefix = 1;
     } else if (**p == '0') {
+=======
+          execute_percent(str, &s_ind);
+          break;
+        case 'n':
+          execute_n(&s_ind, va_arg(args, int *));
+          break;
+        case 'X':
+          execute_X(str, &s_ind, va_arg(args, int), &flags);
+          break;
+      }
+      (s_ind)--;
+      // вывод результата в строку
+    } else {
+      str[s_ind] = format[f_ind];
+    }
+
+    f_ind++;
+    s_ind++;
+    str[s_ind] = '\0';
+  }
+  str[s_ind] = '\0';  // Добавляем нулевой символ в конце строки
+
+  va_end(args);  // Завершаем работу с переменными аргументами
+
+  return s_ind;
+}
+
+void parse_spec(const char *format, int *ind, Flag *flags) {
+  // парсим флаги
+  (*ind)++;
+  while (true) {
+    if (format[*ind] == '-') {
+      flags->minus = 1;
+    } else if (format[*ind] == '+') {
+      flags->sign = 1;
+    } else if (format[*ind] == ' ' && !flags->sign) {
+      flags->space = 1;
+    } else if (format[*ind] == '#') {
+      flags->prefix = 1;
+    } else if (format[*ind] == '0' && !flags->minus) {
+>>>>>>> 59c3dac97c6954adb6728af20080dc1213f5a670
       flags->zero = 1;
     } else {
       break;
     }
+<<<<<<< HEAD
     (*p)++;
   }
 
@@ -131,11 +196,52 @@ void parse_spec(const char **p, Flag *flags, va_list *args) {
     case 'L':
       flags->length = **p;
       (*p)++;
+=======
+    (*ind)++;
+  }
+
+  // парсим ширину
+  if (format[*ind] >= '1' && format[*ind] <= '9') {
+    while (format[*ind] >= '0' && format[*ind] <= '9') {
+      flags->width = flags->width * 10 + (format[*ind] - '0');
+      (*ind)++;
+    }
+  } else if (format[*ind] == '*') {
+    flags->width = -1;  // значение для считывание из аргумента
+    (*ind)++;
+  }
+
+  // парсим точность
+  if (format[*ind] == '.') {
+    (*ind)++;
+    if (format[*ind] >= '1' && format[*ind] <= '9') {
+      while (format[*ind] >= '0' && format[*ind] <= '9') {
+        flags->precision = flags->precision * 10 + (format[*ind] - '0');
+        (*ind)++;
+      }
+    }
+  } else if (format[*ind] == '*') {
+    flags->precision = -1;  // значение для считывание из аргумента
+    (*ind)++;
+  }
+
+  // Парсим длину
+  switch (format[*ind]) {
+    case 'h':
+    case 'l':
+    case 'L':
+      flags->length = format[*ind];
+      (*ind)++;
+>>>>>>> 59c3dac97c6954adb6728af20080dc1213f5a670
       break;
   }
 
   // Парсим спецификатор
+<<<<<<< HEAD
   switch (**p) {
+=======
+  switch (format[*ind]) {
+>>>>>>> 59c3dac97c6954adb6728af20080dc1213f5a670
     case 'c':
     case 'd':
     case 'i':
@@ -152,12 +258,20 @@ void parse_spec(const char **p, Flag *flags, va_list *args) {
     case 'p':
     case 'n':
     case '%':
+<<<<<<< HEAD
       flags->spec = **p;
       // (*p)++;
       break;
     default:
       printf("Ошибка: Некорректный спецификатор %c\n", **p);
       // exit(0);  // что делаем если некорр. спец?
+=======
+      flags->spec = format[*ind];
+      break;
+    default:
+      printf("Ошибка: Некорректный спецификатор %c\n", format[*ind]);
+      exit(0);  // что делаем если некорр. спец?
+>>>>>>> 59c3dac97c6954adb6728af20080dc1213f5a670
       break;
   }
 }
@@ -244,6 +358,13 @@ void double_to_string(double number, char *str, int precision) {
   str[i] = '\0';
 }
 
+<<<<<<< HEAD
+=======
+void execute_percent(char *str, int *ind) { str[*ind] = '%'; }
+
+void execute_n(int *ind, int *count) { *count = *ind; }
+
+>>>>>>> 59c3dac97c6954adb6728af20080dc1213f5a670
 void string_to_int(char *str, int *number) {
   // проверка на то является ли строка целым числом
   int i = 0;
@@ -313,7 +434,11 @@ void string_to_double(char *str, double *number) {
   }
 }
 
+<<<<<<< HEAD
 void int_to_hex(unsigned long int number, char *hex, int reg) {
+=======
+void int_to_hex(int number, char *hex, int reg) {
+>>>>>>> 59c3dac97c6954adb6728af20080dc1213f5a670
   if (number == 0) {
     hex[0] = '0';
     hex[1] = '\0';
@@ -350,7 +475,11 @@ void int_to_hex(unsigned long int number, char *hex, int reg) {
   reverse_string(hex);
 }
 
+<<<<<<< HEAD
 void input_char_left(char *str, char ch) {
+=======
+void input_char(char *str, char ch) {
+>>>>>>> 59c3dac97c6954adb6728af20080dc1213f5a670
   int len = (int)s21_strlen(str);
   for (int i = len + 1; i > 0; i--) {
     str[i] = str[i - 1];
@@ -358,6 +487,7 @@ void input_char_left(char *str, char ch) {
   str[0] = ch;
 }
 
+<<<<<<< HEAD
 void execute_x(char **p, va_list *args, Flag flags) {
   char hex[50];
 
@@ -538,4 +668,33 @@ void process_d_spec(Flag flags, va_list *args, char **p) {
     s21_memset(*p, ' ', flags.width - len);
     (*p) += flags.width - len;
   }
+=======
+void execute_X(char *str, int *ind, int number, Flag *flags) {
+  char hex[100];
+  int_to_hex(number, hex, 1);
+
+  // обработка флагов
+  if (flags->prefix) {  // флаг #
+    input_char(hex, 'X');
+    input_char(hex, '0');
+  }
+
+  if (flags->precision != 0) {  // точность, дополняем нулями слева
+    while ((int)s21_strlen(hex) < flags->precision) {
+      input_char(hex, '0');
+    }
+  }
+
+  if (flags->width != 0 && !flags->minus) {
+    char ch = ' ';
+    if (flags->zero) ch = '0';
+    while ((int)s21_strlen(hex) < flags->width) {
+      input_char(hex, ch);
+    }
+  }
+
+  int hex_len = (int)s21_strlen(hex);
+  s21_strncat(str, hex, hex_len + 1);
+  *ind = *ind + hex_len;
+>>>>>>> 59c3dac97c6954adb6728af20080dc1213f5a670
 }

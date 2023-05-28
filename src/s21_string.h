@@ -7,6 +7,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+// #include <string.h>
+#include <math.h>
 
 #define S21_NULL (void *)0
 #define s21_size_t unsigned long long
