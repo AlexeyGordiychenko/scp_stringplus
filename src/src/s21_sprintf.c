@@ -322,10 +322,10 @@ void int_to_hex(unsigned long int number, char *hex, int reg) {
 
   int i = 0;
   // int minus = 0;
-  if (number < 0) {
+  //if (number < 0) {
     //    minus = 1;
-    number = -number;
-  }
+  //  number = -number;
+  //}
 
   while (number > 0) {
     int digit = number % 16;
