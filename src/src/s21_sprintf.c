@@ -321,11 +321,6 @@ void int_to_hex(unsigned long int number, char *hex, int reg) {
   }
 
   int i = 0;
-  // int minus = 0;
-  //if (number < 0) {
-    //    minus = 1;
-  //  number = -number;
-  //}
 
   while (number > 0) {
     int digit = number % 16;
@@ -341,9 +336,7 @@ void int_to_hex(unsigned long int number, char *hex, int reg) {
     number /= 16;
     i++;
   }
-  /* эту часть отключаю, т.к. у нас по заданию на вход идут только положительные
-  числа if (minus) { hex[i] = '-'; // Добавляем знак минуса i++;
-  }*/
+
   hex[i] = '\0';
 
   // Обратный порядок символов
@@ -392,8 +385,6 @@ void execute_x(char **p, va_list *args, Flag flags) {
     input_char_left(hex, '0');
   }
 
-  //printf("дописали точность !%s!\n", hex);
-
   if (flags.width != 0 && !flags.minus) {
     char ch = ' ';
      if (flags.zero) ch = '0';
@@ -408,8 +399,6 @@ void execute_x(char **p, va_list *args, Flag flags) {
       hex[len + 1] = '\0';
     }
   }
-
-  //printf("дописали ширину !%s!\n", hex);
 
   int hex_len = (int)s21_strlen(hex);
   s21_strncpy(*p, hex, hex_len);
