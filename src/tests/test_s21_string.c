@@ -18,6 +18,10 @@ int main(void) {
                               test_strstr(),
                               test_strtok(),
                               test_sprintf_signed(),
+                              test_sprintf_hex(),
+                              test_sprintf_HEX(),
+                              //test_sprintf_n(),
+                              test_sprintf_percent(),
                               NULL};
 
   for (int i = 0; s21_string_test[i] != NULL; i++) {  // (&& failed == 0)

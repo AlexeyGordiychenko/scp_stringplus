@@ -51,8 +51,6 @@ Suite *test_sprintf_signed(void);
 Suite *test_sprintf_signed_i(void);
 Suite *test_sprintf_octal(void);
 Suite *test_sprintf_unsigned(void);
-Suite *test_sprintf_hex(void);
-Suite *test_sprintf_HEX(void);
 Suite *test_sprintf_percent(void);
 Suite *test_sprintf_pointer(void);
 Suite *test_sprintf_n(void);

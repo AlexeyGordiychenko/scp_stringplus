@@ -1,24 +1,24 @@
-#include "test_me.h"
+#include "test_s21_string.h"
 
-// One parameter HEX
-START_TEST(sprintf_1_HEX) {
+// One parameter hex
+START_TEST(sprintf_1_hex) {
   char str1[100] = "";
   char str2[100] = "";
-  char *str3 = "Test %X Test";
-  int val = 0X32;
+  char *str3 = "Test %x Test";
+  int val = 0x32;
   ck_assert_int_eq(sprintf(str1, str3, val), s21_sprintf(str2, str3, val));
   ck_assert_pstr_eq(str1, str2);
 }
 END_TEST
 
-// Three HEX parameters
-START_TEST(sprintf_2_HEX) {
+// Three hex parameters
+START_TEST(sprintf_2_hex) {
   char str1[100];
   char str2[100];
-  char *str3 = "%X Test %X Test %X";
-  int val = 0X7a4;
-  int val2 = 0X9112312f;
-  int val3 = 0X3123;
+  char *str3 = "%x Test %x Test %x";
+  int val = 0x7a4;
+  int val2 = 0x91ba123f;
+  int val3 = 0x3123;
   ck_assert_int_eq(sprintf(str1, str3, val, val2, val3),
                    s21_sprintf(str2, str3, val, val2, val3));
   ck_assert_pstr_eq(str1, str2);
@@ -26,13 +26,13 @@ START_TEST(sprintf_2_HEX) {
 END_TEST
 
 // Three decimal parameters
-START_TEST(sprintf_3_HEX) {
+START_TEST(sprintf_3_hex) {
   char str1[100];
   char str2[100];
-  char *str3 = "%X Test %X Test %X";
-  int val = 0X3015;
-  int val2 = 0X712;
-  int val3 = 0X99;
+  char *str3 = "%x Test %x Test %x";
+  int val = 0x3015;
+  int val2 = 0x712;
+  int val3 = 0x99;
   ck_assert_int_eq(sprintf(str1, str3, val, val2, val3),
                    s21_sprintf(str2, str3, val, val2, val3));
   ck_assert_pstr_eq(str1, str2);
@@ -40,12 +40,12 @@ START_TEST(sprintf_3_HEX) {
 END_TEST
 
 // Different sizes
-START_TEST(sprintf_4_HEX) {
+START_TEST(sprintf_4_hex) {
   char str1[100];
   char str2[100];
-  char *str3 = "%lX Test %lX Test %hX GOD %hX";
-  unsigned long int val = 3088675747373646;
-  unsigned long int val2 = 33030030303;
+  char *str3 = "%lx Test %lx Test %hx GOD %hx";
+  long int val = 3088675747373646;
+  long val2 = 33030030303;
   unsigned short int val3 = 22600;
   unsigned short val4 = 120;
   ck_assert_int_eq(sprintf(str1, str3, val, val2, val3, val4),
@@ -55,10 +55,10 @@ START_TEST(sprintf_4_HEX) {
 END_TEST
 
 // Different width
-START_TEST(sprintf_5_HEX) {
+START_TEST(sprintf_5_hex) {
   char str1[100];
   char str2[100];
-  char *str3 = "%3X Test %5X Test %10X";
+  char *str3 = "%3x Test %5x Test %10x";
   int val = 3015;
   int val2 = 01234;
   int val3 = 99;
@@ -69,10 +69,10 @@ START_TEST(sprintf_5_HEX) {
 END_TEST
 
 // Different precision and width
-START_TEST(sprintf_6_HEX) {
+START_TEST(sprintf_6_hex) {
   char str1[200];
   char str2[200];
-  char *str3 = "%6.5X Test %.23X Test %3.X TEST %.X";
+  char *str3 = "%6.5x Test %.23x Test %3.x TEST %.x";
   int val = 3015;
   int val2 = 712;
   int val3 = 99;
@@ -84,10 +84,10 @@ START_TEST(sprintf_6_HEX) {
 END_TEST
 
 // Minus flag
-START_TEST(sprintf_7_HEX) {
+START_TEST(sprintf_7_hex) {
   char str1[200];
   char str2[200];
-  char *str3 = "%-10.5X Test %-.8X Test %-7X TEST %-.X";
+  char *str3 = "%-10.5x Test %-.8x Test %-7x TEST %-.x";
   int val = 3015;
   int val2 = 712;
   int val3 = 99;
@@ -99,10 +99,10 @@ START_TEST(sprintf_7_HEX) {
 END_TEST
 
 // Zeroes
-START_TEST(sprintf_8_HEX) {
+START_TEST(sprintf_8_hex) {
   char str1[200];
   char str2[200];
-  char *str3 = "%0X Test %0.X Test %0.0X TEST %0X GOD %.X";
+  char *str3 = "%0x Test %0.x Test %0.0x TEST %0x GOD %.x";
   int val = 3015;
   int val2 = 712;
   int val3 = 99;
@@ -115,10 +115,10 @@ START_TEST(sprintf_8_HEX) {
 END_TEST
 
 // Pluses
-START_TEST(sprintf_9_HEX) {
+START_TEST(sprintf_9_hex) {
   char str1[200];
   char str2[200];
-  char *str3 = "%+X Test %+3.X Test %+5.7X TEST %+10X";
+  char *str3 = "%+x Test %+3.x Test %+5.7x TEST %+10x";
   int val = 3015;
   int val2 = 712;
   int val3 = 99;
@@ -130,10 +130,10 @@ START_TEST(sprintf_9_HEX) {
 END_TEST
 
 // Zero vals
-START_TEST(sprintf_10_HEX) {
+START_TEST(sprintf_10_hex) {
   char str1[200];
   char str2[200];
-  char *str3 = "%X Test %3.X Test %5.7X TEST %10X %#X %-X %+X %.X % .X";
+  char *str3 = "%x Test %3.x Test %5.7x TEST %10x %#x %-x %+x %.x % .x";
   int val = 0;
   ck_assert_int_eq(
       sprintf(str1, str3, val, val, val, val, val, val, val, val, val),
@@ -143,10 +143,10 @@ START_TEST(sprintf_10_HEX) {
 END_TEST
 
 // Spaces
-START_TEST(sprintf_11_HEX) {
+START_TEST(sprintf_11_hex) {
   char str1[200];
   char str2[200];
-  char *str3 = "% X Test % 3.X Test % 5.7X TEST % 10X GOD %.X";
+  char *str3 = "% x Test % 3.x Test % 5.7x TEST % 10x GOD %.x";
   int val = 32;
   int val2 = 8899;
   int val3 = 91918;
@@ -159,10 +159,10 @@ START_TEST(sprintf_11_HEX) {
 END_TEST
 
 // Plus
-START_TEST(sprintf_12_HEX) {
+START_TEST(sprintf_12_hex) {
   char str1[200];
   char str2[200];
-  char *str3 = "%+X Test %+3.X Test %+5.7X TEST %+10X GOD %+.X";
+  char *str3 = "%+x Test %+3.x Test %+5.7x TEST %+10x GOD %+.x";
   int val = 32;
   int val2 = 8899;
   int val3 = 91918;
@@ -175,10 +175,10 @@ START_TEST(sprintf_12_HEX) {
 END_TEST
 
 // Hash
-START_TEST(sprintf_13_HEX) {
+START_TEST(sprintf_13_hex) {
   char str1[200];
   char str2[200];
-  char *str3 = "%#X Test %#3X Test %#5.7X TEST %#.7X Oof %#.X";
+  char *str3 = "%#x Test %#3x Test %#5.7x TEST %#.7x Oof %#.x";
   int val = 32;
   int val2 = 8899;
   int val3 = 91918;
@@ -191,10 +191,10 @@ START_TEST(sprintf_13_HEX) {
 END_TEST
 
 // ZERO flag
-START_TEST(sprintf_14_HEX) {
+START_TEST(sprintf_14_hex) {
   char str1[200];
   char str2[200];
-  char *str3 = "%0X Test %06X Test %05.7X TEST %0.7X Oof %0.X";
+  char *str3 = "%0x Test %06x Test %05.7x TEST %0.7x Oof %0.x";
   int val = 32;
   int val2 = 8899;
   int val3 = 91918;
@@ -207,10 +207,10 @@ START_TEST(sprintf_14_HEX) {
 END_TEST
 
 // Asterisk
-START_TEST(sprintf_15_HEX) {
+START_TEST(sprintf_15_hex) {
   char str1[200];
   char str2[200];
-  char *str3 = "%*X Test %-*X Test %*.*X TEST %.*X";
+  char *str3 = "%*x Test %-*x Test %*.*x TEST %.*x";
   int val = 32;
   int val2 = 8899;
   int val3 = 919;
@@ -228,10 +228,10 @@ START_TEST(sprintf_15_HEX) {
 }
 END_TEST
 
-START_TEST(sprintf_16_HEX) {
+START_TEST(sprintf_16_hex) {
   char str1[200];
   char str2[200];
-  char *str3 = "%- X Test %- 15X sdasda %- 15X sdsad %- X";
+  char *str3 = "%- x Test %- 15x sdasda %- 15x sdsad %- x";
   int val = -3231;
   int val2 = -3231;
   int val3 = 3231;
@@ -242,26 +242,37 @@ START_TEST(sprintf_16_HEX) {
 }
 END_TEST
 
-Suite *test_sprintf_HEX(void) {
-  Suite *s = suite_create("\033[45m-=S21_SPRINTF_HEX2=-\033[0m");
+START_TEST(sprintf_17_hex) {
+  char str1[200];
+  char str2[200];
+  char *str3 = "fdsdsds %lx";
+  long int val = ULONG_MAX;
+  ck_assert_int_eq(sprintf(str1, str3, val), s21_sprintf(str2, str3, val));
+  ck_assert_pstr_eq(str1, str2);
+}
+END_TEST
+
+Suite *test_sprintf_hex(void) {
+  Suite *s = suite_create("\033[45m-=S21_SPRINTF_HEX1=-\033[0m");
   TCase *tc = tcase_create("sprintf_tc");
 
-  tcase_add_test(tc, sprintf_1_HEX);
-  tcase_add_test(tc, sprintf_2_HEX);
-  tcase_add_test(tc, sprintf_3_HEX);
-  tcase_add_test(tc, sprintf_4_HEX);
-  tcase_add_test(tc, sprintf_5_HEX);
-  tcase_add_test(tc, sprintf_6_HEX);
-  tcase_add_test(tc, sprintf_7_HEX);
-  tcase_add_test(tc, sprintf_8_HEX);
-  tcase_add_test(tc, sprintf_9_HEX);
-  tcase_add_test(tc, sprintf_10_HEX);
-  tcase_add_test(tc, sprintf_11_HEX);
-  tcase_add_test(tc, sprintf_12_HEX);
-  tcase_add_test(tc, sprintf_13_HEX);
-  tcase_add_test(tc, sprintf_14_HEX);
-  tcase_add_test(tc, sprintf_15_HEX);
-  tcase_add_test(tc, sprintf_16_HEX);
+  tcase_add_test(tc, sprintf_1_hex);
+  tcase_add_test(tc, sprintf_2_hex);
+  tcase_add_test(tc, sprintf_3_hex);
+  tcase_add_test(tc, sprintf_4_hex);
+  tcase_add_test(tc, sprintf_5_hex);
+  tcase_add_test(tc, sprintf_6_hex);
+  tcase_add_test(tc, sprintf_7_hex);
+  tcase_add_test(tc, sprintf_8_hex);
+  tcase_add_test(tc, sprintf_9_hex);
+  tcase_add_test(tc, sprintf_10_hex);
+  tcase_add_test(tc, sprintf_11_hex);
+  tcase_add_test(tc, sprintf_12_hex);
+  tcase_add_test(tc, sprintf_13_hex);
+  tcase_add_test(tc, sprintf_14_hex);
+  tcase_add_test(tc, sprintf_15_hex);
+  tcase_add_test(tc, sprintf_16_hex); 
+  tcase_add_test(tc, sprintf_17_hex);
 
   suite_add_tcase(s, tc);
   return s;

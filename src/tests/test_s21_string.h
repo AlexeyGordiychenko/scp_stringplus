@@ -25,6 +25,11 @@ Suite *test_strpbrk(void);
 Suite *test_strrchr(void);
 Suite *test_strstr(void);
 Suite *test_strtok(void);
+
 Suite *test_sprintf_signed(void);
+Suite *test_sprintf_hex(void);
+Suite *test_sprintf_HEX(void);
+Suite *test_sprintf_n(void);
+Suite *test_sprintf_percent(void);
 
 #endif  // SRC_TESTS_ME_H

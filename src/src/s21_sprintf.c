@@ -12,7 +12,7 @@ typedef struct {
   char spec;
 } Flag;
 
-void parse_spec(const char **p, Flag *flags, va_list args);
+void parse_spec(const char **p, Flag *flags, va_list *args);
 
 void reverse_string(char *str);
 void int_to_string(int number, char *str);
@@ -20,10 +20,10 @@ int int_to_str_min_len(long int number, char *str, bool sign, int min_len);
 void double_to_string(double number, char *str, int precision);
 void string_to_int(char *str, int *number);
 void string_to_double(char *str, double *number);
-void int_to_hex(int number, char *hex, int reg);
-void input_char(char *str, char ch);
+void int_to_hex(unsigned long int number, char *hex, int reg);
+void input_char_left(char *str, char ch);
 
-void execute_x(char **p, int number, Flag flags);
+void execute_x(char **p, va_list *args, Flag flags);
 void execute_percent(char **str);
 void execute_n(int *var, int count);
 void process_d_spec(Flag flags, va_list *args, char **p);
@@ -37,7 +37,7 @@ int s21_sprintf(char *str, const char *format, ...) {
     Flag flags = {0};  // ининциализируем или обнуляем структуру флагов
     if (*p == '%') {
       /* парсинг спецификатора */
-      parse_spec(&p, &flags, args);
+      parse_spec(&p, &flags, &args);
 
       // тестовый вывод напарсенных структур
       /*      printf(
@@ -57,7 +57,7 @@ int s21_sprintf(char *str, const char *format, ...) {
           break;
         case 'x':
         case 'X':
-          execute_x(&str_p, va_arg(args, int), flags);
+          execute_x(&str_p, &args, flags);
           break;
         case 'd':
           process_d_spec(flags, &args, &str_p);
@@ -74,7 +74,7 @@ int s21_sprintf(char *str, const char *format, ...) {
   return str_p - str;
 }
 
-void parse_spec(const char **p, Flag *flags, va_list args) {
+void parse_spec(const char **p, Flag *flags, va_list *args) {
   // первоначальное значение -1, т.к. 0 - валидное значение
   flags->precision = -1;
 
@@ -85,7 +85,7 @@ void parse_spec(const char **p, Flag *flags, va_list args) {
       flags->minus = 1;
     } else if (**p == '+') {
       flags->sign = 1;
-    } else if (**p == ' ' && !flags->sign) {
+    } else if (**p == ' ') {
       flags->space = 1;
     } else if (**p == '#') {
       flags->prefix = 1;
@@ -98,13 +98,13 @@ void parse_spec(const char **p, Flag *flags, va_list args) {
   }
 
   // парсим ширину
-  if (**p >= '1' && **p <= '9') {
+  if (**p >= '0' && **p <= '9') {
     while (**p >= '0' && **p <= '9') {
       flags->width = flags->width * 10 + (**p - '0');
       (*p)++;
     }
   } else if (**p == '*') {
-    flags->width = va_arg(args, int);  // значение для считывание из аргумента
+    flags->width = va_arg(*args, int);  // значение для считывание из аргумента
     (*p)++;
   }
 
@@ -119,7 +119,7 @@ void parse_spec(const char **p, Flag *flags, va_list args) {
       }
     } else if (**p == '*') {
       flags->precision =
-          va_arg(args, int);  // значение для считывание из аргумента
+          va_arg(*args, int);  // значение для считывание из аргумента
       (*p)++;
     }
   }
@@ -313,7 +313,7 @@ void string_to_double(char *str, double *number) {
   }
 }
 
-void int_to_hex(int number, char *hex, int reg) {
+void int_to_hex(unsigned long int number, char *hex, int reg) {
   if (number == 0) {
     hex[0] = '0';
     hex[1] = '\0';
@@ -350,7 +350,7 @@ void int_to_hex(int number, char *hex, int reg) {
   reverse_string(hex);
 }
 
-void input_char(char *str, char ch) {
+void input_char_left(char *str, char ch) {
   int len = (int)s21_strlen(str);
   for (int i = len + 1; i > 0; i--) {
     str[i] = str[i - 1];
@@ -358,34 +358,61 @@ void input_char(char *str, char ch) {
   str[0] = ch;
 }
 
-void execute_x(char **p, int number, Flag flags) {
-  char hex[1000];
+void execute_x(char **p, va_list *args, Flag flags) {
+  char hex[50];
+
+  unsigned long int number;
+  // обрабатываем длину
+  if (flags.length == 'l') {
+    number = va_arg(*args, unsigned long int);
+  } else if (flags.length == 'h') {
+    number = (unsigned short int)va_arg(*args, int);
+  } else {
+    number = (unsigned int)va_arg(*args, int);
+  }
+
+  // переводим в 16ый формат и записываем в строку
   if (flags.spec == 'x') int_to_hex(number, hex, 0);
   if (flags.spec == 'X') int_to_hex(number, hex, 1);
 
   // обработка флагов
-  if (flags.prefix) {  // флаг #
-    if (flags.spec == 'x') input_char(hex, 'x');
-    if (flags.spec == 'X') input_char(hex, 'X');
-    input_char(hex, '0');
-  }
-
-  if (flags.precision != 0) {  // точность, дополняем нулями слева
-    while ((int)s21_strlen(hex) < flags.precision) {
-      input_char(hex, '0');
+  if (flags.precision != -1) {  // точность, дополняем нулями слева
+    if (flags.precision == 0 && number == 0) {
+      hex[0] = '\0';
+    } else {
+      while ((int)s21_strlen(hex) < flags.precision) {
+        input_char_left(hex, '0');
+      }
     }
   }
+
+  if (flags.prefix && number != 0) {  // флаг #
+    if (flags.spec == 'x') input_char_left(hex, 'x');
+    if (flags.spec == 'X') input_char_left(hex, 'X');
+    input_char_left(hex, '0');
+  }
+
+  //printf("дописали точность !%s!\n", hex);
 
   if (flags.width != 0 && !flags.minus) {
     char ch = ' ';
-    if (flags.zero) ch = '0';
+     if (flags.zero) ch = '0';
     while ((int)s21_strlen(hex) < flags.width) {
-      input_char(hex, ch);
+      input_char_left(hex, ch);
+    }
+
+  } else if (flags.width != 0 && flags.minus) {
+    while ((int)s21_strlen(hex) < flags.width) {
+      int len = (int)s21_strlen(hex);
+      hex[len] = ' ';
+      hex[len + 1] = '\0';
     }
   }
 
+  //printf("дописали ширину !%s!\n", hex);
+
   int hex_len = (int)s21_strlen(hex);
-  s21_strncat(*p, hex, hex_len + 1);
+  s21_strncpy(*p, hex, hex_len);
   (*p) += hex_len;
 }
 
@@ -398,14 +425,14 @@ void execute_percent(char **p) {
 
    if (flags->precision != 0) {  // точность, дополняем нулями слева
      while ((int)s21_strlen(percent) < flags->precision) {
-       input_char(percent, '0');
+       input_char_left(percent, '0');
      }
    }
    if (flags->width != 0 && !flags->minus) {
      char ch = ' ';
      if (flags->zero) ch = '0';
      while ((int)s21_strlen(percent) < flags->width) {
-       input_char(percent, ch);
+       input_char_left(percent, ch);
      }
    }
    int percent_len = (int)s21_strlen(percent);

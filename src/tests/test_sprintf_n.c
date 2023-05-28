@@ -1,4 +1,4 @@
-#include "test_me.h"
+#include "test_s21_string.h"
 
 START_TEST(sprintf_1_n) {
   char str1[100] = "";
