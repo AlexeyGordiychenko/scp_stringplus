@@ -33,6 +33,6 @@ Suite *test_sprintf_n(void);
 Suite *test_sprintf_percent(void);
 Suite *test_sprintf_u(void);
 Suite *test_sprintf_o(void);
-Suite* test_sprintf_p(void);
+Suite *test_sprintf_c(void);
 
 #endif  // SRC_TESTS_ME_H

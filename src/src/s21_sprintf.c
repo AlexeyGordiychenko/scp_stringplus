@@ -33,6 +33,8 @@ void execute_o(char **p, va_list *args, Flag flags);
 void execute_n(int *var, int count);
 void execute_p(char **p, va_list *args, Flag flags);
 void process_d_spec(Flag flags, va_list *args, char **p);
+void apply_flags(char *str, Flag flags);
+void process_c_spec(Flag flags, va_list *args, char **p);
 
 int s21_sprintf(char *str, const char *format, ...) {
   va_list args;
@@ -77,6 +79,10 @@ int s21_sprintf(char *str, const char *format, ...) {
           break;
         case 'd':
           process_d_spec(flags, &args, &str_p);
+          break;
+        case 'c':
+          process_c_spec(flags, &args, &str_p);
+          break;
       }
       // вывод результата в строку
     } else {
@@ -642,49 +648,27 @@ void execute_o(char **p, va_list *args, Flag flags) {
   (*p) += udigit_len;
 }
 
-void pointer_to_string(void *ptr, char *buffer) {
-  uintptr_t value = (uintptr_t)ptr;  // Преобразуем указатель в целое число
-
-  int i = 0;
-  while (value != 0) {
-    int digit = value & 0xF;  // Получаем младшую четырехбитную цифру
-    /*Строка int digit = value & 0xF; выполняет побитовую операцию "И" (AND)
-между значением value и шаблоном 0xF.
-
-Шаблон 0xF представляет собой 4 бита, установленных в единицу: 0000 1111 в
-двоичном представлении. Этот шаблон используется для выделения младшей
-четырехбитной цифры из значения value.
-
-Побитовая операция "И" между двоичными значениями выполняется побитово: каждый
-бит в результирующем значении будет равен 1, только если соответствующие биты в
-обоих операндах равны 1. В противном случае, если хотя бы один из битов равен 0,
-соответствующий бит в результирующем значении будет равен 0.
-
-Таким образом, строка int digit = value & 0xF; сохраняет младшую четырехбитную
-цифру из значения value в переменной digit*/
-
-    buffer[i++] = (digit < 10) ? ('0' + digit) : ('a' + digit - 10);
-    value >>= 4;  // Сдвигаем число на 4 бита вправо
+void process_c_spec(Flag flags, va_list *args, char **p) {
+  int len = 1;
+  if (flags.width > len && !flags.minus) {
+    s21_memset(*p, ' ', flags.width - len);
+    (*p) += flags.width - len;
   }
 
-  if (i == 0) {
-    buffer[i++] = '0';  // Если указатель равен нулю, добавляем цифру 0
+  if (flags.length == 'l') {
+    wchar_t wide_char = (wchar_t)va_arg(*args, int);
+    int bytes_written = wctomb(*p, wide_char);
+    if (bytes_written > 0) {
+      (*p) += bytes_written;
+    }
+  } else {
+    char c = va_arg(*args, int);
+    **p = c;
+    (*p)++;
   }
-  buffer[i] = '\0';
-  reverse_string(buffer);
-}
 
-void execute_p(char **p, va_list *args, Flag flags) {
-  char buffer[50];
-  void *ptr = va_arg(*args, void *);
-
-  // переводим указатель в строку
-  pointer_to_string(ptr, buffer);
-
-  // дополняем флагами и префиксом
-  apply_flags(buffer, flags);
-
-  int buffer_len = (int)s21_strlen(buffer);
-  s21_strncpy(*p, buffer, buffer_len);
-  (*p) += buffer_len;
+  if (flags.width > len && flags.minus) {
+    s21_memset(*p, ' ', flags.width - len);
+    (*p) += flags.width - len;
+  }
 }
