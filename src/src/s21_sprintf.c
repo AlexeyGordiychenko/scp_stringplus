@@ -23,14 +23,16 @@ void string_to_double(char *str, double *number);
 void int_to_hex(unsigned long int number, char *hex, int reg);
 void input_char_left(char *str, char ch);
 void pos_int_to_string_octal(long long unsigned int number, char *str);
+void pointer_to_string(void *ptr, char *buffer);
+void apply_flags(char *str, Flag flags);
 
 void execute_x(char **p, va_list *args, Flag flags);
 void execute_u(char **p, va_list *args, Flag flags);
 void execute_percent(char **str);
 void execute_o(char **p, va_list *args, Flag flags);
 void execute_n(int *var, int count);
+void execute_p(char **p, va_list *args, Flag flags);
 void process_d_spec(Flag flags, va_list *args, char **p);
-void apply_flags(char *str, Flag flags);
 
 int s21_sprintf(char *str, const char *format, ...) {
   va_list args;
@@ -62,13 +64,16 @@ int s21_sprintf(char *str, const char *format, ...) {
           break;
         case 'u':
           execute_u(&str_p, &args, flags);
-        break;
+          break;
         case 'o':
           execute_o(&str_p, &args, flags);
-        break;
+          break;
         case 'x':
         case 'X':
           execute_x(&str_p, &args, flags);
+          break;
+        case 'p':
+          execute_p(&str_p, &args, flags);
           break;
         case 'd':
           process_d_spec(flags, &args, &str_p);
@@ -243,7 +248,6 @@ void pos_int_to_string_octal(long long unsigned int number, char *str) {
   // Обратный порядок символов
   reverse_string(str);
 }
-
 
 void double_to_string(double number, char *str, int precision) {
   if (number == 0.0) {
@@ -545,14 +549,14 @@ void process_d_spec(Flag flags, va_list *args, char **p) {
 void apply_flags(char *str, Flag flags) {
   // обработка флагов
   if (flags.precision != -1) {  // точность, дополняем нулями слева
-    
-    
+
     if (flags.precision == 0 && !s21_strncmp(str, "0", 1)) {
       str[0] = '\0';
     } else {
       int for_prefix = 0;
 
-      if (flags.prefix && flags.spec == 'o') { // у восьмеричных ведущий ноль играет в точности
+      if (flags.prefix &&
+          flags.spec == 'o') {  // у восьмеричных ведущий ноль играет в точности
         for_prefix = 1;
       }
       while ((int)s21_strlen(str) < flags.precision - for_prefix) {
@@ -561,8 +565,9 @@ void apply_flags(char *str, Flag flags) {
     }
   }
 
-  if (flags.prefix && s21_strncmp(str, "0", 2) && str[0] != '\0') {  // флаг #
-    if (flags.spec == 'x') {
+  if ((flags.prefix && s21_strncmp(str, "0", 2) && str[0] != '\0') ||
+      flags.spec == 'p') {  // флаг #
+    if (flags.spec == 'x' || flags.spec == 'p') {
       input_char_left(str, 'x');
       input_char_left(str, '0');
     }
@@ -635,4 +640,51 @@ void execute_o(char **p, va_list *args, Flag flags) {
   int udigit_len = (int)s21_strlen(udigit);
   s21_strncpy(*p, udigit, udigit_len);
   (*p) += udigit_len;
+}
+
+void pointer_to_string(void *ptr, char *buffer) {
+  uintptr_t value = (uintptr_t)ptr;  // Преобразуем указатель в целое число
+
+  int i = 0;
+  while (value != 0) {
+    int digit = value & 0xF;  // Получаем младшую четырехбитную цифру
+    /*Строка int digit = value & 0xF; выполняет побитовую операцию "И" (AND)
+между значением value и шаблоном 0xF.
+
+Шаблон 0xF представляет собой 4 бита, установленных в единицу: 0000 1111 в
+двоичном представлении. Этот шаблон используется для выделения младшей
+четырехбитной цифры из значения value.
+
+Побитовая операция "И" между двоичными значениями выполняется побитово: каждый
+бит в результирующем значении будет равен 1, только если соответствующие биты в
+обоих операндах равны 1. В противном случае, если хотя бы один из битов равен 0,
+соответствующий бит в результирующем значении будет равен 0.
+
+Таким образом, строка int digit = value & 0xF; сохраняет младшую четырехбитную
+цифру из значения value в переменной digit*/
+
+    buffer[i++] = (digit < 10) ? ('0' + digit) : ('a' + digit - 10);
+    value >>= 4;  // Сдвигаем число на 4 бита вправо
+  }
+
+  if (i == 0) {
+    buffer[i++] = '0';  // Если указатель равен нулю, добавляем цифру 0
+  }
+  buffer[i] = '\0';
+  reverse_string(buffer);
+}
+
+void execute_p(char **p, va_list *args, Flag flags) {
+  char buffer[50];
+  void *ptr = va_arg(*args, void *);
+
+  // переводим указатель в строку
+  pointer_to_string(ptr, buffer);
+
+  // дополняем флагами и префиксом
+  apply_flags(buffer, flags);
+
+  int buffer_len = (int)s21_strlen(buffer);
+  s21_strncpy(*p, buffer, buffer_len);
+  (*p) += buffer_len;
 }

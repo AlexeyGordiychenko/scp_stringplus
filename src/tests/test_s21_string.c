@@ -24,6 +24,7 @@ int main(void) {
                               test_sprintf_n(),
                               test_sprintf_percent(),
                               test_sprintf_u(),
+                              test_sprintf_p(),
                               NULL};
 
   for (int i = 0; s21_string_test[i] != NULL; i++) {  // (&& failed == 0)

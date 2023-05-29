@@ -1,4 +1,4 @@
-#include "test_me.h"
+#include "test_s21_string.h"
 
 // One parameter pointer
 START_TEST(sprintf_1_pointer) {
@@ -230,7 +230,7 @@ START_TEST(sprintf_15_pointer) {
 }
 END_TEST
 
-Suite* test_sprintf_pointer(void) {
+Suite* test_sprintf_p(void) {
   Suite* s = suite_create("\033[45m-=S21_SPRINTF_POINTER=-\033[0m");
   TCase* tc = tcase_create("sprintf_tc");
 
