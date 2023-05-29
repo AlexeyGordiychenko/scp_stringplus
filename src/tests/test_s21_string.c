@@ -18,6 +18,7 @@ int main(void) {
                               test_strstr(),
                               test_strtok(),
                               test_sprintf_signed(),
+                              test_sprintf_o(),
                               test_sprintf_hex(),
                               test_sprintf_HEX(),
                               test_sprintf_n(),

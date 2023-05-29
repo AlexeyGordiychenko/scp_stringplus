@@ -15,17 +15,19 @@ typedef struct {
 void parse_spec(const char **p, Flag *flags, va_list *args);
 
 void reverse_string(char *str);
-void int_to_string(long long unsigned int number, char *str);
+void pos_int_to_string(long long unsigned int number, char *str);
 int int_to_str_min_len(long int number, char *str, bool sign, int min_len);
 void double_to_string(double number, char *str, int precision);
 void string_to_int(char *str, int *number);
 void string_to_double(char *str, double *number);
 void int_to_hex(unsigned long int number, char *hex, int reg);
 void input_char_left(char *str, char ch);
+void pos_int_to_string_octal(long long unsigned int number, char *str);
 
 void execute_x(char **p, va_list *args, Flag flags);
 void execute_u(char **p, va_list *args, Flag flags);
 void execute_percent(char **str);
+void execute_o(char **p, va_list *args, Flag flags);
 void execute_n(int *var, int count);
 void process_d_spec(Flag flags, va_list *args, char **p);
 void apply_flags(char *str, Flag flags);
@@ -50,6 +52,7 @@ int s21_sprintf(char *str, const char *format, ...) {
                 flags.width, flags.precision, flags.spec);
       */
       // обработка спецификатора и аргумента
+
       switch (flags.spec) {
         case '%':
           execute_percent(&str_p);
@@ -59,6 +62,9 @@ int s21_sprintf(char *str, const char *format, ...) {
           break;
         case 'u':
           execute_u(&str_p, &args, flags);
+        break;
+        case 'o':
+          execute_o(&str_p, &args, flags);
         break;
         case 'x':
         case 'X':
@@ -176,7 +182,7 @@ void reverse_string(char *str) {
   }
 }
 
-void int_to_string(long long unsigned int number, char *str) {
+void pos_int_to_string(long long unsigned int number, char *str) {
   if (number == 0) {
     str[0] = '0';
     str[1] = '\0';
@@ -207,6 +213,38 @@ void int_to_string(long long unsigned int number, char *str) {
   reverse_string(str);
 }
 
+void pos_int_to_string_octal(long long unsigned int number, char *str) {
+  if (number == 0) {
+    str[0] = '0';
+    str[1] = '\0';
+    return;
+  }
+
+  int i = 0;
+  int is_negative = 0;
+
+  if (number < 0) {
+    is_negative = 1;
+    number = -number;
+  }
+
+  while (number > 0) {
+    int digit = number % 8;
+    str[i++] = '0' + digit;
+    number /= 8;
+  }
+
+  if (is_negative) {
+    str[i++] = '-';
+  }
+
+  str[i] = '\0';
+
+  // Обратный порядок символов
+  reverse_string(str);
+}
+
+
 void double_to_string(double number, char *str, int precision) {
   if (number == 0.0) {
     str[0] = '0';
@@ -224,7 +262,7 @@ void double_to_string(double number, char *str, int precision) {
 
   // Преобразование целой части числа
   int integer_part = (int)number;
-  int_to_string(integer_part, str);
+  pos_int_to_string(integer_part, str);
 
   // Добавление десятичной точки
   int len = s21_strlen(str);
@@ -507,10 +545,17 @@ void process_d_spec(Flag flags, va_list *args, char **p) {
 void apply_flags(char *str, Flag flags) {
   // обработка флагов
   if (flags.precision != -1) {  // точность, дополняем нулями слева
+    
+    
     if (flags.precision == 0 && !s21_strncmp(str, "0", 1)) {
       str[0] = '\0';
     } else {
-      while ((int)s21_strlen(str) < flags.precision) {
+      int for_prefix = 0;
+
+      if (flags.prefix && flags.spec == 'o') { // у восьмеричных ведущий ноль играет в точности
+        for_prefix = 1;
+      }
+      while ((int)s21_strlen(str) < flags.precision - for_prefix) {
         input_char_left(str, '0');
       }
     }
@@ -523,6 +568,9 @@ void apply_flags(char *str, Flag flags) {
     }
     if (flags.spec == 'X') {
       input_char_left(str, 'X');
+      input_char_left(str, '0');
+    }
+    if (flags.spec == 'o') {
       input_char_left(str, '0');
     }
   }
@@ -557,7 +605,30 @@ void execute_u(char **p, va_list *args, Flag flags) {
   }
 
   // переводим в 10ый формат и записываем в строку
-  int_to_string(number, udigit);
+  pos_int_to_string(number, udigit);
+
+  apply_flags(udigit, flags);
+
+  int udigit_len = (int)s21_strlen(udigit);
+  s21_strncpy(*p, udigit, udigit_len);
+  (*p) += udigit_len;
+}
+
+void execute_o(char **p, va_list *args, Flag flags) {
+  char udigit[50];
+
+  long unsigned int number;
+  // обрабатываем длину
+  if (flags.length == 'l') {
+    number = va_arg(*args, long unsigned int);
+  } else if (flags.length == 'h') {
+    number = (unsigned short int)va_arg(*args, int);
+  } else {
+    number = (unsigned int)va_arg(*args, int);
+  }
+
+  // переводим в 8ый формат и записываем в строку
+  pos_int_to_string_octal(number, udigit);
 
   apply_flags(udigit, flags);
 

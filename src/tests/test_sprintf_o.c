@@ -1,7 +1,7 @@
-#include "test_me.h"
+#include "test_s21_string.h"
 
 // One parameter octal
-START_TEST(sprintf_1_octal) {
+START_TEST(sprintf_1_o) {
   char str1[100] = "";
   char str2[100] = "";
   char *str3 = "Test %o Test";
@@ -12,7 +12,7 @@ START_TEST(sprintf_1_octal) {
 END_TEST
 
 // Three octal parameters
-START_TEST(sprintf_2_octal) {
+START_TEST(sprintf_2_o) {
   char str1[100];
   char str2[100];
   char *str3 = "%o Test %o Test %o";
@@ -26,7 +26,7 @@ START_TEST(sprintf_2_octal) {
 END_TEST
 
 // Three decimal parameters
-START_TEST(sprintf_3_octal) {
+START_TEST(sprintf_3_o) {
   char str1[100];
   char str2[100];
   char *str3 = "%o Test %o Test %o";
@@ -40,7 +40,7 @@ START_TEST(sprintf_3_octal) {
 END_TEST
 
 // Different sizes
-START_TEST(sprintf_4_octal) {
+START_TEST(sprintf_4_o) {
   char str1[100];
   char str2[100];
   char *str3 = "%lo Test %lo Test %ho GOD %ho";
@@ -55,7 +55,7 @@ START_TEST(sprintf_4_octal) {
 END_TEST
 
 // Different width
-START_TEST(sprintf_5_octal) {
+START_TEST(sprintf_5_o) {
   char str1[100];
   char str2[100];
   char *str3 = "%3o Test %5o Test %10o";
@@ -69,7 +69,7 @@ START_TEST(sprintf_5_octal) {
 END_TEST
 
 // Different precision and width
-START_TEST(sprintf_6_octal) {
+START_TEST(sprintf_6_o) {
   char str1[200];
   char str2[200];
   char *str3 = "%6.5o Test %.23o Test %3.o TEST %.o";
@@ -84,7 +84,7 @@ START_TEST(sprintf_6_octal) {
 END_TEST
 
 // Minus flag
-START_TEST(sprintf_7_octal) {
+START_TEST(sprintf_7_o) {
   char str1[200];
   char str2[200];
   char *str3 = "%-10.5o Test %-.8o Test %-7o TEST %-.o";
@@ -99,7 +99,7 @@ START_TEST(sprintf_7_octal) {
 END_TEST
 
 // Zeroes
-START_TEST(sprintf_8_octal) {
+START_TEST(sprintf_8_o) {
   char str1[200];
   char str2[200];
   char *str3 = "%0o Test %0.o Test %0.0o TEST %0o GOD %.o";
@@ -115,7 +115,7 @@ START_TEST(sprintf_8_octal) {
 END_TEST
 
 // Pluses
-START_TEST(sprintf_9_octal) {
+START_TEST(sprintf_9_o) {
   char str1[200];
   char str2[200];
   char *str3 = "%+o Test %+3.o Test %+5.7o TEST %+10o";
@@ -130,7 +130,7 @@ START_TEST(sprintf_9_octal) {
 END_TEST
 
 // Zero vals
-START_TEST(sprintf_10_octal) {
+START_TEST(sprintf_10_o) {
   char str1[200];
   char str2[200];
   char *str3 = "%o Test %3.o Test %5.7o TEST %10o %#o %-o %+o %.o % .o";
@@ -143,7 +143,7 @@ START_TEST(sprintf_10_octal) {
 END_TEST
 
 // Spaces
-START_TEST(sprintf_11_octal) {
+START_TEST(sprintf_11_o) {
   char str1[200];
   char str2[200];
   char *str3 = "% o Test % 3.o Test % 5.7o TEST % 10o GOD %.o";
@@ -159,7 +159,7 @@ START_TEST(sprintf_11_octal) {
 END_TEST
 
 // Plus
-START_TEST(sprintf_12_octal) {
+START_TEST(sprintf_12_o) {
   char str1[200];
   char str2[200];
   char *str3 = "%+o Test %+3.o Test %+5.7o TEST %+10o GOD %+.o";
@@ -175,7 +175,7 @@ START_TEST(sprintf_12_octal) {
 END_TEST
 
 // Hash
-START_TEST(sprintf_13_octal) {
+START_TEST(sprintf_13_o) {
   char str1[200];
   char str2[200];
   char *str3 = "%#o Test %#3o Test %#5.7o TEST %#.7o Oof %#.o";
@@ -191,7 +191,7 @@ START_TEST(sprintf_13_octal) {
 END_TEST
 
 // ZERO flag
-START_TEST(sprintf_14_octal) {
+START_TEST(sprintf_14_o) {
   char str1[200];
   char str2[200];
   char *str3 = "%0o Test %06o Test %05.7o TEST %0.7o Oof %0.o";
@@ -207,7 +207,7 @@ START_TEST(sprintf_14_octal) {
 END_TEST
 
 // Asterisk
-START_TEST(sprintf_15_octal) {
+START_TEST(sprintf_15_o) {
   char str1[200];
   char str2[200];
   char *str3 = "%*o Test %-*o Test %*.*o TEST %.*o";
@@ -229,7 +229,7 @@ START_TEST(sprintf_15_octal) {
 END_TEST
 
 // Simple extra test
-START_TEST(sprintf_16_octal) {
+START_TEST(sprintf_16_o) {
   char str1[100] = "";
   char str2[100] = "";
   char *str3 = "%o";
@@ -239,7 +239,7 @@ START_TEST(sprintf_16_octal) {
 }
 END_TEST
 
-START_TEST(sprintf_17_octal) {
+START_TEST(sprintf_17_o) {
   char str1[200];
   char str2[200];
   char *str3 = "%- o Test %- 15o sdasda %- 15o sdsad %- o";
@@ -253,7 +253,7 @@ START_TEST(sprintf_17_octal) {
 }
 END_TEST
 
-START_TEST(sprintf_18_octal) {
+START_TEST(sprintf_18_o) {
   char str1[200];
   char str2[200];
   char *str3 = "fdsdsds %lo";
@@ -263,28 +263,28 @@ START_TEST(sprintf_18_octal) {
 }
 END_TEST
 
-Suite *test_sprintf_octal(void) {
-  Suite *s = suite_create("\033[45m-=S21_SPRINTF_OCTAL=-\033[0m");
+Suite *test_sprintf_o(void) {
+  Suite *s = suite_create("\033[45m-=S21_SPRINTF_O=-\033[0m");
   TCase *tc = tcase_create("sprintf_tc");
 
-  tcase_add_test(tc, sprintf_1_octal);
-  tcase_add_test(tc, sprintf_2_octal);
-  tcase_add_test(tc, sprintf_3_octal);
-  tcase_add_test(tc, sprintf_4_octal);
-  tcase_add_test(tc, sprintf_5_octal);
-  tcase_add_test(tc, sprintf_6_octal);
-  tcase_add_test(tc, sprintf_7_octal);
-  tcase_add_test(tc, sprintf_8_octal);
-  tcase_add_test(tc, sprintf_9_octal);
-  tcase_add_test(tc, sprintf_10_octal);
-  tcase_add_test(tc, sprintf_11_octal);
-  tcase_add_test(tc, sprintf_12_octal);
-  tcase_add_test(tc, sprintf_13_octal);
-  tcase_add_test(tc, sprintf_14_octal);
-  tcase_add_test(tc, sprintf_15_octal);
-  tcase_add_test(tc, sprintf_16_octal);
-  tcase_add_test(tc, sprintf_17_octal);
-  tcase_add_test(tc, sprintf_18_octal);
+  tcase_add_test(tc, sprintf_1_o);
+  tcase_add_test(tc, sprintf_2_o);
+  tcase_add_test(tc, sprintf_3_o);
+  tcase_add_test(tc, sprintf_4_o);
+  tcase_add_test(tc, sprintf_5_o);
+  tcase_add_test(tc, sprintf_6_o);
+  tcase_add_test(tc, sprintf_7_o);
+  tcase_add_test(tc, sprintf_8_o);
+  tcase_add_test(tc, sprintf_9_o);
+  tcase_add_test(tc, sprintf_10_o);
+  tcase_add_test(tc, sprintf_11_o);
+  tcase_add_test(tc, sprintf_12_o);
+  tcase_add_test(tc, sprintf_13_o);
+  tcase_add_test(tc, sprintf_14_o);
+  tcase_add_test(tc, sprintf_15_o);
+  tcase_add_test(tc, sprintf_16_o);
+  tcase_add_test(tc, sprintf_17_o);
+  tcase_add_test(tc, sprintf_18_o);
 
   suite_add_tcase(s, tc);
   return s;
