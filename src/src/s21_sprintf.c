@@ -34,12 +34,14 @@ void execute_n(int *var, int count);
 void execute_p(char **p, va_list *args, Flag flags);
 void process_d_spec(Flag flags, va_list *args, char **p);
 void apply_flags(char *str, Flag flags);
-void process_c_spec(Flag flags, va_list *args, char **p);
+int process_c_spec(Flag flags, va_list *args, char **p);
 
 int s21_sprintf(char *str, const char *format, ...) {
   va_list args;
   va_start(args, format);
   char *str_p = str;
+  // compensation value for len with wide chars
+  int wchar_comp = 0;
 
   for (const char *p = format; *p != '\0'; ++p) {
     Flag flags = {0};  // ининциализируем или обнуляем структуру флагов
@@ -81,7 +83,7 @@ int s21_sprintf(char *str, const char *format, ...) {
           process_d_spec(flags, &args, &str_p);
           break;
         case 'c':
-          process_c_spec(flags, &args, &str_p);
+          wchar_comp += process_c_spec(flags, &args, &str_p);
           break;
       }
       // вывод результата в строку
@@ -93,7 +95,7 @@ int s21_sprintf(char *str, const char *format, ...) {
 
   va_end(args);  // Завершаем работу с переменными аргументами
 
-  return str_p - str;
+  return str_p - str - wchar_comp;
 }
 
 void parse_spec(const char **p, Flag *flags, va_list *args) {
@@ -648,8 +650,9 @@ void execute_o(char **p, va_list *args, Flag flags) {
   (*p) += udigit_len;
 }
 
-void process_c_spec(Flag flags, va_list *args, char **p) {
+int process_c_spec(Flag flags, va_list *args, char **p) {
   int len = 1;
+  int res = 0;
   if (flags.width > len && !flags.minus) {
     s21_memset(*p, ' ', flags.width - len);
     (*p) += flags.width - len;
@@ -660,6 +663,7 @@ void process_c_spec(Flag flags, va_list *args, char **p) {
     int bytes_written = wctomb(*p, wide_char);
     if (bytes_written > 0) {
       (*p) += bytes_written;
+      res = bytes_written - len;
     }
   } else {
     char c = va_arg(*args, int);
@@ -671,4 +675,5 @@ void process_c_spec(Flag flags, va_list *args, char **p) {
     s21_memset(*p, ' ', flags.width - len);
     (*p) += flags.width - len;
   }
+  return res;
 }

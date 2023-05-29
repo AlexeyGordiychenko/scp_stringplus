@@ -243,13 +243,13 @@ START_TEST(sprintf_20_c) {
   wchar_t *str3_w = L"TEST %lc right now\n";
   wchar_t a = L'あ';
 
-  swprintf(str1, 100, str3_w, a);
-  s21_sprintf(str2, str3, a);
+  int len = swprintf(str1, 100, str3_w, a);
+  int len21 = s21_sprintf(str2, str3, a);
   //   printf("%s", str2);
-
   mbstowcs(str2_w, str2, 100);
 
   ck_assert_int_eq(0, wcscmp(str1, str2_w));
+  ck_assert_int_eq(len, len21);
 }
 END_TEST
 
@@ -272,13 +272,13 @@ START_TEST(sprintf_21_c) {
   wchar_t g = L'ま';
   wchar_t h = L'せ';
 
-  swprintf(str1, 100, str3_w, a, b, c, d, e, f, g, h);
-  s21_sprintf(str2, str3, a, b, c, d, e, f, g, h);
+  int len = swprintf(str1, 100, str3_w, a, b, c, d, e, f, g, h);
+  int len21 = s21_sprintf(str2, str3, a, b, c, d, e, f, g, h);
   //   printf("%s", str2);
-
   mbstowcs(str2_w, str2, 100);
 
   ck_assert_int_eq(0, wcscmp(str1, str2_w));
+  ck_assert_int_eq(len, len21);
 }
 END_TEST
 
