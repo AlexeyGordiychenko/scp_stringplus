@@ -1,3 +1,5 @@
+#include <wchar.h>
+
 #include "../s21_string.h"
 
 typedef struct {
@@ -23,8 +25,7 @@ void string_to_double(char *str, double *number);
 void int_to_hex(unsigned long int number, char *hex, int reg);
 void input_char_left(char *str, char ch);
 void pos_int_to_string_octal(long long unsigned int number, char *str);
-void pointer_to_string(void *ptr, char *buffer);
-void apply_flags(char *str, Flag flags);
+int put_wchar(char **p, wchar_t wchar);
 
 void execute_x(char **p, va_list *args, Flag flags);
 void execute_u(char **p, va_list *args, Flag flags);
@@ -35,6 +36,7 @@ void execute_p(char **p, va_list *args, Flag flags);
 void process_d_spec(Flag flags, va_list *args, char **p);
 void apply_flags(char *str, Flag flags);
 int process_c_spec(Flag flags, va_list *args, char **p);
+int process_s_spec(Flag flags, va_list *args, char **p);
 
 int s21_sprintf(char *str, const char *format, ...) {
   va_list args;
@@ -84,6 +86,9 @@ int s21_sprintf(char *str, const char *format, ...) {
           break;
         case 'c':
           wchar_comp += process_c_spec(flags, &args, &str_p);
+          break;
+        case 's':
+          wchar_comp += process_s_spec(flags, &args, &str_p);
           break;
       }
       // вывод результата в строку
@@ -660,11 +665,7 @@ int process_c_spec(Flag flags, va_list *args, char **p) {
 
   if (flags.length == 'l') {
     wchar_t wide_char = (wchar_t)va_arg(*args, int);
-    int bytes_written = wctomb(*p, wide_char);
-    if (bytes_written > 0) {
-      (*p) += bytes_written;
-      res = bytes_written - len;
-    }
+    res = put_wchar(p, wide_char);
   } else {
     char c = va_arg(*args, int);
     **p = c;
@@ -674,6 +675,69 @@ int process_c_spec(Flag flags, va_list *args, char **p) {
   if (flags.width > len && flags.minus) {
     s21_memset(*p, ' ', flags.width - len);
     (*p) += flags.width - len;
+  }
+  return res;
+}
+
+int process_s_spec(Flag flags, va_list *args, char **p) {
+  s21_size_t len = 0;
+  s21_size_t width = (s21_size_t)flags.width;
+  s21_size_t precision =
+      (flags.precision < 0) ? 0 : (s21_size_t)flags.precision;
+  bool wchar = (flags.length == 'l') ? true : false;
+  bool null_line = false;
+  int res = 0;
+
+  wchar_t *wline = NULL;
+  const char *line = NULL;
+
+  if (wchar) {
+    wline = va_arg(*args, wchar_t *);
+    if (wline == NULL) {
+      wline = L"(null)";
+      null_line = true;
+    }
+    len = wcslen(wline);
+  } else {
+    line = va_arg(*args, const char *);
+    if (line == NULL) {
+      line = "(null)";
+      null_line = true;
+    }
+    len = s21_strlen(line);
+  }
+
+  if (flags.precision >= 0 && precision < len) {
+    len = (null_line) ? 0 : precision;
+  }
+
+  if (width > len && !flags.minus) {
+    s21_memset(*p, ' ', width - len);
+    (*p) += width - len;
+  }
+
+  if (wchar) {
+    for (s21_size_t i = 0; i < len; i++) {
+      res += put_wchar(p, wline[i]);
+    }
+  } else {
+    s21_strncpy(*p, line, len);
+    (*p) += len;
+  }
+
+  if (width > len && flags.minus) {
+    s21_memset(*p, ' ', width - len);
+    (*p) += width - len;
+  }
+  return res;
+}
+
+int put_wchar(char **p, wchar_t wchar) {
+  int res = 0;
+  int bytes_written = wctomb(*p, wchar);
+  if (bytes_written > 0) {
+    (*p) += bytes_written;
+    res = bytes_written - 1;
   }
   return res;
 }
