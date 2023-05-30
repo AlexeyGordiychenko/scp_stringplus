@@ -2,6 +2,7 @@
 
 #ifdef __linux__
 #define MAX 133
+#define BUFF_SIZE 256
 #define FORMAT "Unknown error %d"
 char *s21_err[] = {"Success",
                    "Operation not permitted",
@@ -250,13 +251,11 @@ char *s21_err[] = {"Undefined error: 0",
 #endif
 
 char *s21_strerror(int errnum) {
-  char *ans;
-  char buff[256];
+  static char buff[BUFF_SIZE] = {'\0'};
   if (errnum <= MAX && errnum >= 0) {
-    ans = s21_err[errnum];
+    s21_strncpy(buff, s21_err[errnum], 256);
   } else {
-    sprintf(buff, FORMAT, errnum); // заменить на нашу реализацию
-    ans = buff;
+    sprintf(buff, FORMAT, errnum);  // заменить на нашу реализацию
   }
-  return ans;
+  return buff;
 }
