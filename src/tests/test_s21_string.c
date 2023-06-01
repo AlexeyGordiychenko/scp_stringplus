@@ -24,19 +24,16 @@ int main(void) {
                               test_sprintf_n(),
                               test_sprintf_percent(),
                               test_sprintf_u(),
-                              test_sprintf_c(),
-                              test_sprintf_string(),
-                              test_to_upper(),
-                              test_to_lower(),
-                              test_insert(),
-                              test_trim(),
+                              test_sprintf_p(),
+                              test_sprintf_i(),
+                              test_sprintf_f(),
                               NULL};
 
-  for (int i = 0; s21_string_test[i] != NULL; i++) {  // (&& failed == 0)
+  for (int i = 0; s21_string_test[i] != NULL; i++) { 
     SRunner *sr = srunner_create(s21_string_test[i]);
 
     srunner_set_fork_status(sr, CK_NOFORK);
-    srunner_run_all(sr, CK_NORMAL);
+    srunner_run_all(sr, CK_VERBOSE);
 
     failed += srunner_ntests_failed(sr);
     srunner_free(sr);

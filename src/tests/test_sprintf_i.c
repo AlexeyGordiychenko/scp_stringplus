@@ -1,4 +1,4 @@
-#include "test_me.h"
+#include "test_s21_string.h"
 
 // One parameter signed_i
 START_TEST(sprintf_1_signed_i) {
@@ -254,8 +254,8 @@ START_TEST(sprintf_17_signed_i) {
 }
 END_TEST
 
-Suite *test_sprintf_signed_i(void) {
-  Suite *s = suite_create("\033[45m-=S21_SPRINTF_SIGNED_I=-\033[0m");
+Suite *test_sprintf_i(void) {
+  Suite *s = suite_create("\033[45m-=S21_SPRINTF_I=-\033[0m");
   TCase *tc = tcase_create("sprintf_tc");
 
   tcase_add_test(tc, sprintf_1_signed_i);

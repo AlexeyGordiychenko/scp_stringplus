@@ -34,9 +34,7 @@ void execute_o(char **p, va_list *args, Flag flags);
 void execute_n(int *var, int count);
 void execute_p(char **p, va_list *args, Flag flags);
 void process_d_spec(Flag flags, va_list *args, char **p);
-void apply_flags(char *str, Flag flags);
-int process_c_spec(Flag flags, va_list *args, char **p);
-int process_s_spec(Flag flags, va_list *args, char **p);
+void execute_f(char **p, va_list *args, Flag flags);
 
 int s21_sprintf(char *str, const char *format, ...) {
   va_list args;
@@ -52,18 +50,19 @@ int s21_sprintf(char *str, const char *format, ...) {
       parse_spec(&p, &flags, &args);
 
       // тестовый вывод напарсенных структур
-      /*      printf(
-                "minus = %d, sign = %d, space = %d, prefix = %d, zero = %d,
-         width = "
-                "%d, precison = %d, spec = %c\n",
-                flags.minus, flags.sign, flags.space, flags.prefix, flags.zero,
-                flags.width, flags.precision, flags.spec);
-      */
+      //      printf("minus = %d, sign = %d, space = %d, prefix = %d, zero = %d,
+      //      width = %d, precison = %d, spec = %c\n",flags.minus, flags.sign,
+      //      flags.space, flags.prefix, flags.zero,
+      //          flags.width, flags.precision, flags.spec);
+
       // обработка спецификатора и аргумента
 
       switch (flags.spec) {
         case '%':
           execute_percent(&str_p);
+          break;
+        case 'f':
+          execute_f(&str_p, &args, flags);
           break;
         case 'n':
           execute_n(va_arg(args, int *), (str_p - str));
@@ -82,6 +81,7 @@ int s21_sprintf(char *str, const char *format, ...) {
           execute_p(&str_p, &args, flags);
           break;
         case 'd':
+        case 'i':
           process_d_spec(flags, &args, &str_p);
           break;
         case 'c':
@@ -560,8 +560,16 @@ void process_d_spec(Flag flags, va_list *args, char **p) {
 }
 
 void apply_flags(char *str, Flag flags) {
-  // обработка флагов
-  if (flags.precision != -1) {  // точность, дополняем нулями слева
+  // обработка +
+  if (flags.sign && str[0] != '-' && flags.spec == 'f') {
+    input_char_left(str, '+');
+  }
+  if (!flags.sign && str[0] != '-' && flags.space && flags.spec == 'f') {
+    input_char_left(str, ' ');
+  }
+
+  if (flags.precision != -1 &&
+      flags.spec != 'f') {  // точность, дополняем нулями слева
 
     if (flags.precision == 0 && !s21_strncmp(str, "0", 1)) {
       str[0] = '\0';
@@ -577,7 +585,7 @@ void apply_flags(char *str, Flag flags) {
       }
     }
   }
-
+  // обработка #
   if ((flags.prefix && s21_strncmp(str, "0", 2) && str[0] != '\0') ||
       flags.spec == 'p') {  // флаг #
     if (flags.spec == 'x' || flags.spec == 'p') {
@@ -590,6 +598,11 @@ void apply_flags(char *str, Flag flags) {
     }
     if (flags.spec == 'o') {
       input_char_left(str, '0');
+    }
+    if (flags.spec == 'f' && !s21_strchr(str, '.')) {
+      int len = s21_strlen(str);
+      str[len] = '.';
+      str[len + 1] = '\0';
     }
   }
 
@@ -605,6 +618,23 @@ void apply_flags(char *str, Flag flags) {
       int len = (int)s21_strlen(str);
       str[len] = ' ';
       str[len + 1] = '\0';
+    }
+  }
+
+  // костыль для префикса у десятичных
+  char search_chars[] = {'-', '+', ' '};
+  int i = 0;
+
+  if (str[0] == '0' && flags.spec == 'f') {
+    while (str[i] != '\0') {
+      for (int j = 0; j < 3; j++) {
+        if (str[i] == search_chars[j]) {
+          char temp = str[i];
+          str[i] = str[0];
+          str[0] = temp;
+        }
+      }
+      i++;
     }
   }
 }
@@ -732,12 +762,72 @@ int process_s_spec(Flag flags, va_list *args, char **p) {
   return res;
 }
 
-int put_wchar(char **p, wchar_t wchar) {
-  int res = 0;
-  int bytes_written = wctomb(*p, wchar);
-  if (bytes_written > 0) {
-    (*p) += bytes_written;
-    res = bytes_written - 1;
+  int buffer_len = (int)s21_strlen(buffer);
+  s21_strncpy(*p, buffer, buffer_len);
+  (*p) += buffer_len;
+}
+
+void execute_f(char **p, va_list *args, Flag flags) {
+  long double number;
+  char buffer[200] = {0};
+  char sign = '\0';
+
+  // обработка длины
+  if (flags.length == 'L') {
+    number = va_arg(*args, long double);
+  } else {
+    number = va_arg(*args, double);
   }
-  return res;
+
+  // устанавливаем точность
+  int frac_digits = (flags.precision == -1) ? 6 : flags.precision;
+
+  // вычисляем число округленное до нужной точности
+  long double factor = pow(10, frac_digits);
+  long double rounded_integer = round(number * factor) / factor;
+  // printf("rounded integer=%Lf\n", rounded_integer);
+
+  // считывание знака и приведение к положительному
+  if (rounded_integer < 0) {
+    sign = '-';
+    rounded_integer = -rounded_integer;
+  }
+
+  //  разделение на целую и дробную часть
+  long int int_part = (long long int)rounded_integer;
+  long double frac_part = rounded_integer - int_part;
+  // printf("int part=%ld  frac_part=%Lf frac_digit=%d\n", int_part, frac_part,
+  //        frac_digits);
+  //  обработка целой части числа
+  pos_int_to_string(int_part, buffer);
+  if (sign == '-') {
+    input_char_left(buffer, sign);
+  }
+
+  // обработка дробной части числа
+  char buffer_frac[200] = {0};
+
+  int i = (int)s21_strlen(buffer);
+  if (frac_part > 0 || frac_digits > 0) {
+    buffer[i++] = '.';
+    long long int frac_part_int = (long long int)round(
+        frac_part * pow(10, frac_digits));  // делаем из дробной части целую
+    pos_int_to_string(frac_part_int, buffer_frac);
+    //printf("int part=%ld  frac_part=%.20Lf\nbuffer_frac=%s\n", int_part, frac_part,
+     //      buffer_frac);
+    int gap = frac_digits - (int)s21_strlen(buffer_frac);
+    if (gap > 0) {
+      for (int j = 0; j < gap; j++) {
+        s21_strncat(buffer_frac, "0", 2);
+      }
+    }
+    s21_strncat(buffer, buffer_frac, sizeof(buffer_frac));
+  }
+  // printf("buffer=%s\n", buffer);
+
+  apply_flags(buffer, flags);
+
+  int buffer_len = (int)s21_strlen(buffer);
+  s21_strncpy(*p, buffer, buffer_len);
+  (*p) += buffer_len;
 }
