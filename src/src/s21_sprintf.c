@@ -115,8 +115,8 @@ void parse_spec(const char **p, Flag *flags, va_list *args) {
   }
 
   // парсим ширину
-  if (**p >= '0' && **p <= '9') {
-    while (**p >= '0' && **p <= '9') {
+  if (s21_isdigit(**p)) {
+    while (s21_isdigit(**p)) {
       flags->width = flags->width * 10 + (**p - '0');
       (*p)++;
     }
@@ -129,8 +129,8 @@ void parse_spec(const char **p, Flag *flags, va_list *args) {
   if (**p == '.') {
     (*p)++;
     flags->precision = 0;
-    if (**p >= '0' && **p <= '9') {
-      while (**p >= '0' && **p <= '9') {
+    if (s21_isdigit(**p)) {
+      while (s21_isdigit(**p)) {
         flags->precision = flags->precision * 10 + (**p - '0');
         (*p)++;
       }

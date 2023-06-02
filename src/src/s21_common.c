@@ -273,3 +273,5 @@ int put_wchar(char **p, wchar_t wchar) {
   }
   return res;
 }
+
+bool s21_isdigit(int a) { return (a >= '0' && a <= '9'); }
