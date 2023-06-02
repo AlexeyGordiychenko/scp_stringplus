@@ -1,4 +1,5 @@
 #include "../s21_string.h"
+#include "s21_common.h"
 
 typedef struct {
   int width;
@@ -46,7 +47,7 @@ void parse_spec(const char **p, Flag *flags) {
     flags->asterisk = 1;
     (*p)++;
   }
-  while (**p >= '0' && **p <= '9') {
+  while (s21_isdigit(**p)) {
     flags->width = flags->width * 10 + (**p - '0');
     (*p)++;
   }
