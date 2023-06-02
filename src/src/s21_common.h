@@ -11,3 +11,4 @@ void input_char_left(char *str, char ch);
 void pos_int_to_string_octal(long long unsigned int number, char *str);
 int put_wchar(char **p, wchar_t wchar);
 bool s21_isdigit(int a);
+bool s21_isspace(int c);

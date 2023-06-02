@@ -275,3 +275,8 @@ int put_wchar(char **p, wchar_t wchar) {
 }
 
 bool s21_isdigit(int a) { return (a >= '0' && a <= '9'); }
+
+bool s21_isspace(int c) {
+  return (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f' ||
+          c == '\v');
+}
