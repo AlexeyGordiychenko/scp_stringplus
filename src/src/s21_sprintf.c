@@ -1,5 +1,3 @@
-#include <wchar.h>
-
 #include "../s21_string.h"
 #include "s21_common.h"
 

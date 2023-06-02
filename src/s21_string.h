@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <math.h>
+#include <wchar.h>
 
 #define S21_NULL (void *)0
 #define s21_size_t unsigned long long
