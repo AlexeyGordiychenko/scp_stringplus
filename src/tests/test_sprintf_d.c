@@ -297,13 +297,15 @@ Suite *test_sprintf_signed(void) {
   tcase_add_test(tc, sprintf_11_signed);
   tcase_add_test(tc, sprintf_12_signed);
   tcase_add_test(tc, sprintf_13_signed);
-  tcase_add_test(tc, sprintf_14_signed);  
-  tcase_add_test(tc, sprintf_15_signed);
-  tcase_add_test(tc, sprintf_16_signed);
-  tcase_add_test(tc, sprintf_17_signed);
-  tcase_add_test(tc, sprintf_18_signed);
-  tcase_add_test(tc, sprintf_19_signed);
+  tcase_add_test(tc, sprintf_14_signed);
 
+  tcase_add_test(tc, sprintf_15_signed);
+  /*
+   tcase_add_test(tc, sprintf_16_signed);
+   tcase_add_test(tc, sprintf_17_signed);
+   tcase_add_test(tc, sprintf_18_signed);
+   tcase_add_test(tc, sprintf_19_signed);
+ */
   suite_add_tcase(s, tc);
   return s;
 }

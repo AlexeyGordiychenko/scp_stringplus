@@ -271,7 +271,7 @@ Suite *test_sprintf_hex(void) {
   tcase_add_test(tc, sprintf_13_hex);
   tcase_add_test(tc, sprintf_14_hex);
   tcase_add_test(tc, sprintf_15_hex);
-  tcase_add_test(tc, sprintf_16_hex); 
+  tcase_add_test(tc, sprintf_16_hex);
   tcase_add_test(tc, sprintf_17_hex);
 
   suite_add_tcase(s, tc);

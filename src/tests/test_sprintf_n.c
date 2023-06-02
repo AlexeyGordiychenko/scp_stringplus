@@ -41,7 +41,7 @@ START_TEST(sprintf_3_n) {
 END_TEST
 
 START_TEST(sprintf_4_n) {
-   char str1[100];
+  char str1[100];
   char str2[100];
   char *str3 = "%d Test %d Test %d%34.23n";
   long int val = 308;
@@ -49,15 +49,14 @@ START_TEST(sprintf_4_n) {
   unsigned short int val3 = 600;
   int valn1 = 0, valn2 = 0;
 
-  ck_assert_int_eq(
-      sprintf(str1, str3, val, val2, val3, &valn1),
-      s21_sprintf(str2, str3, val, val2, val3, &valn2));
+  ck_assert_int_eq(sprintf(str1, str3, val, val2, val3, &valn1),
+                   s21_sprintf(str2, str3, val, val2, val3, &valn2));
   ck_assert_pstr_eq(str1, str2);
   ck_assert_int_eq(valn1, valn2);
 }
 END_TEST
 
-  Suite *test_sprintf_n(void) {
+Suite *test_sprintf_n(void) {
   Suite *s = suite_create("\033[45m-=S21_SPRINTF_N=-\033[0m");
   TCase *tc = tcase_create("sprintf_tc");
 
