@@ -19,10 +19,10 @@ void pos_int_to_string(long long unsigned int number, char *str) {
   int i = 0;
   int is_negative = 0;
 
-  if (number < 0) {
-    is_negative = 1;
-    number = -number;
-  }
+  //   if (number < 0) {
+  //     is_negative = 1;
+  //     number = -number;
+  //   }
 
   while (number > 0) {
     int digit = number % 10;
@@ -50,10 +50,10 @@ void pos_int_to_string_octal(long long unsigned int number, char *str) {
   int i = 0;
   int is_negative = 0;
 
-  if (number < 0) {
-    is_negative = 1;
-    number = -number;
-  }
+  //   if (number < 0) {
+  //     is_negative = 1;
+  //     number = -number;
+  //   }
 
   while (number > 0) {
     int digit = number % 8;
