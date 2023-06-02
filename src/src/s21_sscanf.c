@@ -2,29 +2,38 @@
 #include "s21_common.h"
 
 typedef struct {
-  int width;
-  int asterisk;
+  s21_size_t width;
+  bool asterisk;
   char length;
   char spec;
 } Flag;
 
-void parse_spec(const char **p, Flag *flags);
+void parse_sscanf_spec(const char **p, Flag *flags);
+bool parse_int(const char **str, long *value, Flag flags);
+bool process_d_spec_sscanf(Flag flags, va_list *args, const char **p);
 
 int s21_sscanf(const char *str, const char *format, ...) {
   va_list args;
   va_start(args, format);
   const char *str_p = str;
+  s21_size_t count = 0;
 
   for (const char *p = format; *p != '\0'; ++p) {
     Flag flags = {0};  // ининциализируем или обнуляем структуру флагов
     if (*p == '%') {
       /* парсинг спецификатора */
-      parse_spec(&p, &flags);
+      parse_sscanf_spec(&p, &flags);
 
       // тестовый вывод напарсенных структур
-      printf("width = %d, asterisk = %d, length = %c, spec = %c\n", flags.width,
-             flags.asterisk, flags.length, flags.spec);
-    } else {
+      // printf("width = %lld, asterisk = %d, length = %c, spec = %c\n",
+      //        flags.width, flags.asterisk, flags.length, flags.spec);
+      switch (flags.spec) {
+        case 'd':
+          count += process_d_spec_sscanf(flags, &args, &str_p);
+          break;
+      }
+
+    } else if (!s21_isspace(*p)) {
       if (*format != *str_p) {
         printf("-=does not match=-");
         break;
@@ -35,16 +44,15 @@ int s21_sscanf(const char *str, const char *format, ...) {
 
   va_end(args);  // Завершаем работу с переменными аргументами
 
-  //   return str_p - str;
-  return 0;
+  return count;
 }
 
-void parse_spec(const char **p, Flag *flags) {
+void parse_sscanf_spec(const char **p, Flag *flags) {
   // парсим флаги
   (*p)++;
 
   if (**p == '*') {
-    flags->asterisk = 1;
+    flags->asterisk = true;
     (*p)++;
   }
   while (s21_isdigit(**p)) {
@@ -53,13 +61,9 @@ void parse_spec(const char **p, Flag *flags) {
   }
 
   // Парсим длину
-  switch (**p) {
-    case 'h':
-    case 'l':
-    case 'L':
-      flags->length = **p;
-      (*p)++;
-      break;
+  while (**p == 'h' || **p == 'l' || **p == 'L') {
+    flags->length = **p;
+    (*p)++;
   }
 
   // Парсим спецификатор
@@ -87,4 +91,61 @@ void parse_spec(const char **p, Flag *flags) {
       // exit(0);  // что делаем если некорр. спец?
       break;
   }
+}
+
+bool parse_int(const char **str, long *value, Flag flags) {
+  int sign = 1;
+  long result = 0;
+  bool overflow = false, res = false;
+  s21_size_t count = 0;
+
+  // skip whitespace
+  while (s21_isspace(**str)) {
+    (*str)++;
+  }
+
+  // handle sign
+  if (**str == '-' || **str == '+') {
+    if (**str == '-') sign = -1;
+    (*str)++;
+    count++;
+  }
+
+  // parse digits
+  while (s21_isdigit(**str) && (count++ < flags.width || flags.width == 0)) {
+    res = true;
+    if (!overflow) {
+      result = result * 10 + (**str - '0');
+      if (result < 0) {
+        overflow = true;
+        result = (sign = 1) ? LONG_MAX : LONG_MIN;
+        sign = 1;
+      }
+    }
+    (*str)++;
+  }
+
+  *value = sign * result;
+
+  return res;
+}
+
+bool process_d_spec_sscanf(Flag flags, va_list *args, const char **p) {
+  long value;
+  bool res = parse_int(p, &value, flags);
+  if (!flags.asterisk) {
+    if (flags.length == 'l' || flags.length == 'L') {
+      long *p_value = va_arg(*args, long *);
+      *p_value = value;
+    } else if (flags.length == 'h') {
+      short *p_value = va_arg(*args, short *);
+      *p_value = (short)value;
+    } else {
+      int *p_value = va_arg(*args, int *);
+      *p_value = (int)value;
+    }
+  } else {
+    res = false;
+  }
+  return res;
 }
