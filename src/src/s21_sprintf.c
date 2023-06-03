@@ -461,18 +461,54 @@ int process_s_spec(Flag flags, va_list *args, char **p) {
     len = s21_strlen(line);
   }
 
-  if (flags.precision >= 0 && precision < len) {
-    len = (null_line) ? 0 : precision;
+  // устанавливаем точность
+  int frac_digits = (flags.precision == -1) ? 6 : flags.precision;
+printf("numberr=%.20Lf\n", number);
+  // вычисляем число округленное до нужной точности
+  long double factor = pow(10, frac_digits);
+  long double rounded_integer = number * factor / factor;
+   printf("rounded integer=%.20Lf\n", rounded_integer);
+
+  // считывание знака и приведение к положительному
+  if (rounded_integer < 0) {
+    sign = '-';
+    rounded_integer = -rounded_integer;
   }
 
-  if (width > len && !flags.minus) {
-    s21_memset(*p, ' ', width - len);
-    (*p) += width - len;
+  //  разделение на целую и дробную часть
+  
+  double int_part=0;
+  long double frac_part = modf(rounded_integer, &int_part);
+  
+  //long int int_part = (long long int)rounded_integer;
+  //long double frac_part = rounded_integer - int_part;
+  // printf("int part=%ld  frac_part=%Lf frac_digit=%d\n", int_part, frac_part,
+  //        frac_digits);
+  //  обработка целой части числа
+  pos_int_to_string((long int)int_part, buffer);
+  if (sign == '-') {
+    input_char_left(buffer, sign);
   }
 
-  if (wchar) {
-    for (s21_size_t i = 0; i < len; i++) {
-      res += put_wchar(p, wline[i]);
+  // обработка дробной части числа
+  char buffer_frac[200] = {0};
+
+  int i = (int)s21_strlen(buffer);
+  if (frac_part > 0 || frac_digits > 0) {
+    buffer[i++] = '.';
+
+
+    long long int frac_part_int = (long long int)round(
+        frac_part * pow(10, frac_digits));  // делаем из дробной части целую
+    
+    pos_int_to_string(frac_part_int, buffer_frac);
+    printf("int part=%f  frac_part=%.20Lf\nbuffer_frac=%s\n", int_part, frac_part,
+          buffer_frac);
+    int gap = frac_digits - (int)s21_strlen(buffer_frac);
+    if (gap > 0) {
+      for (int j = 0; j < gap; j++) {
+        s21_strncat(buffer_frac, "0", 2);
+      }
     }
   } else {
     s21_strncpy(*p, line, len);
