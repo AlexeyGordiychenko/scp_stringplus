@@ -172,13 +172,6 @@ bool process_c_spec_sscanf(Flag flags, va_list *args, const char **p) {
     if (flags.length == 'l' || flags.length == 'L') {
       wchar_t *c = va_arg(*args, wchar_t *);
       for (s21_size_t i = 0; i < width && **p != '\0'; i++) {
-        // wctomb(c, **p);
-        // put_wchar(&c, (wchar_t)(**p));
-        // mbtowc(c, *p, 1);
-        // c[i] = **p;
-        // s21_size_t n = mbstowcs(c, *p, MB_CUR_MAX);
-        // (*p) += n;
-        // (*p)++;
         s21_size_t n = mbrtowc(&c[i], *p, MB_CUR_MAX, NULL);
         (*p) += n;
       }
