@@ -11,6 +11,7 @@ typedef struct {
 void parse_sscanf_spec(const char **p, Flag *flags);
 bool parse_int(const char **str, long *value, Flag flags);
 bool process_d_spec_sscanf(Flag flags, va_list *args, const char **p);
+bool process_c_spec_sscanf(Flag flags, va_list *args, const char **p);
 
 int s21_sscanf(const char *str, const char *format, ...) {
   va_list args;
@@ -18,7 +19,7 @@ int s21_sscanf(const char *str, const char *format, ...) {
   const char *str_p = str;
   s21_size_t count = 0;
 
-  for (const char *p = format; *p != '\0'; ++p) {
+  for (const char *p = format; *p != '\0' && *str_p != '\0'; ++p) {
     Flag flags = {0};  // ининциализируем или обнуляем структуру флагов
     if (*p == '%') {
       /* парсинг спецификатора */
@@ -31,11 +32,17 @@ int s21_sscanf(const char *str, const char *format, ...) {
         case 'd':
           count += process_d_spec_sscanf(flags, &args, &str_p);
           break;
+        case 'c':
+          count += process_c_spec_sscanf(flags, &args, &str_p);
+          break;
       }
-
-    } else if (!s21_isspace(*p)) {
-      if (*format != *str_p) {
-        printf("-=does not match=-");
+    } else if (s21_isspace(*p)) {
+      while (s21_isspace(*str_p)) {
+        str_p++;
+      }
+    } else {
+      if (*p != *str_p) {
+        // printf("-=does not match=-");
         break;
       }
       str_p++;
@@ -148,4 +155,40 @@ bool process_d_spec_sscanf(Flag flags, va_list *args, const char **p) {
     res = false;
   }
   return res;
+}
+
+bool process_c_spec_sscanf(Flag flags, va_list *args, const char **p) {
+  s21_size_t width = (flags.width == 0) ? 1 : flags.width;
+
+  if (flags.asterisk) {
+    if (flags.length == 'l' || flags.length == 'L') {
+      s21_size_t n = mbrtowc(NULL, *p, MB_CUR_MAX, NULL);
+      (*p) += n;
+    } else {
+      for (s21_size_t i = 0; i < width && **p != '\0'; i++, (*p)++) {
+      }
+    }
+  } else {
+    if (flags.length == 'l' || flags.length == 'L') {
+      wchar_t *c = va_arg(*args, wchar_t *);
+      for (s21_size_t i = 0; i < width && **p != '\0'; i++) {
+        // wctomb(c, **p);
+        // put_wchar(&c, (wchar_t)(**p));
+        // mbtowc(c, *p, 1);
+        // c[i] = **p;
+        // s21_size_t n = mbstowcs(c, *p, MB_CUR_MAX);
+        // (*p) += n;
+        // (*p)++;
+        s21_size_t n = mbrtowc(&c[i], *p, MB_CUR_MAX, NULL);
+        (*p) += n;
+      }
+    } else {
+      char *c = va_arg(*args, char *);
+      for (s21_size_t i = 0; i < width && **p != '\0'; i++) {
+        c[i] = **p;
+        (*p)++;
+      }
+    }
+  }
+  return !flags.asterisk;
 }
