@@ -15,6 +15,18 @@ typedef struct {
 
 void parse_spec(const char **p, Flag *flags, va_list *args);
 
+void reverse_string(char *str);
+void pos_int_to_string(long long unsigned int number, char *str);
+int int_to_str_min_len(long int number, char *str, bool sign, int min_len);
+void double_to_string(double number, char *str, int precision);
+void string_to_int(char *str, int *number);
+void string_to_double(char *str, double *number);
+void int_to_hex(unsigned long int number, char *hex, int reg);
+void input_char_left(char *str, char ch);
+void pos_int_to_string_octal(long long unsigned int number, char *str);
+void pointer_to_string(void *ptr, char *buffer);
+void apply_flags(char *str, Flag flags);
+
 void execute_x(char **p, va_list *args, Flag flags);
 void execute_u(char **p, va_list *args, Flag flags);
 void execute_percent(char **str);
@@ -22,6 +34,9 @@ void execute_o(char **p, va_list *args, Flag flags);
 void execute_n(int *var, int count);
 void execute_p(char **p, va_list *args, Flag flags);
 void process_d_spec(Flag flags, va_list *args, char **p);
+void apply_flags(char *str, Flag flags);
+int process_c_spec(Flag flags, va_list *args, char **p);
+int process_s_spec(Flag flags, va_list *args, char **p);
 void execute_f(char **p, va_list *args, Flag flags);
 
 int s21_sprintf(char *str, const char *format, ...) {
@@ -750,4 +765,139 @@ int process_s_spec(Flag flags, va_list *args, char **p) {
     (*p) += width - len;
   }
   return res;
+}
+void pointer_to_string(void *ptr, char *buffer) {
+  uintptr_t value = (uintptr_t)ptr;  // Преобразуем указатель в целое число
+
+  int i = 0;
+  while (value != 0) {
+    int digit = value & 0xF;  // Получаем младшую четырехбитную цифру
+    /*Строка int digit = value & 0xF; выполняет побитовую операцию "И" (AND)
+между значением value и шаблоном 0xF.
+
+Шаблон 0xF представляет собой 4 бита, установленных в единицу: 0000 1111 в
+двоичном представлении. Этот шаблон используется для выделения младшей
+четырехбитной цифры из значения value.
+
+Побитовая операция "И" между двоичными значениями выполняется побитово: каждый
+бит в результирующем значении будет равен 1, только если соответствующие биты
+в обоих операндах равны 1. В противном случае, если хотя бы один из битов
+равен 0, соответствующий бит в результирующем значении будет равен 0.
+
+Таким образом, строка int digit = value & 0xF; сохраняет младшую четырехбитную
+цифру из значения value в переменной digit*/
+
+    buffer[i++] = (digit < 10) ? ('0' + digit) : ('a' + digit - 10);
+    value >>= 4;  // Сдвигаем число на 4 бита вправо
+  }
+
+  if (i == 0) {
+    buffer[i++] = '0';  // Если указатель равен нулю, добавляем цифру 0
+  }
+  buffer[i] = '\0';
+  reverse_string(buffer);
+}
+
+void execute_p(char **p, va_list *args, Flag flags) {
+  char buffer[50];
+  void *ptr = va_arg(*args, void *);
+
+  // переводим указатель в строку
+  pointer_to_string(ptr, buffer);
+
+  // дополняем флагами и префиксом
+  apply_flags(buffer, flags);
+
+  int buffer_len = (int)s21_strlen(buffer);
+  s21_strncpy(*p, buffer, buffer_len);
+  (*p) += buffer_len;
+}
+
+void execute_f(char **p, va_list *args, Flag flags) {
+  long double number;
+  char buffer[200] = {0};
+  char sign = '\0';
+
+  // обработка длины
+  if (flags.length == 'L') {
+    number = va_arg(*args, long double);
+  } else {
+    number = va_arg(*args, double);
+  }
+
+  // устанавливаем точность
+  if (flags.precision == -1) flags.precision = 6;
+
+  // считывание знака и приведение к положительному
+  if (number < 0) {
+    sign = '-';
+    number = -number;
+  }
+
+  //  разделение на целую и дробную часть
+  long double int_part = 0;
+  long double frac_part = modfl(number, &int_part);
+
+  // округление целого при нулевой точности
+  if (frac_part == 0 || flags.precision == 0) {
+    if (round(frac_part) == 1) int_part++;
+  }
+
+  // занесение целой части в строку
+  pos_int_to_string((long long unsigned int)int_part, buffer);
+
+  // обработка дробной части числа
+  if (flags.precision != 0) {
+    int i = (int)s21_strlen(buffer);
+    buffer[i++] = '.';
+
+    while (flags.precision > 0) {
+      double int_frac_part = 0;
+      frac_part = modf(frac_part * 10, &int_frac_part);
+      buffer[i++] = '0' + (int)int_frac_part;
+      flags.precision--;
+    }
+    buffer[i] = '\0';
+
+    // добавляем разряд
+    int plus_one = 0;
+    if (frac_part >= 0.5) {
+      plus_one = 1;
+      i--;  // возвращаемся в позицию последнего
+    }
+    // printf("buffer=%s\n", buffer);
+    while (plus_one == 1) {
+      if (i == 0) {
+        if (buffer[i] == '9') {
+          buffer[i] = '0';
+        } else {
+          buffer[i]++;
+          plus_one = 0;
+        }
+        break;
+      } else if (buffer[i] == '9') {
+        buffer[i--] = '0';
+      } else if (buffer[i] == '.') {
+        i--;
+      } else {
+        buffer[i--]++;
+        plus_one = 0;
+      }
+    }
+
+    if (plus_one) {
+      input_char_left(buffer, '1');
+    }
+  }
+
+  // добавление знака
+  if (sign == '-') {
+    input_char_left(buffer, sign);
+  }
+
+  apply_flags(buffer, flags);
+
+  int buffer_len = (int)s21_strlen(buffer);
+  s21_strncpy(*p, buffer, buffer_len);
+  (*p) += buffer_len;
 }

@@ -10,11 +10,12 @@ int main(void) {
       test_strrchr(),        test_strstr(),    test_strtok(),
       test_sprintf_signed(), test_sprintf_o(), test_sprintf_hex(),
       test_sprintf_HEX(),    test_sprintf_n(), test_sprintf_percent(),
-      test_sprintf_u(),      test_sprintf_c(), test_sprintf_string(),
+      test_sprintf_u(),      test_sprintf_p(), test_sprintf_i(),
+      test_sprintf_f(),      test_sprintf_c(), test_sprintf_string(),
       test_to_upper(),       test_to_lower(),  test_insert(),
       test_trim(),           test_sscanf_d(),  NULL};
 
-  for (int i = 0; s21_string_test[i] != NULL; i++) { 
+  for (int i = 0; s21_string_test[i] != NULL; i++) {
     SRunner *sr = srunner_create(s21_string_test[i]);
 
     srunner_set_fork_status(sr, CK_NOFORK);
