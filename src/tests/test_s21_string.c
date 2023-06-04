@@ -35,6 +35,7 @@ int main(void) {
                               test_trim(),
                               test_sscanf_d(),
                               test_sscanf_c(),
+                              test_sscanf_s(),
                               NULL};
 
   for (int i = 0; s21_string_test[i] != NULL; i++) {  // (&& failed == 0)

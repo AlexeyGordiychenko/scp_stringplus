@@ -11,7 +11,11 @@ typedef struct {
 void parse_sscanf_spec(const char **p, Flag *flags);
 bool parse_int(const char **str, long *value, Flag flags);
 bool process_d_spec_sscanf(Flag flags, va_list *args, const char **p);
-bool process_c_spec_sscanf(Flag flags, va_list *args, const char **p);
+bool process_cs_spec_sscanf(Flag flags, va_list *args, const char **p);
+
+void skip_chars(Flag flags, const char **p);
+void assign_wchars(Flag flags, const char **p, va_list *args);
+void assign_chars(Flag flags, const char **p, va_list *args);
 
 int s21_sscanf(const char *str, const char *format, ...) {
   va_list args;
@@ -33,7 +37,8 @@ int s21_sscanf(const char *str, const char *format, ...) {
           count += process_d_spec_sscanf(flags, &args, &str_p);
           break;
         case 'c':
-          count += process_c_spec_sscanf(flags, &args, &str_p);
+        case 's':
+          count += process_cs_spec_sscanf(flags, &args, &str_p);
           break;
       }
     } else if (s21_isspace(*p)) {
@@ -157,31 +162,78 @@ bool process_d_spec_sscanf(Flag flags, va_list *args, const char **p) {
   return res;
 }
 
-bool process_c_spec_sscanf(Flag flags, va_list *args, const char **p) {
-  s21_size_t width = (flags.width == 0) ? 1 : flags.width;
-
-  if (flags.asterisk) {
-    if (flags.length == 'l' || flags.length == 'L') {
-      s21_size_t n = mbrtowc(NULL, *p, MB_CUR_MAX, NULL);
-      (*p) += n;
-    } else {
-      for (s21_size_t i = 0; i < width && **p != '\0'; i++, (*p)++) {
-      }
+bool process_cs_spec_sscanf(Flag flags, va_list *args, const char **p) {
+  if (flags.spec == 's') {
+    // skip whitespace
+    while (s21_isspace(**p)) {
+      (*p)++;
     }
+  }
+
+  if (flags.asterisk) {  // move the **p, but don't assign to the variable
+    skip_chars(flags, p);
   } else {
     if (flags.length == 'l' || flags.length == 'L') {
-      wchar_t *c = va_arg(*args, wchar_t *);
-      for (s21_size_t i = 0; i < width && **p != '\0'; i++) {
-        s21_size_t n = mbrtowc(&c[i], *p, MB_CUR_MAX, NULL);
-        (*p) += n;
-      }
+      assign_wchars(flags, p, args);
     } else {
-      char *c = va_arg(*args, char *);
-      for (s21_size_t i = 0; i < width && **p != '\0'; i++) {
-        c[i] = **p;
-        (*p)++;
-      }
+      assign_chars(flags, p, args);
     }
   }
   return !flags.asterisk;
+}
+
+void skip_chars(Flag flags, const char **p) {
+  bool is_str = flags.spec == 's';
+  bool is_wide = flags.length == 'l' || flags.length == 'L';
+
+  do {
+    if (is_wide) {
+      s21_size_t n = mbrtowc(NULL, *p, MB_CUR_MAX, NULL);
+      (*p) += n;
+    } else {
+      (*p)++;
+    }
+  } while (**p != '\0' && ((is_str) ? !s21_isspace(**p) : 0));
+}
+
+void assign_wchars(Flag flags, const char **p, va_list *args) {
+  bool is_str = flags.spec == 's';
+  s21_size_t width = flags.width;
+  if (!is_str && width == 0) width = 1;
+
+  wchar_t *c = va_arg(*args, wchar_t *);
+  s21_size_t i = 0;
+  for (; (i < width || width == 0) && ((is_str) ? !s21_isspace(**p) : 1) &&
+         **p != '\0';
+       i++) {
+    s21_size_t n = mbrtowc(c++, *p, MB_CUR_MAX, NULL);
+    (*p) += n;
+  }
+  if (is_str) {
+    *c-- = '\0';
+    for (; i != 0 && s21_isspace(*c); i--, c--) {
+      *c = '\0';
+    }
+  }
+}
+
+void assign_chars(Flag flags, const char **p, va_list *args) {
+  bool is_str = flags.spec == 's';
+  s21_size_t width = flags.width;
+  if (!is_str && width == 0) width = 1;
+
+  char *c = va_arg(*args, char *);
+  s21_size_t i = 0;
+  for (; (i < width || width == 0) && ((is_str) ? !s21_isspace(**p) : 1) &&
+         **p != '\0';
+       i++) {
+    *c++ = **p;
+    (*p)++;
+  }
+  if (is_str) {
+    *c-- = '\0';
+    for (; i != 0 && s21_isspace(*c); i--, c--) {
+      *c = '\0';
+    }
+  }
 }
