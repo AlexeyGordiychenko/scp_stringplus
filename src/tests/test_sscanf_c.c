@@ -28,7 +28,7 @@ START_TEST(sscanf_spec_c_3) {
 END_TEST
 
 START_TEST(sscanf_spec_c_4) {
-  char format[] = "%c";
+  char format[] = " %c";
   char str[] = "\t\n\n   \n  \ta";
   char c1, c2;
   int16_t res1 = s21_sscanf(str, format, &c1);
