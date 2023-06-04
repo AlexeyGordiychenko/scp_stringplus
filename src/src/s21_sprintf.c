@@ -179,6 +179,216 @@ void parse_spec(const char **p, Flag *flags, va_list *args) {
   }
 }
 
+void reverse_string(char *str) {
+  int len = s21_strlen(str);
+  for (int k = 0; k < len / 2; k++) {
+    char buf = str[k];
+    str[k] = str[len - 1 - k];
+    str[len - 1 - k] = buf;
+  }
+}
+
+void pos_int_to_string(long long unsigned int number, char *str) {
+  if (number == 0) {
+    str[0] = '0';
+    str[1] = '\0';
+    return;
+  }
+
+  int i = 0;
+  int is_negative = 0;
+
+  while (number > 0) {
+    int digit = number % 10;
+    str[i++] = '0' + digit;
+    number /= 10;
+  }
+
+  if (is_negative) {
+    str[i++] = '-';
+  }
+
+  str[i] = '\0';
+
+  // Обратный порядок символов
+  reverse_string(str);
+}
+
+void pos_int_to_string_octal(long long unsigned int number, char *str) {
+  if (number == 0) {
+    str[0] = '0';
+    str[1] = '\0';
+    return;
+  }
+
+  int i = 0;
+  int is_negative = 0;
+
+  while (number > 0) {
+    int digit = number % 8;
+    str[i++] = '0' + digit;
+    number /= 8;
+  }
+
+  if (is_negative) {
+    str[i++] = '-';
+  }
+
+  str[i] = '\0';
+
+  // Обратный порядок символов
+  reverse_string(str);
+}
+
+void double_to_string(double number, char *str, int precision) {
+  if (number == 0.0) {
+    str[0] = '0';
+    str[1] = '\0';
+    return;
+  }
+
+  int i = 0;
+  int is_negative = 0;
+
+  if (number < 0) {
+    is_negative = 1;
+    number = -number;
+  }
+
+  // Преобразование целой части числа
+  int integer_part = (int)number;
+  pos_int_to_string(integer_part, str);
+
+  // Добавление десятичной точки
+  int len = s21_strlen(str);
+  str[len] = '.';
+  i = len + 1;
+
+  // Преобразование десятичной части числа
+  double decimal_part = number - integer_part;
+
+  while (precision > 0) {
+    decimal_part *= 10;
+    int digit = (int)decimal_part;
+    str[i++] = '0' + digit;
+    decimal_part -= digit;
+    precision--;
+  }
+
+  if (is_negative) {
+    str[i++] = '-';
+  }
+
+  str[i] = '\0';
+}
+
+void string_to_int(char *str, int *number) {
+  // проверка на то является ли строка целым числом
+  int i = 0;
+  char sign;
+  if (str[i] == '-') {
+    sign = '-';
+    i++;
+  }
+  while (str[i] != '\0') {
+    if (str[i] >= '1' && str[i] <= '9') {
+      i++;
+      continue;
+    } else {
+      printf("строка не является целым числом\n");
+      return;
+    }
+  }
+
+  // преобразование в число
+  i = (sign == '-') ? 1 : 0;  // устанавиливаем позицию для счетчика
+  *number = 0;
+  while (str[i] != '\0') {
+    *number = *number * 10 + (str[i] - '0');
+    i++;
+  }
+
+  if (sign == '-') *number = -(*number);
+}
+
+void string_to_double(char *str, double *number) {
+  // проверка на то является ли строка целым числом
+  int i = 0;
+  char sign;
+  int point = 0;
+
+  if (str[i] == '-') {
+    sign = '-';
+    i++;
+  }
+
+  while (str[i] != '\0') {
+    if (str[i] >= '1' && str[i] <= '9') {
+      i++;
+      continue;
+    } else if (str[i] == '.' && !point) {
+      point = 1;
+      i++;
+    } else {
+      printf("строка не является вещественным числом\n");
+      return;
+    }
+  }
+  // преобразовываем в число
+  char *int_part, *dec_part;
+  int_part = s21_strtok(str, ".");
+  dec_part = s21_strtok(NULL, ".");
+  int x, y, len_dec = (int)s21_strlen(dec_part);
+  string_to_int(int_part, &x);
+  printf("%d\n", x);
+  string_to_int(dec_part, &y);
+  printf("%d\n", y);
+  printf("len = %d\n", len_dec);
+  if (sign == '-') {
+    *number = x - y / pow(10, len_dec);
+  } else {
+    *number = x + y / pow(10, len_dec);
+  }
+}
+
+void int_to_hex(unsigned long int number, char *hex, int reg) {
+  if (number == 0) {
+    hex[0] = '0';
+    hex[1] = '\0';
+    return;
+  }
+
+  int i = 0;
+
+  while (number > 0) {
+    int digit = number % 16;
+    if (digit < 10) {
+      hex[i] = '0' + digit;  // Цифры 0-9
+    } else {
+      if (reg) {
+        hex[i] = 'A' + (digit - 10);  // Буквы A-F
+      } else {
+        hex[i] = 'a' + (digit - 10);  // Буквы a-f
+      }
+    }
+    number /= 16;
+    i++;
+  }
+
+  hex[i] = '\0';
+
+  // Обратный порядок символов
+  reverse_string(hex);
+}
+
+void input_char_left(char *str, char ch) {
+  int len = (int)s21_strlen(str);
+  for (int i = len + 1; i > 0; i--) {
+    str[i] = str[i - 1];
+  }
+  str[0] = ch;
+}
+
 void execute_x(char **p, va_list *args, Flag flags) {
   char hex[50];
 
@@ -315,10 +525,14 @@ void apply_flags(char *str, Flag flags) {
     if (flags.spec == 'x' || flags.spec == 'p') {
       input_char_left(str, 'x');
       input_char_left(str, '0');
+      if (!flags.sign && flags.space) input_char_left(str, ' ');
+      if (flags.sign) input_char_left(str, '+');
     }
     if (flags.spec == 'X') {
       input_char_left(str, 'X');
       input_char_left(str, '0');
+      if (!flags.sign && flags.space) input_char_left(str, ' ');
+      if (flags.sign) input_char_left(str, '+');
     }
     if (flags.spec == 'o') {
       input_char_left(str, '0');
@@ -462,57 +676,73 @@ int process_s_spec(Flag flags, va_list *args, char **p) {
   }
 
   // устанавливаем точность
-  int frac_digits = (flags.precision == -1) ? 6 : flags.precision;
-printf("numberr=%.20Lf\n", number);
-  // вычисляем число округленное до нужной точности
-  long double factor = pow(10, frac_digits);
-  long double rounded_integer = number * factor / factor;
-   printf("rounded integer=%.20Lf\n", rounded_integer);
+  if (flags.precision == -1) flags.precision = 6;
 
   // считывание знака и приведение к положительному
-  if (rounded_integer < 0) {
+  if (number < 0) {
     sign = '-';
-    rounded_integer = -rounded_integer;
+    number = -number;
   }
 
   //  разделение на целую и дробную часть
-  
-  double int_part=0;
-  long double frac_part = modf(rounded_integer, &int_part);
-  
-  //long int int_part = (long long int)rounded_integer;
-  //long double frac_part = rounded_integer - int_part;
-  // printf("int part=%ld  frac_part=%Lf frac_digit=%d\n", int_part, frac_part,
-  //        frac_digits);
-  //  обработка целой части числа
-  pos_int_to_string((long int)int_part, buffer);
-  if (sign == '-') {
-    input_char_left(buffer, sign);
+  long double int_part = 0;
+  long double frac_part = modfl(number, &int_part);
+
+  // округление целого при нулевой точности
+  if (frac_part == 0 || flags.precision == 0) {
+    if (round(frac_part) == 1) int_part++;
   }
 
-  // обработка дробной части числа
-  char buffer_frac[200] = {0};
+  // занесение целой части в строку
+  pos_int_to_string((long long unsigned int)int_part, buffer);
 
-  int i = (int)s21_strlen(buffer);
-  if (frac_part > 0 || frac_digits > 0) {
+  // обработка дробной части числа
+  if (flags.precision != 0) {
+    int i = (int)s21_strlen(buffer);
     buffer[i++] = '.';
 
+    while (flags.precision > 0) {
+      double int_frac_part = 0;
+      frac_part = modf(frac_part * 10, &int_frac_part);
+      buffer[i++] = '0' + (int)int_frac_part;
+      flags.precision--;
+    }
+    buffer[i] = '\0';
 
-    long long int frac_part_int = (long long int)round(
-        frac_part * pow(10, frac_digits));  // делаем из дробной части целую
-    
-    pos_int_to_string(frac_part_int, buffer_frac);
-    printf("int part=%f  frac_part=%.20Lf\nbuffer_frac=%s\n", int_part, frac_part,
-          buffer_frac);
-    int gap = frac_digits - (int)s21_strlen(buffer_frac);
-    if (gap > 0) {
-      for (int j = 0; j < gap; j++) {
-        s21_strncat(buffer_frac, "0", 2);
+    // добавляем разряд
+    int plus_one = 0;
+    if (frac_part >= 0.5) {
+      plus_one = 1;
+      i--;  // возвращаемся в позицию последнего
+    }
+    // printf("buffer=%s\n", buffer);
+    while (plus_one == 1) {
+      if (i == 0) {
+        if (buffer[i] == '9') {
+          buffer[i] = '0';
+        } else {
+          buffer[i]++;
+          plus_one = 0;
+        }
+        break;
+      } else if (buffer[i] == '9') {
+        buffer[i--] = '0';
+      } else if (buffer[i] == '.') {
+        i--;
+      } else {
+        buffer[i--]++;
+        plus_one = 0;
       }
     }
-  } else {
-    s21_strncpy(*p, line, len);
-    (*p) += len;
+
+    if (plus_one) {
+      input_char_left(buffer, '1');
+    }
+  }
+
+  // добавление знака
+  if (sign == '-') {
+    input_char_left(buffer, sign);
   }
 
   if (width > len && flags.minus) {
