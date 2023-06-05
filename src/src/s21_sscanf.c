@@ -130,7 +130,7 @@ bool parse_int(const char **str, long *value, Flag flags) {
       result = result * 10 + (**str - '0');
       if (result < 0) {
         overflow = true;
-        result = (sign = 1) ? LONG_MAX : LONG_MIN;
+        result = (sign == 1) ? LONG_MAX : LONG_MIN;
         sign = 1;
       }
     }
