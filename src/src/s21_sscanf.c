@@ -10,12 +10,13 @@ typedef struct {
 
 void parse_sscanf_spec(const char **p, Flag *flags);
 bool parse_int(const char **str, long *value, Flag flags);
-bool process_d_spec_sscanf(Flag flags, va_list *args, const char **p);
+bool process_di_spec_sscanf(Flag flags, va_list *args, const char **p);
 bool process_cs_spec_sscanf(Flag flags, va_list *args, const char **p);
 
 void skip_chars(Flag flags, const char **p);
 void assign_wchars(Flag flags, const char **p, va_list *args);
 void assign_chars(Flag flags, const char **p, va_list *args);
+int base16_digit(int c);
 
 int s21_sscanf(const char *str, const char *format, ...) {
   va_list args;
@@ -34,7 +35,8 @@ int s21_sscanf(const char *str, const char *format, ...) {
       //        flags.width, flags.asterisk, flags.length, flags.spec);
       switch (flags.spec) {
         case 'd':
-          count += process_d_spec_sscanf(flags, &args, &str_p);
+        case 'i':
+          count += process_di_spec_sscanf(flags, &args, &str_p);
           break;
         case 'c':
         case 's':
@@ -110,6 +112,7 @@ bool parse_int(const char **str, long *value, Flag flags) {
   long result = 0;
   bool overflow = false, res = false;
   s21_size_t count = 0;
+  int base = 10;
 
   // skip whitespace
   while (s21_isspace(**str)) {
@@ -123,18 +126,41 @@ bool parse_int(const char **str, long *value, Flag flags) {
     count++;
   }
 
-  // parse digits
-  while (s21_isdigit(**str) && (count++ < flags.width || flags.width == 0)) {
+  // handle base
+  if (**str == '0' && (count++ < flags.width || flags.width == 0)) {
     res = true;
-    if (!overflow) {
-      result = result * 10 + (**str - '0');
-      if (result < 0) {
-        overflow = true;
-        result = (sign == 1) ? LONG_MAX : LONG_MIN;
-        sign = 1;
-      }
-    }
+    base = 8;
     (*str)++;
+    if ((**str == 'x' || **str == 'X') &&
+        (count++ < flags.width || flags.width == 0)) {
+      base = 16;
+      (*str)++;
+    }
+  }
+
+  while (count++ < flags.width || flags.width == 0) {
+    int digit = -1;
+    if (s21_isdigit(**str)) {
+      digit = **str - '0';
+    } else if (base == 16) {
+      digit = base16_digit(**str);
+    }
+
+    if (digit >= 0 && digit < base) {
+      res = true;
+      if (!overflow) {
+        if (result > (LONG_MAX - digit) / base) {
+          overflow = true;
+          result = (sign == 1) ? LONG_MAX : LONG_MIN;
+          sign = 1;
+        } else {
+          result = result * base + digit;
+        }
+      }
+      (*str)++;
+    } else {
+      break;
+    }
   }
 
   *value = sign * result;
@@ -142,7 +168,7 @@ bool parse_int(const char **str, long *value, Flag flags) {
   return res;
 }
 
-bool process_d_spec_sscanf(Flag flags, va_list *args, const char **p) {
+bool process_di_spec_sscanf(Flag flags, va_list *args, const char **p) {
   long value;
   bool res = parse_int(p, &value, flags);
   if (!flags.asterisk) {
@@ -236,4 +262,16 @@ void assign_chars(Flag flags, const char **p, va_list *args) {
       *c = '\0';
     }
   }
+}
+
+int base16_digit(int c) {
+  int res = -1;
+  if (c >= '0' && c <= '9') {
+    res = c - '0';
+  } else if (c >= 'a' && c <= 'f') {
+    res = c - 'a' + 10;
+  } else if (c >= 'A' && c <= 'F') {
+    res = c - 'A' + 10;
+  }
+  return res;
 }
