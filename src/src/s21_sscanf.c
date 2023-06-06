@@ -9,7 +9,7 @@ typedef struct {
 } Flag;
 
 void parse_sscanf_spec(const char **p, Flag *flags);
-bool parse_int(const char **str, long *value, Flag flags);
+bool parse_int(const char **str, long *value, s21_size_t width, int base);
 bool process_di_spec_sscanf(Flag flags, va_list *args, const char **p);
 bool process_cs_spec_sscanf(Flag flags, va_list *args, const char **p);
 
@@ -107,12 +107,11 @@ void parse_sscanf_spec(const char **p, Flag *flags) {
   }
 }
 
-bool parse_int(const char **str, long *value, Flag flags) {
+bool parse_int(const char **str, long *value, s21_size_t width, int base) {
   int sign = 1;
   long result = 0;
   bool overflow = false, res = false;
   s21_size_t count = 0;
-  int base = 10;
 
   // skip whitespace
   while (s21_isspace(**str)) {
@@ -127,18 +126,20 @@ bool parse_int(const char **str, long *value, Flag flags) {
   }
 
   // handle base
-  if (**str == '0' && (count++ < flags.width || flags.width == 0)) {
-    res = true;
-    base = 8;
-    (*str)++;
-    if ((**str == 'x' || **str == 'X') &&
-        (count++ < flags.width || flags.width == 0)) {
-      base = 16;
+  if (base == 0) {
+    base = 10;
+    if (**str == '0' && (count++ < width || width == 0)) {
+      res = true;
+      base = 8;
       (*str)++;
+      if ((**str == 'x' || **str == 'X') && (count++ < width || width == 0)) {
+        base = 16;
+        (*str)++;
+      }
     }
   }
 
-  while (count++ < flags.width || flags.width == 0) {
+  while (count++ < width || width == 0) {
     int digit = -1;
     if (s21_isdigit(**str)) {
       digit = **str - '0';
@@ -170,7 +171,13 @@ bool parse_int(const char **str, long *value, Flag flags) {
 
 bool process_di_spec_sscanf(Flag flags, va_list *args, const char **p) {
   long value;
-  bool res = parse_int(p, &value, flags);
+  int base = 0;
+  switch (flags.spec) {
+    case 'd':
+      base = 10;
+      break;
+  }
+  bool res = parse_int(p, &value, flags.width, base);
   if (!flags.asterisk) {
     if (flags.length == 'l' || flags.length == 'L') {
       long *p_value = va_arg(*args, long *);
