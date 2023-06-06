@@ -14,16 +14,6 @@ typedef struct {
 } Flag;
 
 void parse_spec(const char **p, Flag *flags, va_list *args);
-
-void reverse_string(char *str);
-void double_to_string(long double number, char *buffer, int precision);
-void pos_int_to_string(long long unsigned int number, char *str);
-int int_to_str_min_len(long int number, char *str, bool sign, int min_len);
-void string_to_int(char *str, int *number);
-void string_to_double(char *str, double *number);
-void int_to_hex(unsigned long int number, char *hex, int reg);
-void input_char_left(char *str, char ch);
-void pos_int_to_string_octal(long long unsigned int number, char *str);
 void pointer_to_string(void *ptr, char *buffer);
 void apply_flags(char *str, Flag flags);
 
@@ -197,174 +187,6 @@ void parse_spec(const char **p, Flag *flags, va_list *args) {
       // exit(0);  // что делаем если некорр. спец?
       break;
   }
-}
-
-void reverse_string(char *str) {
-  int len = s21_strlen(str);
-  for (int k = 0; k < len / 2; k++) {
-    char buf = str[k];
-    str[k] = str[len - 1 - k];
-    str[len - 1 - k] = buf;
-  }
-}
-
-void pos_int_to_string(long long unsigned int number, char *str) {
-  if (number == 0) {
-    str[0] = '0';
-    str[1] = '\0';
-    return;
-  }
-
-  int i = 0;
-  int is_negative = 0;
-
-  while (number > 0) {
-    int digit = number % 10;
-    str[i++] = '0' + digit;
-    number /= 10;
-  }
-
-  if (is_negative) {
-    str[i++] = '-';
-  }
-
-  str[i] = '\0';
-
-  // Обратный порядок символов
-  reverse_string(str);
-}
-
-void pos_int_to_string_octal(long long unsigned int number, char *str) {
-  if (number == 0) {
-    str[0] = '0';
-    str[1] = '\0';
-    return;
-  }
-
-  int i = 0;
-  int is_negative = 0;
-
-  while (number > 0) {
-    int digit = number % 8;
-    str[i++] = '0' + digit;
-    number /= 8;
-  }
-
-  if (is_negative) {
-    str[i++] = '-';
-  }
-
-  str[i] = '\0';
-
-  // Обратный порядок символов
-  reverse_string(str);
-}
-
-void string_to_int(char *str, int *number) {
-  // проверка на то является ли строка целым числом
-  int i = 0;
-  char sign;
-  if (str[i] == '-') {
-    sign = '-';
-    i++;
-  }
-  while (str[i] != '\0') {
-    if (str[i] >= '1' && str[i] <= '9') {
-      i++;
-      continue;
-    } else {
-      printf("строка не является целым числом\n");
-      return;
-    }
-  }
-
-  // преобразование в число
-  i = (sign == '-') ? 1 : 0;  // устанавиливаем позицию для счетчика
-  *number = 0;
-  while (str[i] != '\0') {
-    *number = *number * 10 + (str[i] - '0');
-    i++;
-  }
-
-  if (sign == '-') *number = -(*number);
-}
-
-void string_to_double(char *str, double *number) {
-  // проверка на то является ли строка целым числом
-  int i = 0;
-  char sign;
-  int point = 0;
-
-  if (str[i] == '-') {
-    sign = '-';
-    i++;
-  }
-
-  while (str[i] != '\0') {
-    if (str[i] >= '1' && str[i] <= '9') {
-      i++;
-      continue;
-    } else if (str[i] == '.' && !point) {
-      point = 1;
-      i++;
-    } else {
-      printf("строка не является вещественным числом\n");
-      return;
-    }
-  }
-  // преобразовываем в число
-  char *int_part, *dec_part;
-  int_part = s21_strtok(str, ".");
-  dec_part = s21_strtok(NULL, ".");
-  int x, y, len_dec = (int)s21_strlen(dec_part);
-  string_to_int(int_part, &x);
-  printf("%d\n", x);
-  string_to_int(dec_part, &y);
-  printf("%d\n", y);
-  printf("len = %d\n", len_dec);
-  if (sign == '-') {
-    *number = x - y / pow(10, len_dec);
-  } else {
-    *number = x + y / pow(10, len_dec);
-  }
-}
-
-void int_to_hex(unsigned long int number, char *hex, int reg) {
-  if (number == 0) {
-    hex[0] = '0';
-    hex[1] = '\0';
-    return;
-  }
-
-  int i = 0;
-
-  while (number > 0) {
-    int digit = number % 16;
-    if (digit < 10) {
-      hex[i] = '0' + digit;  // Цифры 0-9
-    } else {
-      if (reg) {
-        hex[i] = 'A' + (digit - 10);  // Буквы A-F
-      } else {
-        hex[i] = 'a' + (digit - 10);  // Буквы a-f
-      }
-    }
-    number /= 16;
-    i++;
-  }
-
-  hex[i] = '\0';
-
-  // Обратный порядок символов
-  reverse_string(hex);
-}
-
-void input_char_left(char *str, char ch) {
-  int len = (int)s21_strlen(str);
-  for (int i = len + 1; i > 0; i--) {
-    str[i] = str[i - 1];
-  }
-  str[0] = ch;
 }
 
 void execute_x(char **p, va_list *args, Flag flags) {
@@ -674,74 +496,22 @@ int process_s_spec(Flag flags, va_list *args, char **p) {
     len = s21_strlen(line);
   }
 
-  // устанавливаем точность
-  if (flags.precision == -1) flags.precision = 6;
-
-  // считывание знака и приведение к положительному
-  if (number < 0) {
-    sign = '-';
-    number = -number;
+  if (flags.precision >= 0 && precision < len) {
+    len = (null_line) ? 0 : precision;
   }
 
-  //  разделение на целую и дробную часть
-  long double int_part = 0;
-  long double frac_part = modfl(number, &int_part);
-
-  // округление целого при нулевой точности
-  if (frac_part == 0 || flags.precision == 0) {
-    if (round(frac_part) == 1) int_part++;
+  if (width > len && !flags.minus) {
+    s21_memset(*p, ' ', width - len);
+    (*p) += width - len;
   }
 
-  // занесение целой части в строку
-  pos_int_to_string((long long unsigned int)int_part, buffer);
-
-  // обработка дробной части числа
-  if (flags.precision != 0) {
-    int i = (int)s21_strlen(buffer);
-    buffer[i++] = '.';
-
-    while (flags.precision > 0) {
-      double int_frac_part = 0;
-      frac_part = modf(frac_part * 10, &int_frac_part);
-      buffer[i++] = '0' + (int)int_frac_part;
-      flags.precision--;
+  if (wchar) {
+    for (s21_size_t i = 0; i < len; i++) {
+      res += put_wchar(p, wline[i]);
     }
-    buffer[i] = '\0';
-
-    // добавляем разряд
-    int plus_one = 0;
-    if (frac_part >= 0.5) {
-      plus_one = 1;
-      i--;  // возвращаемся в позицию последнего
-    }
-    // printf("buffer=%s\n", buffer);
-    while (plus_one == 1) {
-      if (i == 0) {
-        if (buffer[i] == '9') {
-          buffer[i] = '0';
-        } else {
-          buffer[i]++;
-          plus_one = 0;
-        }
-        break;
-      } else if (buffer[i] == '9') {
-        buffer[i--] = '0';
-      } else if (buffer[i] == '.') {
-        i--;
-      } else {
-        buffer[i--]++;
-        plus_one = 0;
-      }
-    }
-
-    if (plus_one) {
-      input_char_left(buffer, '1');
-    }
-  }
-
-  // добавление знака
-  if (sign == '-') {
-    input_char_left(buffer, sign);
+  } else {
+    s21_strncpy(*p, line, len);
+    (*p) += len;
   }
 
   if (width > len && flags.minus) {
@@ -750,6 +520,90 @@ int process_s_spec(Flag flags, va_list *args, char **p) {
   }
   return res;
 }
+
+void pointer_to_string(void *ptr, char *buffer) {
+  uintptr_t value = (uintptr_t)ptr;  // Преобразуем указатель в целое число
+
+  int i = 0;
+  while (value != 0) {
+    int digit = value & 0xF;  // Получаем младшую четырехбитную цифру
+    /*Строка int digit = value & 0xF; выполняет побитовую операцию "И" (AND)
+между значением value и шаблоном 0xF.
+
+Шаблон 0xF представляет собой 4 бита, установленных в единицу: 0000 1111 в
+двоичном представлении. Этот шаблон используется для выделения младшей
+четырехбитной цифры из значения value.
+
+Побитовая операция "И" между двоичными значениями выполняется побитово: каждый
+бит в результирующем значении будет равен 1, только если соответствующие биты
+в обоих операндах равны 1. В противном случае, если хотя бы один из битов
+равен 0, соответствующий бит в результирующем значении будет равен 0.
+
+Таким образом, строка int digit = value & 0xF; сохраняет младшую четырехбитную
+цифру из значения value в переменной digit*/
+
+    buffer[i++] = (digit < 10) ? ('0' + digit) : ('a' + digit - 10);
+    value >>= 4;  // Сдвигаем число на 4 бита вправо
+  }
+
+  if (flags.length == 'l') {
+    wchar_t wide_char = (wchar_t)va_arg(*args, int);
+    res = put_wchar(p, wide_char);
+  } else {
+    char c = va_arg(*args, int);
+    **p = c;
+    (*p)++;
+  }
+
+  if (flags.width > len && flags.minus) {
+    s21_memset(*p, ' ', flags.width - len);
+    (*p) += flags.width - len;
+  }
+  return res;
+}
+
+int process_s_spec(Flag flags, va_list *args, char **p) {
+  s21_size_t len = 0;
+  s21_size_t width = (s21_size_t)flags.width;
+  s21_size_t precision =
+      (flags.precision < 0) ? 0 : (s21_size_t)flags.precision;
+  bool wchar = (flags.length == 'l') ? true : false;
+  bool null_line = false;
+  int res = 0;
+
+  wchar_t *wline = NULL;
+  const char *line = NULL;
+
+  if (wchar) {
+    wline = va_arg(*args, wchar_t *);
+    if (wline == NULL) {
+      wline = L"(null)";
+      null_line = true;
+    }
+    len = wcslen(wline);
+  } else {
+    line = va_arg(*args, const char *);
+    if (line == NULL) {
+      line = "(null)";
+      null_line = true;
+    }
+    len = s21_strlen(line);
+  }
+
+  // устанавливаем точность
+  if (flags.precision == -1) flags.precision = 6;
+
+  // преобразуем число в строку с заданной точностью
+  double_to_string(number, buffer, flags.precision);
+
+  apply_flags(buffer, flags);
+
+  int buffer_len = (int)s21_strlen(buffer);
+  s21_strncpy(*p, buffer, buffer_len);
+  (*p) += buffer_len;
+}
+
+
 
 void pointer_to_string(void *ptr, char *buffer) {
   uintptr_t value = (uintptr_t)ptr;  // Преобразуем указатель в целое число
