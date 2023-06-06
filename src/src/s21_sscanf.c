@@ -10,7 +10,7 @@ typedef struct {
 
 void parse_sscanf_spec(const char **p, Flag *flags);
 bool parse_int(const char **str, long *value, s21_size_t width, int base);
-bool process_di_spec_sscanf(Flag flags, va_list *args, const char **p);
+bool process_dio_spec_sscanf(Flag flags, va_list *args, const char **p);
 bool process_cs_spec_sscanf(Flag flags, va_list *args, const char **p);
 
 void skip_chars(Flag flags, const char **p);
@@ -36,7 +36,8 @@ int s21_sscanf(const char *str, const char *format, ...) {
       switch (flags.spec) {
         case 'd':
         case 'i':
-          count += process_di_spec_sscanf(flags, &args, &str_p);
+        case 'o':
+          count += process_dio_spec_sscanf(flags, &args, &str_p);
           break;
         case 'c':
         case 's':
@@ -123,6 +124,9 @@ bool parse_int(const char **str, long *value, s21_size_t width, int base) {
     if (**str == '-') sign = -1;
     (*str)++;
     count++;
+    if (width == 1) {
+      while (**str) (*str)++;
+    }
   }
 
   // handle base
@@ -169,12 +173,15 @@ bool parse_int(const char **str, long *value, s21_size_t width, int base) {
   return res;
 }
 
-bool process_di_spec_sscanf(Flag flags, va_list *args, const char **p) {
+bool process_dio_spec_sscanf(Flag flags, va_list *args, const char **p) {
   long value;
   int base = 0;
   switch (flags.spec) {
     case 'd':
       base = 10;
+      break;
+    case 'o':
+      base = 8;
       break;
   }
   bool res = parse_int(p, &value, flags.width, base);
