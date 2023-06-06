@@ -36,6 +36,18 @@ Suite *test_sprintf_u(void);
 Suite *test_sprintf_p(void);
 Suite *test_sprintf_i(void);
 Suite *test_sprintf_f(void);
+Suite *test_sprintf_c(void);
+Suite *test_sprintf_string(void);
 Suite *test_sprintf_e(void);
+
+Suite *test_to_upper(void);
+Suite *test_to_lower(void);
+Suite *test_insert(void);
+Suite *test_trim(void);
+
+Suite *test_sscanf_d(void);
+Suite *test_sscanf_c(void);
+Suite *test_sscanf_s(void);
+Suite *test_sscanf_i(void);
 
 #endif  // SRC_TESTS_ME_H

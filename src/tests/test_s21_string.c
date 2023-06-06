@@ -28,6 +28,16 @@ int main(void) {
                               test_sprintf_i(),
                               test_sprintf_f(),
                               test_sprintf_e(),
+                              test_sprintf_c(), 
+                              test_sprintf_string(),
+                              test_to_upper(),       
+                              test_to_lower(),  
+                              test_insert(),
+                              test_trim(),           
+                              test_sscanf_d(),  
+                              test_sscanf_c(),
+                              test_sscanf_s(),       
+                              test_sscanf_i(),
                               NULL};
 
   for (int i = 0; s21_string_test[i] != NULL; i++) {  // (&& failed == 0)
