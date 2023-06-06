@@ -139,6 +139,7 @@ char *s21_err[] = {"Success",
                    "Operation not possible due to RF-kill",
                    "Memory page has hardware error"};
 #elif __APPLE__
+#define BUFF_SIZE 256
 #define MAX 106
 #define FORMAT "Unknown error: %d"
 char *s21_err[] = {"Undefined error: 0",

@@ -3,7 +3,7 @@
 void reverse_string(char *str);
 void pos_int_to_string(long long unsigned int number, char *str);
 int int_to_str_min_len(long int number, char *str, bool sign, int min_len);
-void double_to_string(double number, char *str, int precision);
+void double_to_string(long double number, char *buffer, int precision);
 void string_to_int(char *str, int *number);
 void string_to_double(char *str, double *number);
 void int_to_hex(unsigned long int number, char *hex, int reg);
