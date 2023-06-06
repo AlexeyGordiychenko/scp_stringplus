@@ -840,12 +840,12 @@ void execute_e(char **p, va_list *args, Flag flags) {
   // printf("приведение разрядности\n");
   int exp_count = 0;
 
-  while (fabs(number) < 1.0) {
+  while (fabsl(number) < 1.0) {
     number *= 10;
     exp_count--;
   }
 
-  while (fabs(number) >= 10.0) {
+  while (fabsl(number) >= 10.0) {
     number = number / 10;
     exp_count++;
   }
