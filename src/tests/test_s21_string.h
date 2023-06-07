@@ -50,5 +50,6 @@ Suite *test_sscanf_c(void);
 Suite *test_sscanf_s(void);
 Suite *test_sscanf_i(void);
 Suite *test_sscanf_o(void);
+Suite *test_sscanf_u(void);
 
 #endif  // SRC_TESTS_ME_H
