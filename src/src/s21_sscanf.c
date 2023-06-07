@@ -11,7 +11,7 @@ typedef struct {
 void parse_sscanf_spec(const char **p, Flag *flags);
 bool parse_int(const char **str, long *value, s21_size_t width, int base,
                bool positive);
-bool process_diou_spec_sscanf(Flag flags, va_list *args, const char **p);
+bool process_dioux_spec_sscanf(Flag flags, va_list *args, const char **p);
 bool process_cs_spec_sscanf(Flag flags, va_list *args, const char **p);
 
 void skip_chars(Flag flags, const char **p);
@@ -41,7 +41,9 @@ int s21_sscanf(const char *str, const char *format, ...) {
         case 'i':
         case 'o':
         case 'u':
-          count += process_diou_spec_sscanf(flags, &args, &str_p);
+        case 'x':
+        case 'X':
+          count += process_dioux_spec_sscanf(flags, &args, &str_p);
           break;
         case 'c':
         case 's':
@@ -136,16 +138,19 @@ bool parse_int(const char **str, long *value, s21_size_t width, int base,
   }
 
   // handle base
-  if (base == 0) {
-    base = 10;
+  if (base == 0 || base == 16) {
+    int new_base = 10;
     if (**str == '0' && (count++ < width || width == 0)) {
       res = true;
-      base = 8;
+      new_base = 8;
       (*str)++;
       if ((**str == 'x' || **str == 'X') && (count++ < width || width == 0)) {
-        base = 16;
+        new_base = 16;
         (*str)++;
       }
+    }
+    if (base == 0) {
+      base = new_base;
     }
   }
 
@@ -188,7 +193,7 @@ bool parse_int(const char **str, long *value, s21_size_t width, int base,
   return res;
 }
 
-bool process_diou_spec_sscanf(Flag flags, va_list *args, const char **p) {
+bool process_dioux_spec_sscanf(Flag flags, va_list *args, const char **p) {
   long value;
   int base = 0;
   bool positive = false;
@@ -201,6 +206,11 @@ bool process_diou_spec_sscanf(Flag flags, va_list *args, const char **p) {
       break;
     case 'u':
       base = 10;
+      positive = true;
+      break;
+    case 'x':
+    case 'X':
+      base = 16;
       positive = true;
       break;
   }
