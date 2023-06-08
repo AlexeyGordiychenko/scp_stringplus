@@ -71,7 +71,7 @@ void pos_int_to_string_octal(long long unsigned int number, char *str) {
   reverse_string(str);
 }
 
-void double_to_string(long double number, char *buffer, int precision) {
+void double_to_string(long double number, char *buffer, Flag flags) {
   char sign = '\0';
   // считывание знака и приведение к положительному
   if (number < 0) {
@@ -84,7 +84,7 @@ void double_to_string(long double number, char *buffer, int precision) {
   long double frac_part = modfl(number, &int_part);
 
   // округление целого при нулевой точности
-  if (frac_part == 0 || precision == 0) {
+  if (frac_part == 0 || flags.precision == 0) {
     if (round(frac_part) == 1) int_part++;
   }
 
@@ -92,49 +92,50 @@ void double_to_string(long double number, char *buffer, int precision) {
   pos_int_to_string((long long unsigned int)int_part, buffer);
 
   // обработка дробной части числа
-  if (precision != 0) {
-    int i = (int)s21_strlen(buffer);
-    buffer[i++] = '.';
+  if (frac_part != 0 && (flags.spec != 'g' || flags.spec != 'G')) {
+    if (flags.precision != 0) {
+      int i = (int)s21_strlen(buffer);
+      buffer[i++] = '.';
 
-    while (precision > 0) {
-      double int_frac_part = 0;
-      frac_part = modf(frac_part * 10, &int_frac_part);
-      buffer[i++] = '0' + (int)int_frac_part;
-      precision--;
-    }
-    buffer[i] = '\0';
+      while (flags.precision > 0) {
+        double int_frac_part = 0;
+        frac_part = modf(frac_part * 10, &int_frac_part);
+        buffer[i++] = '0' + (int)int_frac_part;
+        flags.precision--;
+      }
+      buffer[i] = '\0';
 
-    // добавляем разряд если оставшаяся часть больше 0.5
-    int plus_one = 0;
-    if (frac_part >= 0.5) {
-      plus_one = 1;
-      i--;  // возвращаемся в позицию последнего
-    }
-    // printf("buffer=%s\n", buffer);
-    while (plus_one == 1) {
-      if (i == 0) {
-        if (buffer[i] == '9') {
-          buffer[i] = '0';
+      // добавляем разряд если оставшаяся часть больше 0.5
+      int plus_one = 0;
+      if (frac_part >= 0.5) {
+        plus_one = 1;
+        i--;  // возвращаемся в позицию последнего
+      }
+
+      while (plus_one == 1) {
+        if (i == 0) {
+          if (buffer[i] == '9') {
+            buffer[i] = '0';
+          } else {
+            buffer[i]++;
+            plus_one = 0;
+          }
+          break;
+        } else if (buffer[i] == '9') {
+          buffer[i--] = '0';
+        } else if (buffer[i] == '.') {
+          i--;
         } else {
-          buffer[i]++;
+          buffer[i--]++;
           plus_one = 0;
         }
-        break;
-      } else if (buffer[i] == '9') {
-        buffer[i--] = '0';
-      } else if (buffer[i] == '.') {
-        i--;
-      } else {
-        buffer[i--]++;
-        plus_one = 0;
+      }
+
+      if (plus_one) {
+        input_char_left(buffer, '1');
       }
     }
-
-    if (plus_one) {
-      input_char_left(buffer, '1');
-    }
   }
-
   // добавление знака
   if (sign == '-') {
     input_char_left(buffer, sign);

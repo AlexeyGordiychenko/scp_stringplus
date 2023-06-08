@@ -1,18 +1,6 @@
 #include "../s21_string.h"
 #include "s21_common.h"
 
-typedef struct {
-  int minus;
-  int sign;
-  int space;
-  int prefix;
-  int zero;
-  int width;
-  int precision;
-  char length;
-  char spec;
-} Flag;
-
 void parse_spec(const char **p, Flag *flags, va_list *args);
 void pointer_to_string(void *ptr, char *buffer);
 void apply_flags(char *str, Flag flags);
@@ -667,7 +655,7 @@ void execute_f(char **p, va_list *args, Flag flags) {
   if (flags.precision == -1) flags.precision = 6;
 
   // преобразуем число в строку с заданной точностью
-  double_to_string(number, buffer, flags.precision);
+  double_to_string(number, buffer, flags);
 
   apply_flags(buffer, flags);
 
@@ -688,6 +676,67 @@ void execute_e(char **p, va_list *args, Flag flags) {
     number = va_arg(*args, double);
   }
 
+  // приводим к экспоненциальному формату
+  double_to_exp(buffer, number, flags);
+
+  // применяем флаги
+  apply_flags(buffer, flags);
+
+  // записываем результат в основную строку
+  int buffer_len = (int)s21_strlen(buffer);
+  s21_strncpy(*p, buffer, buffer_len);
+  (*p) += buffer_len;
+}
+
+void execute_g(char **p, va_list *args, Flag flags) {
+  char buffer[200] = {0};
+  long double number;
+
+  // обработка длины
+  if (flags.length == 'L') {
+    number = va_arg(*args, long double);
+  } else {
+    number = va_arg(*args, double);
+  }
+
+  // определяем вывод
+  int q = 0;
+  if (flags.precision == -1)
+    q = 6;
+  else if (flags.precision == 0)
+    q = 1;
+  else
+    q = flags.precision;
+  long double temp = number;
+  int exp_count = 0;
+  while (fabsl(temp) < 1.0) {
+    temp *= 10;
+    exp_count--;
+  }
+  while (fabsl(temp) >= 10.0) {
+    temp = temp / 10;
+    exp_count++;
+  }
+
+  // делаем самый сложный выбор в жизни
+  if (q > exp_count && exp_count >= -4) {
+    flags.precision = q - (exp_count + 1);
+    double_to_string(number, buffer, flags);
+  } else {
+    flags.precision = q - 1;
+    double_to_exp(buffer, number, flags);
+  }
+
+  // применяем флаги
+  apply_flags(buffer, flags);
+
+  // записываем результат в основную строку
+  int buffer_len = (int)s21_strlen(buffer);
+  s21_strncpy(*p, buffer, buffer_len);
+  (*p) += buffer_len;
+}
+
+void double_to_exp(char *buffer, long double number, Flag flags) {
   // приводим разрядность к экспоненциальной форме и фиксируем смещение
   // printf("приведение разрядности\n");
   int exp_count = 0;
@@ -707,8 +756,7 @@ void execute_e(char **p, va_list *args, Flag flags) {
   if (flags.precision == -1) flags.precision = 6;
 
   // преобразуем число в строку с заданной точностью
-  // printf("преобразование в строку\n");
-  double_to_string(number, buffer, flags.precision);
+  double_to_string(number, buffer, flags);
 
   // преобразуем коэффициент в строку
   // printf("преобразование в строку коээф\n");

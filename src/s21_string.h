@@ -6,14 +6,25 @@
 #include <math.h>
 #include <stdarg.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <wchar.h>
 
 #define S21_NULL (void *)0
 #define s21_size_t unsigned long long
+
+typedef struct {
+  int minus;
+  int sign;
+  int space;
+  int prefix;
+  int zero;
+  int width;
+  int precision;
+  char length;
+  char spec;
+} Flag;
 
 void *s21_memchr(const void *str, int c, s21_size_t n);             // Done
 int s21_memcmp(const void *str1, const void *str2, s21_size_t n);   // Done
