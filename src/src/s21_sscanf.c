@@ -9,17 +9,24 @@ typedef struct {
 } Flag;
 
 void parse_sscanf_spec(const char **p, Flag *flags);
-bool parse_int(const char **str, long *value, s21_size_t width, int base,
-               bool positive);
-bool process_dioux_spec_sscanf(Flag flags, va_list *args, const char **p);
+bool parse_int(const char **str, long *value, s21_size_t width, int base);
+bool parse_uint(const char **str, unsigned long *value, s21_size_t width,
+                int base);
+bool parse_pre_number(s21_size_t *count, int *sign, s21_size_t width, int *base,
+                      const char **str);
+bool process_dio_spec_sscanf(Flag flags, va_list *args, int base,
+                             const char **p);
+bool process_ux_spec_sscanf(Flag flags, va_list *args, int base,
+                            const char **p);
 bool process_cs_spec_sscanf(Flag flags, va_list *args, const char **p);
-
-void skip_chars(Flag flags, const char **p);
-void assign_wchars(Flag flags, const char **p, va_list *args);
-void assign_chars(Flag flags, const char **p, va_list *args);
-int base16_digit(int c);
 void assign_int_value(Flag flags, va_list *args, long value);
 void assign_uint_value(Flag flags, va_list *args, long value);
+void assign_wchars(Flag flags, const char **p, va_list *args);
+void assign_chars(Flag flags, const char **p, va_list *args);
+
+void skip_chars(Flag flags, const char **p);
+int base16_digit(int c);
+int get_digit(const char **str, int base);
 
 int s21_sscanf(const char *str, const char *format, ...) {
   va_list args;
@@ -38,12 +45,20 @@ int s21_sscanf(const char *str, const char *format, ...) {
       //        flags.width, flags.asterisk, flags.length, flags.spec);
       switch (flags.spec) {
         case 'd':
+          count += process_dio_spec_sscanf(flags, &args, 10, &str_p);
+          break;
         case 'i':
+          count += process_dio_spec_sscanf(flags, &args, 0, &str_p);
+          break;
         case 'o':
+          count += process_dio_spec_sscanf(flags, &args, 8, &str_p);
+          break;
         case 'u':
+          count += process_ux_spec_sscanf(flags, &args, 10, &str_p);
+          break;
         case 'x':
         case 'X':
-          count += process_dioux_spec_sscanf(flags, &args, &str_p);
+          count += process_ux_spec_sscanf(flags, &args, 16, &str_p);
           break;
         case 'c':
         case 's':
@@ -56,7 +71,6 @@ int s21_sscanf(const char *str, const char *format, ...) {
       }
     } else {
       if (*p != *str_p) {
-        // printf("-=does not match=-");
         break;
       }
       str_p++;
@@ -114,67 +128,24 @@ void parse_sscanf_spec(const char **p, Flag *flags) {
   }
 }
 
-bool parse_int(const char **str, long *value, s21_size_t width, int base,
-               bool positive) {
+bool parse_int(const char **str, long *value, s21_size_t width, int base) {
   int sign = 1;
   long result = 0;
-  unsigned long uresult = 0;
-  bool overflow = false, res = false;
+  bool overflow = false;
   s21_size_t count = 0;
 
-  // skip whitespace
-  while (s21_isspace(**str)) {
-    (*str)++;
-  }
-
-  // handle sign
-  if (**str == '-' || **str == '+') {
-    if (**str == '-') sign = -1;
-    (*str)++;
-    count++;
-    if (width == 1) {
-      while (**str) (*str)++;
-    }
-  }
-
-  // handle base
-  if (base == 0 || base == 16) {
-    int new_base = 10;
-    if (**str == '0' && (count++ < width || width == 0)) {
-      res = true;
-      new_base = 8;
-      (*str)++;
-      if ((**str == 'x' || **str == 'X') && (count++ < width || width == 0)) {
-        new_base = 16;
-        (*str)++;
-      }
-    }
-    if (base == 0) {
-      base = new_base;
-    }
-  }
+  bool res = parse_pre_number(&count, &sign, width, &base, str);
 
   while (count++ < width || width == 0) {
-    int digit = -1;
-    if (s21_isdigit(**str)) {
-      digit = **str - '0';
-    } else if (base == 16) {
-      digit = base16_digit(**str);
-    }
+    int digit = get_digit(str, base);
 
     if (digit >= 0 && digit < base) {
       res = true;
       if (!overflow) {
-        if (positive && uresult > (ULONG_MAX - digit) / base) {
-          overflow = true;
-          uresult = ULONG_MAX;
-          sign = 1;
-        } else if (!positive && result > (LONG_MAX - digit) / base) {
+        if (result > (LONG_MAX - digit) / base) {
           overflow = true;
           result = (sign == 1) ? LONG_MAX : LONG_MIN;
           sign = 1;
-        } else if (positive) {
-          uresult = uresult * base + digit;
         } else {
           result = result * base + digit;
         }
@@ -184,43 +155,101 @@ bool parse_int(const char **str, long *value, s21_size_t width, int base,
       break;
     }
   }
-  if (positive) {
-    *value = sign * uresult;
-  } else {
-    *value = sign * result;
-  }
+  *value = sign * result;
 
   return res;
 }
 
-bool process_dioux_spec_sscanf(Flag flags, va_list *args, const char **p) {
-  long value;
-  int base = 0;
-  bool positive = false;
-  switch (flags.spec) {
-    case 'd':
-      base = 10;
-      break;
-    case 'o':
-      base = 8;
-      break;
-    case 'u':
-      base = 10;
-      positive = true;
-      break;
-    case 'x':
-    case 'X':
-      base = 16;
-      positive = true;
-      break;
-  }
-  bool res = parse_int(p, &value, flags.width, base, positive);
-  if (!flags.asterisk) {
-    if (positive) {
-      assign_uint_value(flags, args, value);
+bool parse_uint(const char **str, unsigned long *value, s21_size_t width,
+                int base) {
+  int sign = 1;
+  unsigned long result = 0;
+  bool overflow = false;
+  s21_size_t count = 0;
+
+  bool res = parse_pre_number(&count, &sign, width, &base, str);
+
+  while (count++ < width || width == 0) {
+    int digit = get_digit(str, base);
+
+    if (digit >= 0 && digit < base) {
+      res = true;
+      if (!overflow) {
+        if (result > (ULONG_MAX - digit) / base) {
+          overflow = true;
+          result = ULONG_MAX;
+          sign = 1;
+        } else {
+          result = result * base + digit;
+        }
+      }
+      (*str)++;
     } else {
-      assign_int_value(flags, args, value);
+      break;
     }
+  }
+  *value = sign * result;
+
+  return res;
+}
+
+bool parse_pre_number(s21_size_t *count, int *sign, s21_size_t width, int *base,
+                      const char **str) {
+  bool res = false;
+
+  // skip whitespace
+  while (s21_isspace(**str)) {
+    (*str)++;
+  }
+
+  // handle sign
+  if (**str == '-' || **str == '+') {
+    if (**str == '-') *sign = -1;
+    (*str)++;
+    (*count)++;
+    if (width == 1) {
+      while (**str) (*str)++;
+    }
+  }
+
+  // handle base
+  if (*base == 0 || *base == 16) {
+    int new_base = 10;
+    if (**str == '0' && ((*count)++ < width || width == 0)) {
+      res = true;
+      new_base = 8;
+      (*str)++;
+      if ((**str == 'x' || **str == 'X') &&
+          ((*count)++ < width || width == 0)) {
+        new_base = 16;
+        (*str)++;
+      }
+    }
+    if (*base == 0) {
+      *base = new_base;
+    }
+  }
+  return res;
+}
+
+bool process_dio_spec_sscanf(Flag flags, va_list *args, int base,
+                             const char **p) {
+  long value;
+  bool res = parse_int(p, &value, flags.width, base);
+  if (!flags.asterisk) {
+    assign_int_value(flags, args, value);
+  } else {
+    res = false;
+  }
+  return res;
+}
+
+bool process_ux_spec_sscanf(Flag flags, va_list *args, int base,
+                            const char **p) {
+  unsigned long value;
+  bool res = parse_uint(p, &value, flags.width, base);
+  if (!flags.asterisk) {
+    assign_uint_value(flags, args, value);
   } else {
     res = false;
   }
@@ -247,18 +276,30 @@ bool process_cs_spec_sscanf(Flag flags, va_list *args, const char **p) {
   return !flags.asterisk;
 }
 
-void skip_chars(Flag flags, const char **p) {
-  bool is_str = flags.spec == 's';
-  bool is_wide = flags.length == 'l' || flags.length == 'L';
+void assign_int_value(Flag flags, va_list *args, long value) {
+  if (flags.length == 'l' || flags.length == 'L') {
+    long *p_value = va_arg(*args, long *);
+    *p_value = value;
+  } else if (flags.length == 'h') {
+    short *p_value = va_arg(*args, short *);
+    *p_value = (short)value;
+  } else {
+    int *p_value = va_arg(*args, int *);
+    *p_value = (int)value;
+  }
+}
 
-  do {
-    if (is_wide) {
-      s21_size_t n = mbrtowc(NULL, *p, MB_CUR_MAX, NULL);
-      (*p) += n;
-    } else {
-      (*p)++;
-    }
-  } while (**p != '\0' && ((is_str) ? !s21_isspace(**p) : 0));
+void assign_uint_value(Flag flags, va_list *args, long value) {
+  if (flags.length == 'l' || flags.length == 'L') {
+    unsigned long *p_value = va_arg(*args, unsigned long *);
+    *p_value = value;
+  } else if (flags.length == 'h') {
+    unsigned short *p_value = va_arg(*args, unsigned short *);
+    *p_value = (unsigned short)value;
+  } else {
+    unsigned int *p_value = va_arg(*args, unsigned int *);
+    *p_value = (unsigned int)value;
+  }
 }
 
 void assign_wchars(Flag flags, const char **p, va_list *args) {
@@ -303,6 +344,20 @@ void assign_chars(Flag flags, const char **p, va_list *args) {
   }
 }
 
+void skip_chars(Flag flags, const char **p) {
+  bool is_str = flags.spec == 's';
+  bool is_wide = flags.length == 'l' || flags.length == 'L';
+
+  do {
+    if (is_wide) {
+      s21_size_t n = mbrtowc(NULL, *p, MB_CUR_MAX, NULL);
+      (*p) += n;
+    } else {
+      (*p)++;
+    }
+  } while (**p != '\0' && ((is_str) ? !s21_isspace(**p) : 0));
+}
+
 int base16_digit(int c) {
   int res = -1;
   if (c >= '0' && c <= '9') {
@@ -315,28 +370,12 @@ int base16_digit(int c) {
   return res;
 }
 
-void assign_int_value(Flag flags, va_list *args, long value) {
-  if (flags.length == 'l' || flags.length == 'L') {
-    long *p_value = va_arg(*args, long *);
-    *p_value = value;
-  } else if (flags.length == 'h') {
-    short *p_value = va_arg(*args, short *);
-    *p_value = (short)value;
-  } else {
-    int *p_value = va_arg(*args, int *);
-    *p_value = (int)value;
+int get_digit(const char **str, int base) {
+  int digit = -1;
+  if (s21_isdigit(**str)) {
+    digit = **str - '0';
+  } else if (base == 16) {
+    digit = base16_digit(**str);
   }
-}
-
-void assign_uint_value(Flag flags, va_list *args, long value) {
-  if (flags.length == 'l' || flags.length == 'L') {
-    unsigned long *p_value = va_arg(*args, unsigned long *);
-    *p_value = value;
-  } else if (flags.length == 'h') {
-    unsigned short *p_value = va_arg(*args, unsigned short *);
-    *p_value = (unsigned short)value;
-  } else {
-    unsigned int *p_value = va_arg(*args, unsigned int *);
-    *p_value = (unsigned int)value;
-  }
+  return digit;
 }
