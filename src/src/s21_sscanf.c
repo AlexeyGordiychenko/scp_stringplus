@@ -20,6 +20,7 @@ bool process_ux_spec_sscanf(SFlags flags, va_list *args, int base,
                             const char **p);
 bool process_p_spec_sscanf(SFlags flags, va_list *args, const char **p);
 bool process_cs_spec_sscanf(SFlags flags, va_list *args, const char **p);
+bool process_n_spec_sscanf(SFlags flags, va_list *args, s21_size_t count);
 void assign_int_value(SFlags flags, va_list *args, long value);
 void assign_uint_value(SFlags flags, va_list *args, long value);
 void assign_wchars(SFlags flags, const char **p, va_list *args);
@@ -67,6 +68,9 @@ int s21_sscanf(const char *str, const char *format, ...) {
         case 'c':
         case 's':
           count += process_cs_spec_sscanf(flags, &args, &str_p);
+          break;
+        case 'n':
+          process_n_spec_sscanf(flags, &args, str_p - str);
           break;
       }
     } else if (s21_isspace(*p)) {
@@ -294,6 +298,13 @@ bool process_cs_spec_sscanf(SFlags flags, va_list *args, const char **p) {
     }
   }
   return !flags.asterisk;
+}
+
+bool process_n_spec_sscanf(SFlags flags, va_list *args, s21_size_t count) {
+  assign_int_value(flags, args, count);
+  // int *p_value = va_arg(*args, int *);
+  // *p_value = count;
+  return count != 0;
 }
 
 void assign_int_value(SFlags flags, va_list *args, long value) {
