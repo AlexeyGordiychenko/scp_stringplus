@@ -92,7 +92,7 @@ void double_to_string(long double number, char *buffer, Flag flags) {
   pos_int_to_string((long long unsigned int)int_part, buffer);
 
   // обработка дробной части числа
-  if (frac_part != 0 && (flags.spec != 'g' || flags.spec != 'G')) {
+  if ((flags.spec != 'g' || flags.spec != 'G')) {
     if (flags.precision != 0) {
       int i = (int)s21_strlen(buffer);
       buffer[i++] = '.';
@@ -136,7 +136,7 @@ void double_to_string(long double number, char *buffer, Flag flags) {
       }
     }
   }
-  
+
   // добавление знака
   if (sign == '-') {
     input_char_left(buffer, sign);

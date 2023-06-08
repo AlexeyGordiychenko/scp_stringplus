@@ -301,6 +301,7 @@ void apply_flags(char *str, Flag flags) {
     input_char_left(str, ' ');
   }
 
+  // точность для не десятичных
   if (flags.precision != -1 && flags.spec != 'f' && flags.spec != 'g' &&
       flags.spec != 'G') {  // точность, дополняем нулями слева
 
