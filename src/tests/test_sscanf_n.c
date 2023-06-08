@@ -116,17 +116,17 @@ START_TEST(sscanf_spec_n_6) {
 }
 END_TEST
 
-// START_TEST(sscanf_spec_n_7) {
-//   char format[] = "%%%c";
-//   char str[] = "%p";
-//   char d1 = 0, d2 = 0;
+START_TEST(sscanf_spec_n_7) {
+  char format[] = "%%%c";
+  char str[] = "%p";
+  char d1 = 0, d2 = 0;
 
-//   int16_t res1 = s21_sscanf(str, format, &d1);
-//   int16_t res2 = sscanf(str, format, &d2);
-//   ck_assert_int_eq(d1, d2);
-//   ck_assert_int_eq(res1, res2);
-// }
-// END_TEST
+  int16_t res1 = s21_sscanf(str, format, &d1);
+  int16_t res2 = sscanf(str, format, &d2);
+  ck_assert_int_eq(d1, d2);
+  ck_assert_int_eq(res1, res2);
+}
+END_TEST
 
 START_TEST(sscanf_spec_n_8) {
   char format[] = "%s %n %s %n %s %s %s %n";
@@ -198,7 +198,7 @@ Suite *test_sscanf_n(void) {
   tcase_add_test(tc, sscanf_spec_n_4);
   tcase_add_test(tc, sscanf_spec_n_5);
   tcase_add_test(tc, sscanf_spec_n_6);
-  //   tcase_add_test(tc, sscanf_spec_n_7);
+  tcase_add_test(tc, sscanf_spec_n_7);
   tcase_add_test(tc, sscanf_spec_n_8);
   //   tcase_add_test(tc, sscanf_spec_n_9);
   tcase_add_test(tc, sscanf_spec_n_10);

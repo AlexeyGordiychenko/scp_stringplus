@@ -72,6 +72,9 @@ int s21_sscanf(const char *str, const char *format, ...) {
         case 'n':
           process_n_spec_sscanf(flags, &args, str_p - str);
           break;
+        case '%':
+          str_p++;
+          break;
       }
     } else if (s21_isspace(*p)) {
       while (s21_isspace(*str_p)) {
