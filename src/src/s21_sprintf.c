@@ -56,7 +56,6 @@ int s21_sprintf(char *str, const char *format, ...) {
         case 'G':
           execute_g(&str_p, &args, flags);
           break;
-
         case 'n':
           execute_n(va_arg(args, int *), (str_p - str));
           break;
@@ -713,10 +712,12 @@ void execute_g(char **p, va_list *args, Flag flags) {
     number = va_arg(*args, double);
   }
 
-  if (number == NAN) {  // почему не заходит??
-    printf("buffer=%s\n", buffer);
+  if (isnan(number)) {
     s21_strncpy(buffer, "nan", 3);
-    printf("buf=%s\n", buffer);
+  } else if (isinf(number) > 0) {
+    s21_strncpy(buffer, "inf", 3);
+  } else if (isinf(number) < 0) {
+    s21_strncpy(buffer, "-inf", 4);
   } else if (number == 0.0) {
     buffer[0] = '0';
     buffer[1] = '\0';
