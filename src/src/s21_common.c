@@ -136,9 +136,25 @@ void double_to_string(long double number, char *buffer, Flag flags) {
       }
     }
   }
+  
   // добавление знака
   if (sign == '-') {
     input_char_left(buffer, sign);
+  }
+
+  // откидываем нули дробной части для gG
+  if (!flags.prefix && (flags.spec == 'g' || flags.spec == 'G') &&
+      s21_strchr(buffer, '.')) {
+    int i = (int)s21_strlen(buffer);
+    while (buffer[i - 1] == '0' || buffer[i - 1] == '.') {
+      if (buffer[i - 1] == '.') {
+        buffer[i - 1] = '\0';
+        break;
+      } else {
+        buffer[i - 1] = '\0';
+        i--;
+      }
+    }
   }
 }
 

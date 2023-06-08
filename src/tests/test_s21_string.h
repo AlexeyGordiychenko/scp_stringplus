@@ -39,6 +39,7 @@ Suite *test_sprintf_f(void);
 Suite *test_sprintf_c(void);
 Suite *test_sprintf_string(void);
 Suite *test_sprintf_e(void);
+Suite *test_sprintf_g(void);
 
 Suite *test_to_upper(void);
 Suite *test_to_lower(void);

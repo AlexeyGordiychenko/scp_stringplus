@@ -4,6 +4,7 @@
 void parse_spec(const char **p, Flag *flags, va_list *args);
 void pointer_to_string(void *ptr, char *buffer);
 void apply_flags(char *str, Flag flags);
+void double_to_exp(char *buffer, long double number, Flag flags);
 
 void execute_x(char **p, va_list *args, Flag flags);
 void execute_u(char **p, va_list *args, Flag flags);
@@ -17,6 +18,7 @@ int process_c_spec(Flag flags, va_list *args, char **p);
 int process_s_spec(Flag flags, va_list *args, char **p);
 void execute_f(char **p, va_list *args, Flag flags);
 void execute_e(char **p, va_list *args, Flag flags);
+void execute_g(char **p, va_list *args, Flag flags);
 
 int s21_sprintf(char *str, const char *format, ...) {
   va_list args;
@@ -50,6 +52,11 @@ int s21_sprintf(char *str, const char *format, ...) {
         case 'E':
           execute_e(&str_p, &args, flags);
           break;
+        case 'g':
+        case 'G':
+          execute_g(&str_p, &args, flags);
+          break;
+
         case 'n':
           execute_n(va_arg(args, int *), (str_p - str));
           break;
@@ -284,17 +291,19 @@ void process_d_spec(Flag flags, va_list *args, char **p) {
 void apply_flags(char *str, Flag flags) {
   // обработка +
   if (flags.sign && str[0] != '-' &&
-      (flags.spec == 'f' || flags.spec == 'e' || flags.spec == 'E')) {
+      (flags.spec == 'f' || flags.spec == 'e' || flags.spec == 'E' ||
+       flags.spec == 'g' || flags.spec == 'G')) {
     input_char_left(str, '+');
   }
 
   if (!flags.sign && str[0] != '-' && flags.space &&
-      (flags.spec == 'f' || flags.spec == 'e' || flags.spec == 'E')) {
+      (flags.spec == 'f' || flags.spec == 'e' || flags.spec == 'E' ||
+       flags.spec == 'g' || flags.spec == 'G')) {
     input_char_left(str, ' ');
   }
 
-  if (flags.precision != -1 &&
-      flags.spec != 'f') {  // точность, дополняем нулями слева
+  if (flags.precision != -1 && flags.spec != 'f' && flags.spec != 'g' &&
+      flags.spec != 'G') {  // точность, дополняем нулями слева
 
     if (flags.precision == 0 && !s21_strncmp(str, "0", 1)) {
       str[0] = '\0';
@@ -334,10 +343,15 @@ void apply_flags(char *str, Flag flags) {
       str[len] = '.';
       str[len + 1] = '\0';
     }
-    if ((flags.spec == 'E' || flags.spec == 'e') && !s21_strchr(str, '.')) {
+
+    if ((flags.spec == 'E' || flags.spec == 'e' || flags.spec == 'G' ||
+         flags.spec == 'g') &&
+        !s21_strchr(str, '.')) {
       char *position = {0};
-      if (flags.spec == 'e') position = s21_strchr(str, 'e');
-      if (flags.spec == 'E') position = s21_strchr(str, 'E');
+      if (flags.spec == 'e' || flags.spec == 'g')
+        position = s21_strchr(str, 'e');
+      if (flags.spec == 'E' || flags.spec == 'G')
+        position = s21_strchr(str, 'E');
 
       if (position != S21_NULL) {
         int index = position - str;  // Вычисляем индекс первого вхождения
@@ -372,7 +386,8 @@ void apply_flags(char *str, Flag flags) {
   int i = 0;
 
   if (str[0] == '0' &&
-      (flags.spec == 'f' || flags.spec == 'E' || flags.spec == 'e')) {
+      (flags.spec == 'f' || flags.spec == 'E' || flags.spec == 'e' ||
+       flags.spec == 'G' || flags.spec == 'g')) {
     while (str[i] != '\0' && str[i] != 'E' && str[i] != 'e') {
       for (int j = 0; j < 3; j++) {
         if (str[i] == search_chars[j]) {
@@ -669,7 +684,6 @@ void execute_e(char **p, va_list *args, Flag flags) {
   char buffer[200] = {0};
 
   // обработка длины
-  // printf("обработка длины\n");
   if (flags.length == 'L') {
     number = va_arg(*args, long double);
   } else {
@@ -699,32 +713,42 @@ void execute_g(char **p, va_list *args, Flag flags) {
     number = va_arg(*args, double);
   }
 
-  // определяем вывод
-  int q = 0;
-  if (flags.precision == -1)
-    q = 6;
-  else if (flags.precision == 0)
-    q = 1;
-  else
-    q = flags.precision;
-  long double temp = number;
-  int exp_count = 0;
-  while (fabsl(temp) < 1.0) {
-    temp *= 10;
-    exp_count--;
-  }
-  while (fabsl(temp) >= 10.0) {
-    temp = temp / 10;
-    exp_count++;
-  }
-
-  // делаем самый сложный выбор в жизни
-  if (q > exp_count && exp_count >= -4) {
-    flags.precision = q - (exp_count + 1);
-    double_to_string(number, buffer, flags);
+  if (number == NAN) {  // почему не заходит??
+    printf("buffer=%s\n", buffer);
+    s21_strncpy(buffer, "nan", 3);
+    printf("buf=%s\n", buffer);
+  } else if (number == 0.0) {
+    buffer[0] = '0';
+    buffer[1] = '\0';
   } else {
-    flags.precision = q - 1;
-    double_to_exp(buffer, number, flags);
+    // определяем вывод
+    int q = 0;
+    if (flags.precision == -1)
+      q = 6;
+    else if (flags.precision == 0)
+      q = 1;
+    else
+      q = flags.precision;
+    long double temp = number;
+    int exp_count = 0;
+    while (fabsl(temp) < 1.0) {
+      temp *= 10;
+      exp_count--;
+    }
+    while (fabsl(roundl((temp * pow(10, flags.precision)) /
+                        pow(10, flags.precision))) >= 10.0) {
+      temp = temp / 10;
+      exp_count++;
+    }
+
+    // делаем самый сложный выбор в жизни
+    if (q > exp_count && exp_count >= -4) {
+      flags.precision = q - (exp_count + 1);
+      double_to_string(number, buffer, flags);
+    } else {
+      flags.precision = q - 1;
+      double_to_exp(buffer, number, flags);
+    }
   }
 
   // применяем флаги
@@ -737,29 +761,26 @@ void execute_g(char **p, va_list *args, Flag flags) {
 }
 
 void double_to_exp(char *buffer, long double number, Flag flags) {
-  // приводим разрядность к экспоненциальной форме и фиксируем смещение
-  // printf("приведение разрядности\n");
-  int exp_count = 0;
+  // устанавливаем точность
+  if (flags.precision == -1) flags.precision = 6;
 
+  // приводим разрядность к экспоненциальной форме и фиксируем смещение
+  int exp_count = 0;
   while (fabsl(number) < 1.0) {
     number *= 10;
     exp_count--;
   }
 
-  while (fabsl(number) >= 10.0) {
+  while (fabsl(roundl((number * pow(10, flags.precision)) /
+                      pow(10, flags.precision))) >= 10.0) {
     number = number / 10;
     exp_count++;
   }
-
-  // устанавливаем точность
-  // printf("установка точности\n");
-  if (flags.precision == -1) flags.precision = 6;
 
   // преобразуем число в строку с заданной точностью
   double_to_string(number, buffer, flags);
 
   // преобразуем коэффициент в строку
-  // printf("преобразование в строку коээф\n");
   char exp_count_string[20] = {0};
   char sign = '+';
   if (exp_count < 0) sign = '-';
@@ -769,20 +790,23 @@ void double_to_exp(char *buffer, long double number, Flag flags) {
   }
   input_char_left(exp_count_string, sign);
 
+  // откидываем незначащие нули для gG у дробной части
+  if (!flags.prefix && (flags.spec == 'g' || flags.spec == 'G') &&
+      s21_strchr(buffer, '.')) {
+    int i = (int)s21_strlen(buffer);
+    while (buffer[i - 1] == '0') {
+      buffer[i - 1] = '\0';
+      i--;
+    }
+  }
+
   // собираем строку
-  // printf("сборка строки\n");
+  char exp_char = {0};
+  if (flags.spec == 'e' || flags.spec == 'g') exp_char = 'e';
+  if (flags.spec == 'E' || flags.spec == 'G') exp_char = 'E';
+
   int i = s21_strlen(buffer);
-  buffer[i] = flags.spec;
+  buffer[i] = exp_char;
   buffer[i + 1] = '\0';
   s21_strncat(buffer, exp_count_string, sizeof(exp_count_string));
-
-  // применяем флаги
-  // printf("применение флагов\n");
-  apply_flags(buffer, flags);
-
-  // записываем результат в основную строку
-  // printf("запись финального результата\n");
-  int buffer_len = (int)s21_strlen(buffer);
-  s21_strncpy(*p, buffer, buffer_len);
-  (*p) += buffer_len;
 }
