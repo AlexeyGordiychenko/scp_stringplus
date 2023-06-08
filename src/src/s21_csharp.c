@@ -58,21 +58,21 @@ void *s21_insert(const char *src, const char *str, s21_size_t start_index) {
 
 // char *trim_custom(const char *str, const char *trim_chars) {
 void *s21_trim(const char *src, const char *trim_chars) {
-  if (src == S21_NULL) return NULL;
+  if (src == S21_NULL) return S21_NULL;
 
   const char *start = src;
   const char *end;
 
   // Trim leading characters
-  while (*start && trim_chars != NULL &&
-         s21_strchr(trim_chars, *start) != NULL) {
+  while (*start && trim_chars != S21_NULL &&
+         s21_strchr(trim_chars, *start) != S21_NULL) {
     start++;
   }
 
   // Trim trailing characters
   end = src + s21_strlen(src) - 1;
-  while (end > start && trim_chars != NULL &&
-         s21_strchr(trim_chars, *end) != NULL) {
+  while (end > start && trim_chars != S21_NULL &&
+         s21_strchr(trim_chars, *end) != S21_NULL) {
     end--;
   }
 

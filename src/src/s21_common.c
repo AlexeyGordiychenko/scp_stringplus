@@ -197,7 +197,7 @@ void string_to_double(char *str, double *number) {
   // преобразовываем в число
   char *int_part, *dec_part;
   int_part = s21_strtok(str, ".");
-  dec_part = s21_strtok(NULL, ".");
+  dec_part = s21_strtok(S21_NULL, ".");
   int x, y, len_dec = (int)s21_strlen(dec_part);
   string_to_int(int_part, &x);
   printf("%d\n", x);

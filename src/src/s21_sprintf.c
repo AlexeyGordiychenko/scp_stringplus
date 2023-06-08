@@ -339,7 +339,7 @@ void apply_flags(char *str, Flag flags) {
       if (flags.spec == 'e') position = s21_strchr(str, 'e');
       if (flags.spec == 'E') position = s21_strchr(str, 'E');
 
-      if (position != NULL) {
+      if (position != S21_NULL) {
         int index = position - str;  // Вычисляем индекс первого вхождения
         int len = (int)s21_strlen(str);
 
@@ -465,19 +465,19 @@ int process_s_spec(Flag flags, va_list *args, char **p) {
   bool null_line = false;
   int res = 0;
 
-  wchar_t *wline = NULL;
-  const char *line = NULL;
+  wchar_t *wline = S21_NULL;
+  const char *line = S21_NULL;
 
   if (wchar) {
     wline = va_arg(*args, wchar_t *);
-    if (wline == NULL) {
+    if (wline == S21_NULL) {
       wline = L"(null)";
       null_line = true;
     }
     len = wcslen(wline);
   } else {
     line = va_arg(*args, const char *);
-    if (line == NULL) {
+    if (line == S21_NULL) {
       line = "(null)";
       null_line = true;
     }
@@ -663,8 +663,6 @@ void execute_f(char **p, va_list *args, Flag flags) {
   s21_strncpy(*p, buffer, buffer_len);
   (*p) += buffer_len;
 }
-
-
 
 void execute_e(char **p, va_list *args, Flag flags) {
   long double number;

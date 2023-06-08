@@ -346,7 +346,7 @@ void assign_wchars(SFlags flags, const char **p, va_list *args) {
   for (; (i < width || width == 0) && ((is_str) ? !s21_isspace(**p) : 1) &&
          **p != '\0';
        i++) {
-    s21_size_t n = mbrtowc(c++, *p, MB_CUR_MAX, NULL);
+    s21_size_t n = mbrtowc(c++, *p, MB_CUR_MAX, S21_NULL);
     (*p) += n;
   }
   if (is_str) {
@@ -384,7 +384,7 @@ void skip_chars(SFlags flags, const char **p) {
 
   do {
     if (is_wide) {
-      s21_size_t n = mbrtowc(NULL, *p, MB_CUR_MAX, NULL);
+      s21_size_t n = mbrtowc(S21_NULL, *p, MB_CUR_MAX, S21_NULL);
       (*p) += n;
     } else {
       (*p)++;
