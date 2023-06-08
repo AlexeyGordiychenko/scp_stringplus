@@ -10,8 +10,8 @@ typedef struct {
 } SFlags;
 
 void parse_sscanf_spec(const char **p, SFlags *flags);
-bool parse_int(const char **str, long *value, s21_size_t width, int base);
-bool parse_uint(const char **str, unsigned long *value, s21_size_t width,
+bool parse_int(const char **str, long long *value, s21_size_t width, int base);
+bool parse_uint(const char **str, unsigned long long *value, s21_size_t width,
                 int base);
 bool parse_pre_number(s21_size_t *count, int *sign, s21_size_t width, int *base,
                       const char **str);
@@ -22,8 +22,8 @@ bool process_ux_spec_sscanf(SFlags flags, va_list *args, int base,
 bool process_p_spec_sscanf(SFlags flags, va_list *args, const char **p);
 bool process_cs_spec_sscanf(SFlags flags, va_list *args, const char **p);
 bool process_n_spec_sscanf(SFlags flags, va_list *args, s21_size_t count);
-void assign_int_value(SFlags flags, va_list *args, long value);
-void assign_uint_value(SFlags flags, va_list *args, unsigned long value);
+void assign_int_value(SFlags flags, va_list *args, long long value);
+void assign_uint_value(SFlags flags, va_list *args, unsigned long long value);
 void assign_wchars(SFlags flags, const char **p, va_list *args);
 void assign_chars(SFlags flags, const char **p, va_list *args);
 
@@ -144,9 +144,9 @@ void parse_sscanf_spec(const char **p, SFlags *flags) {
   }
 }
 
-bool parse_int(const char **str, long *value, s21_size_t width, int base) {
+bool parse_int(const char **str, long long *value, s21_size_t width, int base) {
   int sign = 1;
-  long result = 0;
+  long long result = 0;
   bool overflow = false;
   s21_size_t count = 0;
 
@@ -176,10 +176,10 @@ bool parse_int(const char **str, long *value, s21_size_t width, int base) {
   return res;
 }
 
-bool parse_uint(const char **str, unsigned long *value, s21_size_t width,
+bool parse_uint(const char **str, unsigned long long *value, s21_size_t width,
                 int base) {
   int sign = 1;
-  unsigned long result = 0;
+  unsigned long long result = 0;
   bool overflow = false;
   s21_size_t count = 0;
 
@@ -251,7 +251,7 @@ bool parse_pre_number(s21_size_t *count, int *sign, s21_size_t width, int *base,
 bool process_dio_spec_sscanf(SFlags flags, va_list *args, int base,
                              const char **p) {
   if (**p == '\0') return false;
-  long value;
+  long long value;
   bool res = parse_int(p, &value, flags.width, base);
   if (!flags.asterisk) {
     assign_int_value(flags, args, value);
@@ -264,7 +264,7 @@ bool process_dio_spec_sscanf(SFlags flags, va_list *args, int base,
 bool process_ux_spec_sscanf(SFlags flags, va_list *args, int base,
                             const char **p) {
   if (**p == '\0') return false;
-  unsigned long value;
+  unsigned long long value;
   bool res = parse_uint(p, &value, flags.width, base);
   if (!flags.asterisk) {
     assign_uint_value(flags, args, value);
@@ -276,7 +276,7 @@ bool process_ux_spec_sscanf(SFlags flags, va_list *args, int base,
 
 bool process_p_spec_sscanf(SFlags flags, va_list *args, const char **p) {
   if (**p == '\0') return false;
-  unsigned long value;
+  unsigned long long value;
   bool res = parse_uint(p, &value, flags.width, 16);
   if (!flags.asterisk) {
     void **p_value = va_arg(*args, void **);
@@ -315,7 +315,7 @@ bool process_n_spec_sscanf(SFlags flags, va_list *args, s21_size_t count) {
   return count != 0;
 }
 
-void assign_int_value(SFlags flags, va_list *args, long value) {
+void assign_int_value(SFlags flags, va_list *args, long long value) {
   if (flags.double_len) {
     switch (flags.length) {
       case 'l':
@@ -335,7 +335,7 @@ void assign_int_value(SFlags flags, va_list *args, long value) {
     switch (flags.length) {
       case 'l':
         long *l_value = va_arg(*args, long *);
-        *l_value = value;
+        *l_value = (long)value;
         break;
       case 'h':
         short *h_value = va_arg(*args, short *);
@@ -349,7 +349,7 @@ void assign_int_value(SFlags flags, va_list *args, long value) {
   }
 }
 
-void assign_uint_value(SFlags flags, va_list *args, unsigned long value) {
+void assign_uint_value(SFlags flags, va_list *args, unsigned long long value) {
   if (flags.double_len) {
     switch (flags.length) {
       case 'l':
@@ -369,7 +369,7 @@ void assign_uint_value(SFlags flags, va_list *args, unsigned long value) {
     switch (flags.length) {
       case 'l':
         unsigned long *l_value = va_arg(*args, unsigned long *);
-        *l_value = value;
+        *l_value = (unsigned long)value;
         break;
       case 'h':
         unsigned short *h_value = va_arg(*args, unsigned short *);
