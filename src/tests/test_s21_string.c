@@ -1,6 +1,8 @@
 #include "test_s21_string.h"
+#include <locale.h>
 
 int main(void) {
+  setlocale(LC_NUMERIC, "C");
   int failed = 0;
   Suite *s21_string_test[] = {test_memchr(),          test_memcmp(),
                               test_memcpy(),          test_memset(),
