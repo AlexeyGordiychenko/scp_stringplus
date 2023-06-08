@@ -16,7 +16,6 @@ typedef struct {
 void parse_spec(const char **p, Flag *flags, va_list *args);
 void pointer_to_string(void *ptr, char *buffer);
 void apply_flags(char *str, Flag flags);
-void double_to_exp(char *buffer, long double number, Flag flags);
 
 void execute_x(char **p, va_list *args, Flag flags);
 void execute_u(char **p, va_list *args, Flag flags);
@@ -30,7 +29,6 @@ int process_c_spec(Flag flags, va_list *args, char **p);
 int process_s_spec(Flag flags, va_list *args, char **p);
 void execute_f(char **p, va_list *args, Flag flags);
 void execute_e(char **p, va_list *args, Flag flags);
-void execute_g(char **p, va_list *args, Flag flags);
 
 int s21_sprintf(char *str, const char *format, ...) {
   va_list args;
@@ -89,11 +87,6 @@ int s21_sprintf(char *str, const char *format, ...) {
           break;
         case 's':
           wchar_comp += process_s_spec(flags, &args, &str_p);
-          break;
-
-        case 'g':
-        case 'G':
-          execute_g(&str_p, &args, flags);
           break;
       }
       // вывод результата в строку
@@ -695,68 +688,8 @@ void execute_e(char **p, va_list *args, Flag flags) {
     number = va_arg(*args, double);
   }
 
-  // приводим к экспоненциальному формату
-  double_to_exp(buffer, number, flags);
-
-  // применяем флаги
-  apply_flags(buffer, flags);
-
-  // записываем результат в основную строку
-  int buffer_len = (int)s21_strlen(buffer);
-  s21_strncpy(*p, buffer, buffer_len);
-  (*p) += buffer_len;
-}
-
-void execute_g(char **p, va_list *args, Flag flags) {
-  char buffer[200] = {0};
-  long double number;
-
-  // обработка длины
-  if (flags.length == 'L') {
-    number = va_arg(*args, long double);
-  } else {
-    number = va_arg(*args, double);
-  }
-
-  // определяем вывод
-  int q = 0;
-  if (flags.precision == -1)
-    q = 6;
-  else if (flags.precision == 0)
-    q = 1;
-  else
-    q = flags.precision;
-  long double temp = number;
-  int exp_count = 0;
-  while (fabsl(temp) < 1.0) {
-    temp *= 10;
-    exp_count--;
-  }
-  while (fabsl(temp) >= 10.0) {
-    temp = temp / 10;
-    exp_count++;
-  }
-
-  // делаем самый сложный выбор в жизни
-  if (q > exp_count && exp_count >= -4) {
-    flags.precision = q - (exp_count + 1);
-    double_to_string(number, buffer, flags.precision);
-  } else {
-    flags.precision = q - 1;
-    double_to_exp(buffer, number, flags);
-  }
-
-  // применяем флаги
-  apply_flags(buffer, flags);
-
-  // записываем результат в основную строку
-  int buffer_len = (int)s21_strlen(buffer);
-  s21_strncpy(*p, buffer, buffer_len);
-  (*p) += buffer_len;
-}
-
-void double_to_exp(char *buffer, long double number, Flag flags) {
   // приводим разрядность к экспоненциальной форме и фиксируем смещение
+  // printf("приведение разрядности\n");
   int exp_count = 0;
 
   while (fabsl(number) < 1.0) {
@@ -768,13 +701,17 @@ void double_to_exp(char *buffer, long double number, Flag flags) {
     number = number / 10;
     exp_count++;
   }
+
   // устанавливаем точность
+  // printf("установка точности\n");
   if (flags.precision == -1) flags.precision = 6;
 
   // преобразуем число в строку с заданной точностью
+  // printf("преобразование в строку\n");
   double_to_string(number, buffer, flags.precision);
 
   // преобразуем коэффициент в строку
+  // printf("преобразование в строку коээф\n");
   char exp_count_string[20] = {0};
   char sign = '+';
   if (exp_count < 0) sign = '-';
@@ -785,11 +722,19 @@ void double_to_exp(char *buffer, long double number, Flag flags) {
   input_char_left(exp_count_string, sign);
 
   // собираем строку
-  char exp_char = {0};
-  if (flags.spec == 'e' || flags.spec == 'g') exp_char = 'e';
-  if (flags.spec == 'E' || flags.spec == 'G') exp_char = 'E';
+  // printf("сборка строки\n");
   int i = s21_strlen(buffer);
-  buffer[i] = exp_char;
+  buffer[i] = flags.spec;
   buffer[i + 1] = '\0';
   s21_strncat(buffer, exp_count_string, sizeof(exp_count_string));
+
+  // применяем флаги
+  // printf("применение флагов\n");
+  apply_flags(buffer, flags);
+
+  // записываем результат в основную строку
+  // printf("запись финального результата\n");
+  int buffer_len = (int)s21_strlen(buffer);
+  s21_strncpy(*p, buffer, buffer_len);
+  (*p) += buffer_len;
 }
