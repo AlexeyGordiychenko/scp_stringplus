@@ -18,6 +18,7 @@ bool process_dio_spec_sscanf(SFlags flags, va_list *args, int base,
                              const char **p);
 bool process_ux_spec_sscanf(SFlags flags, va_list *args, int base,
                             const char **p);
+bool process_p_spec_sscanf(SFlags flags, va_list *args, const char **p);
 bool process_cs_spec_sscanf(SFlags flags, va_list *args, const char **p);
 void assign_int_value(SFlags flags, va_list *args, long value);
 void assign_uint_value(SFlags flags, va_list *args, long value);
@@ -59,6 +60,9 @@ int s21_sscanf(const char *str, const char *format, ...) {
         case 'x':
         case 'X':
           count += process_ux_spec_sscanf(flags, &args, 16, &str_p);
+          break;
+        case 'p':
+          count += process_p_spec_sscanf(flags, &args, &str_p);
           break;
         case 'c':
         case 's':
@@ -250,6 +254,18 @@ bool process_ux_spec_sscanf(SFlags flags, va_list *args, int base,
   bool res = parse_uint(p, &value, flags.width, base);
   if (!flags.asterisk) {
     assign_uint_value(flags, args, value);
+  } else {
+    res = false;
+  }
+  return res;
+}
+
+bool process_p_spec_sscanf(SFlags flags, va_list *args, const char **p) {
+  unsigned long value;
+  bool res = parse_uint(p, &value, flags.width, 16);
+  if (!flags.asterisk) {
+    void **p_value = va_arg(*args, void **);
+    *p_value = (void *)value;
   } else {
     res = false;
   }
