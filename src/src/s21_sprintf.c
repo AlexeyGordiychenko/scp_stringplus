@@ -664,6 +664,8 @@ void execute_f(char **p, va_list *args, Flag flags) {
   (*p) += buffer_len;
 }
 
+
+
 void execute_e(char **p, va_list *args, Flag flags) {
   long double number;
   char buffer[200] = {0};
