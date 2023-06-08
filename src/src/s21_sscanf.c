@@ -35,7 +35,7 @@ int s21_sscanf(const char *str, const char *format, ...) {
   const char *str_p = str;
   s21_size_t count = 0;
 
-  for (const char *p = format; *p != '\0' && *str_p != '\0'; ++p) {
+  for (const char *p = format; *p != '\0'; ++p) {
     SFlags flags = {0};  // ининциализируем или обнуляем структуру флагов
     if (*p == '%') {
       /* парсинг спецификатора */
@@ -238,6 +238,7 @@ bool parse_pre_number(s21_size_t *count, int *sign, s21_size_t width, int *base,
 
 bool process_dio_spec_sscanf(SFlags flags, va_list *args, int base,
                              const char **p) {
+  if (**p == '\0') return false;
   long value;
   bool res = parse_int(p, &value, flags.width, base);
   if (!flags.asterisk) {
@@ -250,6 +251,7 @@ bool process_dio_spec_sscanf(SFlags flags, va_list *args, int base,
 
 bool process_ux_spec_sscanf(SFlags flags, va_list *args, int base,
                             const char **p) {
+  if (**p == '\0') return false;
   unsigned long value;
   bool res = parse_uint(p, &value, flags.width, base);
   if (!flags.asterisk) {
@@ -261,6 +263,7 @@ bool process_ux_spec_sscanf(SFlags flags, va_list *args, int base,
 }
 
 bool process_p_spec_sscanf(SFlags flags, va_list *args, const char **p) {
+  if (**p == '\0') return false;
   unsigned long value;
   bool res = parse_uint(p, &value, flags.width, 16);
   if (!flags.asterisk) {
@@ -273,6 +276,7 @@ bool process_p_spec_sscanf(SFlags flags, va_list *args, const char **p) {
 }
 
 bool process_cs_spec_sscanf(SFlags flags, va_list *args, const char **p) {
+  if (**p == '\0') return false;
   if (flags.spec == 's') {
     // skip whitespace
     while (s21_isspace(**p)) {
