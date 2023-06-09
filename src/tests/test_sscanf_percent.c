@@ -71,7 +71,7 @@ START_TEST(sscanf_spec_percent_5) {
 END_TEST
 
 Suite *test_sscanf_percent(void) {
-  Suite *s = suite_create("\033[45m-=S21_SSCANF_PERCENT=-\033[0m");
+  Suite *s = suite_create("\033[33m-=s21_sscanf_%=-\033[0m");
   TCase *tc = tcase_create("sscanf_tc");
 
   tcase_add_test(tc, sscanf_spec_percent_1);

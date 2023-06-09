@@ -98,7 +98,7 @@ START_TEST(strlen_14) {
 END_TEST
 
 Suite *test_strlen(void) {
-  Suite *s = suite_create("\033[45m-=S21_STRLEN=-\033[0m");
+  Suite *s = suite_create("\033[33m-=s21_strlen=-\033[0m");
   TCase *tc = tcase_create("strlen_tc");
 
   tcase_add_test(tc, strlen_1);

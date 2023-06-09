@@ -284,7 +284,7 @@ START_TEST(sprintf_20_hex) {
 END_TEST
 
 Suite *test_sprintf_hex(void) {
-  Suite *s = suite_create("\033[45m-=S21_SPRINTF_HEX1=-\033[0m");
+  Suite *s = suite_create("\033[33m-=s21_sprintf_h=-\033[0m");
   TCase *tc = tcase_create("sprintf_tc");
 
   tcase_add_test(tc, sprintf_1_hex);

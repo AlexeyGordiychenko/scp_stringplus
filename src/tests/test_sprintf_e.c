@@ -468,42 +468,7 @@ START_TEST(sprintf_41_e) {
   ck_assert_pstr_eq(str1, str2);
 }
 END_TEST
-/*
-START_TEST(sprintf_42_e) {
-  char str1[200];
-  char str2[200];
-  char *str3 = "%e\n%.e\n%.5e\n%.9e\n%.15E!";
-  double num = 0;
-  ck_assert_int_eq(sprintf(str1, str3, num, num, num, num, num),
-                   s21_sprintf(str2, str3, num, num, num, num, num));
-  ck_assert_pstr_eq(str1, str2);
-}
-END_TEST
 
-START_TEST(sprintf_43_e) {
-  char str1[400];
-  char str2[400];
-  char *str3 = "test: %20Le!\ntest: %Le!\ntest: %-10Le!";
-  long double num =
-      -93257812350000000000000000000683689988320616583292392563908359623906832590653989623598263628236642932982362398.;
-  ck_assert_int_eq(sprintf(str1, str3, num, num, num),
-                   s21_sprintf(str2, str3, num, num, num));
-  ck_assert_pstr_eq(str1, str2);
-}
-END_TEST
-
-START_TEST(sprintf_44_e) {
-  char str1[400];
-  char str2[400];
-  char *str3 = "test: %060Le!\ntest: %.14Le!";
-  long double num =
-      -93257812350000000000000000000683689988320616583292392563908359623906832590653989623598263628236642932982362398.;
-  ck_assert_int_eq(sprintf(str1, str3, num, num),
-                   s21_sprintf(str2, str3, num, num));
-  ck_assert_pstr_eq(str1, str2);
-}
-END_TEST
-*/
 START_TEST(sprintf_45_e) {
   char str1[400];
   char str2[400];
@@ -537,7 +502,7 @@ START_TEST(sprintf_47_e) {
 END_TEST
 
 Suite *test_sprintf_e(void) {
-  Suite *s = suite_create("\033[45m-=S21_SPRINTF_E=-\033[0m");
+  Suite *s = suite_create("\033[33m-=s21_sprintf_e=-\033[0m");
   TCase *tc = tcase_create("sprintf_tc");
 
   tcase_add_test(tc, sprintf_1_e);
@@ -581,11 +546,6 @@ Suite *test_sprintf_e(void) {
   tcase_add_test(tc, sprintf_39_e);
   tcase_add_test(tc, sprintf_40_e);
   tcase_add_test(tc, sprintf_41_e);
-  // tcase_add_test(tc, sprintf_42_e);
-  /*
-  tcase_add_test(tc, sprintf_43_e);
-  tcase_add_test(tc, sprintf_44_e);
-  */
   tcase_add_test(tc, sprintf_45_e);
   tcase_add_test(tc, sprintf_46_e);
   tcase_add_test(tc, sprintf_47_e);

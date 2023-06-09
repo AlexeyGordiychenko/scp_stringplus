@@ -506,29 +506,7 @@ START_TEST(sprintf_47_f) {
   ck_assert_pstr_eq(str1, str2);
 }
 END_TEST
-/*
-START_TEST(sprintf_48_f) {
-  char str1[400];
-  char str2[400];
-  char *str3 = "test: %.1Lf!\ntest: %.2Lf!\ntest: %.3Lf!";
-  long double num = 823631075973858585858447757573.6495633;
-  ck_assert_int_eq(sprintf(str1, str3, num, num, num),
-                   s21_sprintf(str2, str3, num, num, num));
-  ck_assert_pstr_eq(str1, str2);
-}
-END_TEST
 
-START_TEST(sprintf_49_f) {
-  char str1[400];
-  char str2[400];
-  char *str3 = "test: %+ 0Lf!\ntest: %.6Lf!\ntest: %.15Lf!";
-  long double num = 823631075973858585858447757573.6495633;
-  ck_assert_int_eq(sprintf(str1, str3, num, num, num),
-                   s21_sprintf(str2, str3, num, num, num));
-  ck_assert_pstr_eq(str1, str2);
-}
-END_TEST
-*/
 START_TEST(sprintf_50_f) {
   char str1[400];
   char str2[400];
@@ -606,7 +584,7 @@ END_TEST
 
 Suite *test_sprintf_f(void) {
   setlocale(LC_NUMERIC, "C");
-  Suite *s = suite_create("\033[45m-=S21_SPRINTF_F=-\033[0m");
+  Suite *s = suite_create("\033[33m-=s21_sprintf_f=-\033[0m");
   TCase *tc = tcase_create("sprintf_tc");
 
   tcase_add_test(tc, sprintf_1_f);
@@ -655,8 +633,6 @@ Suite *test_sprintf_f(void) {
   tcase_add_test(tc, sprintf_45_f);
   tcase_add_test(tc, sprintf_46_f);
   tcase_add_test(tc, sprintf_47_f);
-  //tcase_add_test(tc, sprintf_48_f);
-  //tcase_add_test(tc, sprintf_49_f);  
   tcase_add_test(tc, sprintf_50_f);
   tcase_add_test(tc, sprintf_51_f);
   tcase_add_test(tc, sprintf_52_f);

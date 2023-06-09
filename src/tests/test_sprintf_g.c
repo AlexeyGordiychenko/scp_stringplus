@@ -508,8 +508,18 @@ START_TEST(sprintf_46_g) {
 }
 END_TEST
 
+START_TEST(sprintf_47_g) {
+  char str1[400];
+  char str2[400];
+  char *str3 = "test: %.10Lg!\n";
+  long double num = -123.2300000000;
+  ck_assert_int_eq(sprintf(str1, str3, num), s21_sprintf(str2, str3, num));
+  ck_assert_pstr_eq(str1, str2);
+}
+END_TEST
+
 Suite *test_sprintf_g(void) {
-  Suite *s = suite_create("\033[45m-=S21_SPRINTF_G=-\033[0m");
+  Suite *s = suite_create("\033[33m-=s21_sprintf_g=-\033[0m");
   TCase *tc = tcase_create("sprintf_tc");
 
   tcase_add_test(tc, sprintf_1_g);
@@ -558,6 +568,7 @@ Suite *test_sprintf_g(void) {
   tcase_add_test(tc, sprintf_44_g);
   tcase_add_test(tc, sprintf_45_g);
   tcase_add_test(tc, sprintf_46_g);
+  tcase_add_test(tc, sprintf_47_g);
 
   suite_add_tcase(s, tc);
   return s;

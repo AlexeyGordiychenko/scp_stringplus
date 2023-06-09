@@ -153,28 +153,6 @@ START_TEST(sscanf_spec_n_8) {
 }
 END_TEST
 
-// START_TEST(sscanf_spec_n_9) {
-//   char format[] = "%lf %lf %lf %lf %n %lf";
-//   char str[] = ".0 66.34 9877.66 1.99 0.999";
-//   long double d1 = 0, d2 = 0;
-//   long double dd1 = 0, dd2 = 0;
-//   long double f1 = 0, f2 = 0;
-//   long double ff1 = 0, ff2 = 0;
-//   long double k1 = 0, k2 = 0;
-//   int n1 = 0, n2 = 0;
-
-//   int16_t res1 = s21_sscanf(str, format, &d1, &dd1, &f1, &ff1, &n1, &k1);
-//   int16_t res2 = sscanf(str, format, &d2, &dd2, &f2, &ff2, &n2, &k2);
-//   ck_assert_ldouble_eq(res1, res2);
-//   ck_assert_ldouble_eq(d1, d2);
-//   ck_assert_ldouble_eq(dd1, dd2);
-//   ck_assert_ldouble_eq(f1, f2);
-//   ck_assert_ldouble_eq(ff1, ff2);
-//   ck_assert_ldouble_eq(k1, k2);
-//   ck_assert_int_eq(n1, n2);
-// }
-// END_TEST
-
 START_TEST(sscanf_spec_n_10) {
   char format[] = "%s %s";
   char str[] = "hi \t\n";
@@ -189,7 +167,7 @@ START_TEST(sscanf_spec_n_10) {
 END_TEST
 
 Suite *test_sscanf_n(void) {
-  Suite *s = suite_create("\033[45m-=S21_SSCANF_N=-\033[0m");
+  Suite *s = suite_create("\033[33m-=s21_sscanf_n=-\033[0m");
   TCase *tc = tcase_create("sscanf_tc");
 
   tcase_add_test(tc, sscanf_spec_n_1);
@@ -200,7 +178,6 @@ Suite *test_sscanf_n(void) {
   tcase_add_test(tc, sscanf_spec_n_6);
   tcase_add_test(tc, sscanf_spec_n_7);
   tcase_add_test(tc, sscanf_spec_n_8);
-  //   tcase_add_test(tc, sscanf_spec_n_9);
   tcase_add_test(tc, sscanf_spec_n_10);
 
   suite_add_tcase(s, tc);

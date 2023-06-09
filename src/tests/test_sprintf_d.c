@@ -313,7 +313,7 @@ START_TEST(sprintf_22_signed) {
 END_TEST
 
 Suite *test_sprintf_signed(void) {
-  Suite *s = suite_create("\033[45m-=S21_SPRINTF_SIGNED=-\033[0m");
+  Suite *s = suite_create("\033[33m-=s21_sprintf_d=-\033[0m");
   TCase *tc = tcase_create("sprintf_tc");
 
   tcase_add_test(tc, sprintf_1_signed);

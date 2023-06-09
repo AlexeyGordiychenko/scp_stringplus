@@ -201,7 +201,7 @@ START_TEST(memcmp_16) {
 END_TEST
 
 Suite *test_memcmp(void) {
-  Suite *s = suite_create("\033[45m-=S21_MEMCMP=-\033[0m");
+  Suite *s = suite_create("\033[33m-=s21_memcmp=-\033[0m");
   TCase *tc = tcase_create("memcmp_tc");
 
   tcase_add_test(tc, memcmp_1);

@@ -231,7 +231,7 @@ START_TEST(sprintf_15_pointer) {
 END_TEST
 
 Suite* test_sprintf_p(void) {
-  Suite* s = suite_create("\033[45m-=S21_SPRINTF_POINTER=-\033[0m");
+  Suite* s = suite_create("\033[33m-=s21_sprintf_p=-\033[0m");
   TCase* tc = tcase_create("sprintf_tc");
 
   tcase_add_test(tc, sprintf_1_pointer);

@@ -141,7 +141,7 @@ void double_to_string(long double number, char *buffer, Flag flags) {
   if (sign == '-') {
     input_char_left(buffer, sign);
   }
-
+ 
   // откидываем нули дробной части для gG
   if (!flags.prefix && (flags.spec == 'g' || flags.spec == 'G') &&
       s21_strchr(buffer, '.')) {
@@ -155,75 +155,6 @@ void double_to_string(long double number, char *buffer, Flag flags) {
         i--;
       }
     }
-  }
-}
-
-void string_to_int(char *str, int *number) {
-  // проверка на то является ли строка целым числом
-  int i = 0;
-  char sign;
-  if (str[i] == '-') {
-    sign = '-';
-    i++;
-  }
-  while (str[i] != '\0') {
-    if (str[i] >= '1' && str[i] <= '9') {
-      i++;
-      continue;
-    } else {
-      printf("строка не является целым числом\n");
-      return;
-    }
-  }
-
-  // преобразование в число
-  i = (sign == '-') ? 1 : 0;  // устанавиливаем позицию для счетчика
-  *number = 0;
-  while (str[i] != '\0') {
-    *number = *number * 10 + (str[i] - '0');
-    i++;
-  }
-
-  if (sign == '-') *number = -(*number);
-}
-
-void string_to_double(char *str, double *number) {
-  // проверка на то является ли строка целым числом
-  int i = 0;
-  char sign;
-  int point = 0;
-
-  if (str[i] == '-') {
-    sign = '-';
-    i++;
-  }
-
-  while (str[i] != '\0') {
-    if (str[i] >= '1' && str[i] <= '9') {
-      i++;
-      continue;
-    } else if (str[i] == '.' && !point) {
-      point = 1;
-      i++;
-    } else {
-      printf("строка не является вещественным числом\n");
-      return;
-    }
-  }
-  // преобразовываем в число
-  char *int_part, *dec_part;
-  int_part = s21_strtok(str, ".");
-  dec_part = s21_strtok(S21_NULL, ".");
-  int x, y, len_dec = (int)s21_strlen(dec_part);
-  string_to_int(int_part, &x);
-  printf("%d\n", x);
-  string_to_int(dec_part, &y);
-  printf("%d\n", y);
-  printf("len = %d\n", len_dec);
-  if (sign == '-') {
-    *number = x - y / pow(10, len_dec);
-  } else {
-    *number = x + y / pow(10, len_dec);
   }
 }
 

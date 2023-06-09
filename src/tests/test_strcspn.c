@@ -88,7 +88,7 @@ START_TEST(strcspn_12) {
 END_TEST
 
 Suite *test_strcspn(void) {
-  Suite *s = suite_create("\033[45m-=S21_STRCSPN=-\033[0m");
+  Suite *s = suite_create("\033[33m-=s21_strcspn=-\033[0m");
   TCase *tc = tcase_create("strcspn_tc");
 
   tcase_add_test(tc, strcspn_1);

@@ -57,7 +57,7 @@ START_TEST(strchr_8) {
 END_TEST
 
 Suite *test_strchr(void) {
-  Suite *s = suite_create("\033[45m-=S21_STRCHR=-\033[0m");
+  Suite *s = suite_create("\033[33m-=s21_strchr=-\033[0m");
   TCase *tc = tcase_create("strchr_tc");
 
   suite_add_tcase(s, tc);

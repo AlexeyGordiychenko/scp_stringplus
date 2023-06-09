@@ -446,7 +446,7 @@ START_TEST(sscanf_spec_real_29) {
 END_TEST
 
 Suite *test_sscanf_float(void) {
-  Suite *s = suite_create("\033[45m-=S21_SSCANF_FLOAT=-\033[0m");
+  Suite *s = suite_create("\033[33m-=s21_sscanf_f=-\033[0m");
   TCase *tc = tcase_create("sscanf_tc");
 
   tcase_add_test(tc, sscanf_spec_real_1);

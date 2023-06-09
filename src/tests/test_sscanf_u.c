@@ -1501,7 +1501,7 @@ START_TEST(sscanf_spec_llu_25) {
 END_TEST
 
 Suite *test_sscanf_u(void) {
-  Suite *s = suite_create("\033[45m-=S21_SSCANF_U=-\033[0m");
+  Suite *s = suite_create("\033[33m-=s21_sscanf_u=-\033[0m");
   TCase *tc = tcase_create("sscanf_tc");
 
   tcase_add_test(tc, sscanf_spec_hhu_1);

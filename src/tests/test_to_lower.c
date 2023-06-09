@@ -64,7 +64,7 @@ START_TEST(test_to_lower_7) {
 END_TEST
 
 Suite *test_to_lower(void) {
-  Suite *s = suite_create("\033[45m-=S21_TO_LOWER=-\033[0m");
+  Suite *s = suite_create("\033[33m-=s21_lower=-\033[0m");
   TCase *tc = tcase_create("to_lower_tc");
 
   suite_add_tcase(s, tc);

@@ -55,7 +55,7 @@ START_TEST(memset_6) {
 END_TEST
 
 Suite *test_memset(void) {
-  Suite *s = suite_create("\033[45m-=S21_MEMSET=-\033[0m");
+  Suite *s = suite_create("\033[33m-=s21_memset=-\033[0m");
   TCase *tc = tcase_create("memset_tc");
 
   suite_add_tcase(s, tc);
