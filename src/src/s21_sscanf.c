@@ -15,6 +15,9 @@ bool parse_uint(const char **str, unsigned long long *value, s21_size_t width,
                 int base);
 bool parse_pre_number(s21_size_t *count, int *sign, s21_size_t width, int *base,
                       const char **str);
+
+bool process_spec(SFlags flags, va_list *args, const char **p, const char **str,
+                  s21_size_t *count);
 bool process_dio_spec_sscanf(SFlags flags, va_list *args, int base,
                              const char **p);
 bool process_ux_spec_sscanf(SFlags flags, va_list *args, int base,
@@ -22,6 +25,7 @@ bool process_ux_spec_sscanf(SFlags flags, va_list *args, int base,
 bool process_p_spec_sscanf(SFlags flags, va_list *args, const char **p);
 bool process_cs_spec_sscanf(SFlags flags, va_list *args, const char **p);
 bool process_n_spec_sscanf(SFlags flags, va_list *args, s21_size_t count);
+
 void assign_int_value(SFlags flags, va_list *args, long long value);
 void assign_uint_value(SFlags flags, va_list *args, unsigned long long value);
 void assign_wchars(SFlags flags, const char **p, va_list *args);
@@ -36,54 +40,22 @@ int s21_sscanf(const char *str, const char *format, ...) {
   va_start(args, format);
   const char *str_p = str;
   s21_size_t count = 0;
+  bool res = true;
 
-  for (const char *p = format; *p != '\0'; ++p) {
+  for (const char *p = format; *p != '\0' && res; ++p) {
     SFlags flags = {0};  // ининциализируем или обнуляем структуру флагов
     if (*p == '%') {
       /* парсинг спецификатора */
       parse_sscanf_spec(&p, &flags);
-
-      // тестовый вывод напарсенных структур
-      // printf("width = %lld, asterisk = %d, length = %c, spec = %c\n",
-      //        flags.width, flags.asterisk, flags.length, flags.spec);
-      switch (flags.spec) {
-        case 'd':
-          count += process_dio_spec_sscanf(flags, &args, 10, &str_p);
-          break;
-        case 'i':
-          count += process_dio_spec_sscanf(flags, &args, 0, &str_p);
-          break;
-        case 'o':
-          count += process_dio_spec_sscanf(flags, &args, 8, &str_p);
-          break;
-        case 'u':
-          count += process_ux_spec_sscanf(flags, &args, 10, &str_p);
-          break;
-        case 'x':
-        case 'X':
-          count += process_ux_spec_sscanf(flags, &args, 16, &str_p);
-          break;
-        case 'p':
-          count += process_p_spec_sscanf(flags, &args, &str_p);
-          break;
-        case 'c':
-        case 's':
-          count += process_cs_spec_sscanf(flags, &args, &str_p);
-          break;
-        case 'n':
-          process_n_spec_sscanf(flags, &args, str_p - str);
-          break;
-        case '%':
-          str_p++;
-          break;
-      }
+      /* обработка спецификатора */
+      res = process_spec(flags, &args, &str_p, &str, &count);
     } else if (s21_isspace(*p)) {
       while (s21_isspace(*str_p)) {
         str_p++;
       }
     } else {
       if (*p != *str_p) {
-        break;
+        res = false;
       }
       str_p++;
     }
@@ -92,6 +64,44 @@ int s21_sscanf(const char *str, const char *format, ...) {
   va_end(args);  // Завершаем работу с переменными аргументами
 
   return count;
+}
+
+bool process_spec(SFlags flags, va_list *args, const char **p, const char **str,
+                  s21_size_t *count) {
+  bool res = true;
+  switch (flags.spec) {
+    case 'd':
+      res = process_dio_spec_sscanf(flags, args, 10, p);
+      break;
+    case 'i':
+      res = process_dio_spec_sscanf(flags, args, 0, p);
+      break;
+    case 'o':
+      res = process_dio_spec_sscanf(flags, args, 8, p);
+      break;
+    case 'u':
+      res = process_ux_spec_sscanf(flags, args, 10, p);
+      break;
+    case 'x':
+    case 'X':
+      res = process_ux_spec_sscanf(flags, args, 16, p);
+      break;
+    case 'p':
+      res = process_p_spec_sscanf(flags, args, p);
+      break;
+    case 'c':
+    case 's':
+      res = process_cs_spec_sscanf(flags, args, p);
+      break;
+    case 'n':
+      process_n_spec_sscanf(flags, args, *p - *str);
+      break;
+    case '%':
+      (*p)++;
+      break;
+  }
+  *count += res && !flags.asterisk && flags.spec != 'n' && flags.spec != '%';
+  return res;
 }
 
 void parse_sscanf_spec(const char **p, SFlags *flags) {
@@ -223,9 +233,6 @@ bool parse_pre_number(s21_size_t *count, int *sign, s21_size_t width, int *base,
     if (**str == '-') *sign = -1;
     (*str)++;
     (*count)++;
-    if (width == 1) {
-      while (**str) (*str)++;
-    }
   }
 
   // handle base
@@ -251,12 +258,10 @@ bool parse_pre_number(s21_size_t *count, int *sign, s21_size_t width, int *base,
 bool process_dio_spec_sscanf(SFlags flags, va_list *args, int base,
                              const char **p) {
   if (**p == '\0') return false;
-  long long value;
+  long long value = 0;
   bool res = parse_int(p, &value, flags.width, base);
-  if (!flags.asterisk) {
+  if (res && !flags.asterisk) {
     assign_int_value(flags, args, value);
-  } else {
-    res = false;
   }
   return res;
 }
@@ -264,25 +269,21 @@ bool process_dio_spec_sscanf(SFlags flags, va_list *args, int base,
 bool process_ux_spec_sscanf(SFlags flags, va_list *args, int base,
                             const char **p) {
   if (**p == '\0') return false;
-  unsigned long long value;
+  unsigned long long value = 0;
   bool res = parse_uint(p, &value, flags.width, base);
-  if (!flags.asterisk) {
+  if (res && !flags.asterisk) {
     assign_uint_value(flags, args, value);
-  } else {
-    res = false;
   }
   return res;
 }
 
 bool process_p_spec_sscanf(SFlags flags, va_list *args, const char **p) {
   if (**p == '\0') return false;
-  unsigned long long value;
+  unsigned long long value = 0;
   bool res = parse_uint(p, &value, flags.width, 16);
-  if (!flags.asterisk) {
+  if (res && !flags.asterisk) {
     void **p_value = va_arg(*args, void **);
     *p_value = (void *)value;
-  } else {
-    res = false;
   }
   return res;
 }
@@ -305,14 +306,12 @@ bool process_cs_spec_sscanf(SFlags flags, va_list *args, const char **p) {
       assign_chars(flags, p, args);
     }
   }
-  return !flags.asterisk;
+  return true;
 }
 
 bool process_n_spec_sscanf(SFlags flags, va_list *args, s21_size_t count) {
   assign_int_value(flags, args, count);
-  // int *p_value = va_arg(*args, int *);
-  // *p_value = count;
-  return count != 0;
+  return true;
 }
 
 void assign_int_value(SFlags flags, va_list *args, long long value) {
