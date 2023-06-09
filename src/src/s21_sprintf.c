@@ -643,12 +643,38 @@ void pointer_to_string(void *ptr, char *buffer) {
 void execute_p(char **p, va_list *args, Flag flags) {
   char buffer[50];
   void *ptr = va_arg(*args, void *);
+#ifdef __linux__
 
+#elif __APPLE__
+
+#endif
   // переводим указатель в строку
   pointer_to_string(ptr, buffer);
 
   // дополняем флагами и префиксом
   apply_flags(buffer, flags);
+
+#ifdef __linux__
+  if (ptr == 0) {
+    s21_strncpy(buffer, "(nil)", 5);
+    buffer[5] = '\0';
+    if (flags.width != 0 && !flags.minus) {
+      char ch = ' ';
+      if (flags.zero) ch = '0';
+      while ((int)s21_strlen(buffer) < flags.width) {
+        input_char_left(buffer, ch);
+      }
+
+    } else if (flags.width != 0 && flags.minus) {
+      while ((int)s21_strlen(buffer) < flags.width) {
+        int len = (int)s21_strlen(buffer);
+        buffer[len] = ' ';
+        buffer[len + 1] = '\0';
+      }
+    }
+  }
+
+#endif
 
   int buffer_len = (int)s21_strlen(buffer);
   s21_strncpy(*p, buffer, buffer_len);
