@@ -271,6 +271,180 @@ START_TEST(sscanf_spec_real_19) {
 }
 END_TEST
 
+START_TEST(sscanf_spec_real_20) {
+  long double a1 = 1, a2 = 0, b1 = 1, b2 = 0, c1 = 1, c2 = 0, d1 = 1, d2 = 0;
+
+  const char str[] = "53.1 -4.1135 41.3333 +2.0001";
+  const char fstr[] = "%Lf %Lf %Lf %Lf";
+
+  int16_t res1 = s21_sscanf(str, fstr, &a1, &b1, &c1, &d1);
+  int16_t res2 = sscanf(str, fstr, &a2, &b2, &c2, &d2);
+
+  ck_assert_int_eq(res1, res2);
+  ck_assert_double_eq(a1, a2);
+  ck_assert_double_eq(b1, b2);
+  ck_assert_double_eq(c1, c2);
+  ck_assert_double_eq(d1, d2);
+}
+END_TEST
+
+START_TEST(sscanf_spec_real_21) {
+  double a1 = 0, a2 = 0, b1 = 0, b2 = 0, c1 = 0, c2 = 0, d1 = 0, d2 = 0;
+
+  const char str[] = "0.00001 -4123123 4. .";
+  const char fstr[] = "%lf %lf %lf %lf";
+
+  int16_t res1 = s21_sscanf(str, fstr, &a1, &b1, &c1, &d1);
+  int16_t res2 = sscanf(str, fstr, &a2, &b2, &c2, &d2);
+
+  ck_assert_int_eq(res1, res2);
+  ck_assert_double_eq(a1, a2);
+  ck_assert_double_eq(b1, b2);
+  ck_assert_double_eq(c1, c2);
+  ck_assert_double_eq(d1, d2);
+}
+END_TEST
+
+START_TEST(sscanf_spec_real_22) {
+  float a1 = 0, a2 = 0, b1 = 0, b2 = 0, c1 = 0, c2 = 0, d1 = 0, d2 = 0;
+
+  const char str[] = ". . . .";
+  const char fstr[] = "%f %f %f %f";
+
+  int16_t res1 = s21_sscanf(str, fstr, &a1, &b1, &c1, &d1);
+  int16_t res2 = sscanf(str, fstr, &a2, &b2, &c2, &d2);
+
+  ck_assert_int_eq(res1, res2);
+  ck_assert_double_eq(a1, a2);
+  ck_assert_double_eq(b1, b2);
+  ck_assert_double_eq(c1, c2);
+  ck_assert_double_eq(d1, d2);
+}
+END_TEST
+
+START_TEST(sscanf_spec_real_23) {
+  long double a1 = 0, a2 = 0, b1 = 0, b2 = 0, c1 = 0, c2 = 0, d1 = 0, d2 = 0;
+
+  const char str[] = "513.41 -4.14135 414.3333 +112.0001";
+  const char fstr[] = "%Lf %Lf %Lf %Lf";
+
+  int16_t res1 = s21_sscanf(str, fstr, &a1, &b1, &c1, &d1);
+  int16_t res2 = sscanf(str, fstr, &a2, &b2, &c2, &d2);
+
+  ck_assert_int_eq(res1, res2);
+  ck_assert_double_eq(a1, a2);
+  ck_assert_double_eq(b1, b2);
+  ck_assert_double_eq(c1, c2);
+  ck_assert_double_eq(d1, d2);
+}
+END_TEST
+
+START_TEST(sscanf_spec_real_24) {
+  float a1 = 0, a2 = 0, b1 = 0, b2 = 0, c1 = 0, c2 = 0;
+
+  const char str[] = "53.1 -4.1135 411231.333 +2.0001";
+  const char fstr[] = "%*f %f %f %f";
+
+  int16_t res1 = s21_sscanf(str, fstr, &a1, &b1, &c1);
+  int16_t res2 = sscanf(str, fstr, &a2, &b2, &c2);
+
+  ck_assert_int_eq(res1, res2);
+  ck_assert_float_eq(a1, a2);
+  ck_assert_float_eq(b1, b2);
+  ck_assert_float_eq(c1, c2);
+}
+END_TEST
+
+START_TEST(sscanf_spec_real_25) {
+  float a1 = 0, a2 = 0, b1 = 0, b2 = 0, c1 = 0, c2 = 0, d1 = 0, d2 = 0;
+
+  const char str[] = "1.4441 1.31e+4 -3.31e-4 0.444e-5";
+  const char fstr[] = "%G %G %G %G";
+
+  int16_t res1 = s21_sscanf(str, fstr, &a1, &b1, &c1, &d1);
+  int16_t res2 = sscanf(str, fstr, &a2, &b2, &c2, &d2);
+
+  ck_assert_int_eq(res1, res2);
+  ck_assert_double_eq(a1, a2);
+  ck_assert_double_eq(b1, b2);
+  ck_assert_double_eq(c1, c2);
+  ck_assert_double_eq(d1, d2);
+}
+END_TEST
+
+START_TEST(sscanf_spec_real_26) {
+  float a1 = 0, a2 = 0, b1 = 0, b2 = 0, c1 = 0, c2 = 0, d1 = 0, d2 = 0;
+
+  const char str[] = "inf 1.31e+4 NaN 0.444e-5";
+  const char fstr[] = "%G %G %G %G";
+
+  int16_t res1 = s21_sscanf(str, fstr, &a1, &b1, &c1, &d1);
+  int16_t res2 = sscanf(str, fstr, &a2, &b2, &c2, &d2);
+
+  ck_assert_int_eq(res1, res2);
+  ck_assert_ldouble_eq(a1, a2);
+  ck_assert_double_eq(b1, b2);
+  ck_assert_float_nan(c1);
+  ck_assert_float_nan(c2);
+  ck_assert_double_eq(d1, d2);
+}
+END_TEST
+
+START_TEST(sscanf_spec_real_27) {
+  float a1 = 0, a2 = 0, b1 = 0, b2 = 0, c1 = 0, c2 = 0, d1 = 0, d2 = 0;
+
+  const char str[] = "inF InF inF INF";
+  const char fstr[] = "%G %G %G %G";
+
+  int16_t res1 = s21_sscanf(str, fstr, &a1, &b1, &c1, &d1);
+  int16_t res2 = sscanf(str, fstr, &a2, &b2, &c2, &d2);
+
+  ck_assert_int_eq(res1, res2);
+  ck_assert_ldouble_eq(a1, a2);
+  ck_assert_double_eq(b1, b2);
+  ck_assert_double_eq(c1, c2);
+  ck_assert_double_eq(d1, d2);
+}
+END_TEST
+
+START_TEST(sscanf_spec_real_28) {
+  float a1 = 0, a2 = 0, b1 = 0, b2 = 0, c1 = 0, c2 = 0, d1 = 0, d2 = 0;
+
+  const char str[] = "Nan NAN 0.0000 0";
+  const char fstr[] = "%G %G %G %G";
+
+  int16_t res1 = s21_sscanf(str, fstr, &a1, &b1, &c1, &d1);
+  int16_t res2 = sscanf(str, fstr, &a2, &b2, &c2, &d2);
+
+  ck_assert_int_eq(res1, res2);
+  ck_assert_float_nan(a1);
+  ck_assert_float_nan(a2);
+  ck_assert_float_nan(b1);
+  ck_assert_float_nan(b2);
+  ck_assert_ldouble_eq(c1, c2);
+  ck_assert_ldouble_eq(d1, d2);
+}
+END_TEST
+
+START_TEST(sscanf_spec_real_29) {
+  float a1 = 0, a2 = 0, b1 = 0, b2 = 0, c1 = 0, c2 = 0, d1 = 0, d2 = 0;
+
+  const char str[] =
+      "nAN           INF                   -0.1111         1e-10";
+  const char fstr[] = "%G %G %G %G";
+
+  int16_t res1 = s21_sscanf(str, fstr, &a1, &b1, &c1, &d1);
+  int16_t res2 = sscanf(str, fstr, &a2, &b2, &c2, &d2);
+
+  ck_assert_int_eq(res1, res2);
+  ck_assert_float_nan(a1);
+  ck_assert_float_nan(a2);
+  ck_assert_ldouble_eq(b1, b2);
+  ck_assert_ldouble_eq(c1, c2);
+  ck_assert_ldouble_eq(d1, d2);
+}
+END_TEST
+
 Suite *test_sscanf_float(void) {
   Suite *s = suite_create("\033[45m-=S21_SSCANF_FLOAT=-\033[0m");
   TCase *tc = tcase_create("sscanf_tc");
@@ -292,6 +466,16 @@ Suite *test_sscanf_float(void) {
   tcase_add_test(tc, sscanf_spec_real_15);
   tcase_add_test(tc, sscanf_spec_real_18);
   tcase_add_test(tc, sscanf_spec_real_19);
+  tcase_add_test(tc, sscanf_spec_real_20);
+  tcase_add_test(tc, sscanf_spec_real_21);
+  tcase_add_test(tc, sscanf_spec_real_22);
+  tcase_add_test(tc, sscanf_spec_real_23);
+  tcase_add_test(tc, sscanf_spec_real_24);
+  tcase_add_test(tc, sscanf_spec_real_25);
+  tcase_add_test(tc, sscanf_spec_real_26);
+  tcase_add_test(tc, sscanf_spec_real_27);
+  tcase_add_test(tc, sscanf_spec_real_28);
+  tcase_add_test(tc, sscanf_spec_real_29);
 
   suite_add_tcase(s, tc);
   return s;

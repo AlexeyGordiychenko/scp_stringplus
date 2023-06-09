@@ -96,6 +96,10 @@ bool process_spec(SFlags flags, va_list *args, const char **p, const char **str,
       res = process_ux_spec_sscanf(flags, args, 16, p);
       break;
     case 'f':
+    case 'g':
+    case 'G':
+    case 'e':
+    case 'E':
       res = process_f_spec_sscanf(flags, args, p);
       break;
     case 'p':
@@ -483,8 +487,11 @@ void assign_chars(SFlags flags, const char **p, va_list *args) {
 
 void assign_float_value(SFlags flags, va_list *args, long double value) {
   if (flags.length == 'L') {
-    long double *l_value = va_arg(*args, long double *);
-    *l_value = value;
+    long double *ld_value = va_arg(*args, long double *);
+    *ld_value = value;
+  } else if (flags.length == 'l') {
+    double *d_value = va_arg(*args, double *);
+    *d_value = (double)value;
   } else {
     float *p_value = va_arg(*args, float *);
     *p_value = (float)value;
