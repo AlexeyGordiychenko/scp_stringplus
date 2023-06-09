@@ -252,6 +252,37 @@ START_TEST(sprintf_17_hex) {
 }
 END_TEST
 
+START_TEST(sprintf_18_hex) {
+  char str1[400];
+  char str2[400];
+  char *str3 = "test: %lx!\n";
+  long double num = INFINITY;
+  ck_assert_int_eq(sprintf(str1, str3, num), s21_sprintf(str2, str3, num));
+  ck_assert_pstr_eq(str1, str2);
+}
+END_TEST
+
+START_TEST(sprintf_19_hex) {
+  char str1[400];
+  char str2[400];
+  char *str3 = "test: %lx!";
+  long double num = NAN;
+  ck_assert_int_eq(sprintf(str1, str3, num),
+                   s21_sprintf(str2, str3, num));
+  ck_assert_pstr_eq(str1, str2);
+}
+END_TEST
+
+START_TEST(sprintf_20_hex) {
+  char str1[400];
+  char str2[400];
+  char *str3 = "test: %lx!\n";
+  long double num = -INFINITY;
+  ck_assert_int_eq(sprintf(str1, str3, num), s21_sprintf(str2, str3, num));
+  ck_assert_pstr_eq(str1, str2);
+}
+END_TEST
+
 Suite *test_sprintf_hex(void) {
   Suite *s = suite_create("\033[45m-=S21_SPRINTF_HEX1=-\033[0m");
   TCase *tc = tcase_create("sprintf_tc");
@@ -273,6 +304,9 @@ Suite *test_sprintf_hex(void) {
   tcase_add_test(tc, sprintf_15_hex);
   tcase_add_test(tc, sprintf_16_hex);
   tcase_add_test(tc, sprintf_17_hex);
+  tcase_add_test(tc, sprintf_18_hex);
+  tcase_add_test(tc, sprintf_19_hex);
+  tcase_add_test(tc, sprintf_20_hex);
 
   suite_add_tcase(s, tc);
   return s;

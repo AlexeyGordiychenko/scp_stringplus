@@ -504,6 +504,38 @@ START_TEST(sprintf_44_e) {
 }
 END_TEST
 */
+START_TEST(sprintf_45_e) {
+  char str1[400];
+  char str2[400];
+  char *str3 = "test: %Le!\n";
+  long double num = INFINITY;
+  ck_assert_int_eq(sprintf(str1, str3, num), s21_sprintf(str2, str3, num));
+  ck_assert_pstr_eq(str1, str2);
+}
+END_TEST
+
+START_TEST(sprintf_46_e) {
+  char str1[400];
+  char str2[400];
+  char *str3 = "test: %Le!test: %Le!\n";
+  long double num = NAN;
+  long double num1 = 1.;
+  ck_assert_int_eq(sprintf(str1, str3, num, num1),
+                   s21_sprintf(str2, str3, num, num1));
+  ck_assert_pstr_eq(str1, str2);
+}
+END_TEST
+
+START_TEST(sprintf_47_e) {
+  char str1[400];
+  char str2[400];
+  char *str3 = "test: %Le!\n";
+  long double num = -INFINITY;
+  ck_assert_int_eq(sprintf(str1, str3, num), s21_sprintf(str2, str3, num));
+  ck_assert_pstr_eq(str1, str2);
+}
+END_TEST
+
 Suite *test_sprintf_e(void) {
   Suite *s = suite_create("\033[45m-=S21_SPRINTF_E=-\033[0m");
   TCase *tc = tcase_create("sprintf_tc");
@@ -533,7 +565,6 @@ Suite *test_sprintf_e(void) {
   tcase_add_test(tc, sprintf_23_e);
   tcase_add_test(tc, sprintf_24_e);
   tcase_add_test(tc, sprintf_25_e);
-
   tcase_add_test(tc, sprintf_26_e);
   tcase_add_test(tc, sprintf_27_e);
   tcase_add_test(tc, sprintf_28_e);
@@ -541,7 +572,6 @@ Suite *test_sprintf_e(void) {
   tcase_add_test(tc, sprintf_30_e);
   tcase_add_test(tc, sprintf_31_e);
   tcase_add_test(tc, sprintf_32_e);
-  
   tcase_add_test(tc, sprintf_33_e);
   tcase_add_test(tc, sprintf_34_e);
   tcase_add_test(tc, sprintf_35_e);
@@ -549,14 +579,16 @@ Suite *test_sprintf_e(void) {
   tcase_add_test(tc, sprintf_37_e);
   tcase_add_test(tc, sprintf_38_e);
   tcase_add_test(tc, sprintf_39_e);
- tcase_add_test(tc, sprintf_40_e);
-  
+  tcase_add_test(tc, sprintf_40_e);
   tcase_add_test(tc, sprintf_41_e);
-  //tcase_add_test(tc, sprintf_42_e);
+  // tcase_add_test(tc, sprintf_42_e);
   /*
   tcase_add_test(tc, sprintf_43_e);
   tcase_add_test(tc, sprintf_44_e);
   */
+  tcase_add_test(tc, sprintf_45_e);
+  tcase_add_test(tc, sprintf_46_e);
+  tcase_add_test(tc, sprintf_47_e);
 
   suite_add_tcase(s, tc);
   return s;

@@ -254,6 +254,37 @@ START_TEST(sprintf_17_signed_i) {
 }
 END_TEST
 
+START_TEST(sprintf_18_signed_i) {
+  char str1[400];
+  char str2[400];
+  char *str3 = "test: %li!\n";
+  long double num = INFINITY;
+  ck_assert_int_eq(sprintf(str1, str3, num), s21_sprintf(str2, str3, num));
+  ck_assert_pstr_eq(str1, str2);
+}
+END_TEST
+
+START_TEST(sprintf_19_signed_i) {
+  char str1[400];
+  char str2[400];
+  char *str3 = "test: %li!";
+  long double num = NAN;
+  ck_assert_int_eq(sprintf(str1, str3, num),
+                   s21_sprintf(str2, str3, num));
+  ck_assert_pstr_eq(str1, str2);
+}
+END_TEST
+
+START_TEST(sprintf_20_signed_i) {
+  char str1[400];
+  char str2[400];
+  char *str3 = "test: %li!\n";
+  long double num = -INFINITY;
+  ck_assert_int_eq(sprintf(str1, str3, num), s21_sprintf(str2, str3, num));
+  ck_assert_pstr_eq(str1, str2);
+}
+END_TEST
+
 Suite *test_sprintf_i(void) {
   Suite *s = suite_create("\033[45m-=S21_SPRINTF_I=-\033[0m");
   TCase *tc = tcase_create("sprintf_tc");
