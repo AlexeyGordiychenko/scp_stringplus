@@ -269,8 +269,7 @@ START_TEST(sprintf_19_signed_i) {
   char str2[400];
   char *str3 = "test: %li!";
   long double num = NAN;
-  ck_assert_int_eq(sprintf(str1, str3, num),
-                   s21_sprintf(str2, str3, num));
+  ck_assert_int_eq(sprintf(str1, str3, num), s21_sprintf(str2, str3, num));
   ck_assert_pstr_eq(str1, str2);
 }
 END_TEST
@@ -306,6 +305,9 @@ Suite *test_sprintf_i(void) {
   tcase_add_test(tc, sprintf_15_signed_i);
   tcase_add_test(tc, sprintf_16_signed_i);
   tcase_add_test(tc, sprintf_17_signed_i);
+  tcase_add_test(tc, sprintf_18_signed_i);
+  tcase_add_test(tc, sprintf_19_signed_i);
+  tcase_add_test(tc, sprintf_20_signed_i);
 
   suite_add_tcase(s, tc);
   return s;
