@@ -254,9 +254,9 @@ char *s21_err[] = {"Undefined error: 0",
 char *s21_strerror(int errnum) {
   static char buff[BUFF_SIZE] = {'\0'};
   if (errnum <= MAX && errnum >= 0) {
-    s21_strncpy(buff, s21_err[errnum], 256);
+    s21_strncpy(buff, s21_err[errnum], BUFF_SIZE);
   } else {
-    sprintf(buff, FORMAT, errnum);  // заменить на нашу реализацию
+    s21_sprintf(buff, FORMAT, errnum);  // заменить на нашу реализацию
   }
   return buff;
 }
