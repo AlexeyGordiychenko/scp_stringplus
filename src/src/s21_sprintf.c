@@ -288,6 +288,7 @@ void process_d_spec(Flag flags, va_list *args, char **p) {
 }
 
 void apply_flags(char *str, Flag flags) {
+  
   // обработка +
   if (flags.sign && str[0] != '-' &&
       (flags.spec == 'f' || flags.spec == 'e' || flags.spec == 'E' ||
@@ -300,7 +301,7 @@ void apply_flags(char *str, Flag flags) {
        flags.spec == 'g' || flags.spec == 'G')) {
     input_char_left(str, ' ');
   }
-
+ 
   // точность для не десятичных
   if (flags.precision != -1 && flags.spec != 'f' && flags.spec != 'g' &&
       flags.spec != 'G') {  // точность, дополняем нулями слева
@@ -353,7 +354,7 @@ void apply_flags(char *str, Flag flags) {
       if (flags.spec == 'E' || flags.spec == 'G')
         position = s21_strchr(str, 'E');
 
-      if (position != S21_NULL) {
+      if (position != NULL) {
         int index = position - str;  // Вычисляем индекс первого вхождения
         int len = (int)s21_strlen(str);
 
@@ -691,13 +692,20 @@ void execute_f(char **p, va_list *args, Flag flags) {
   } else {
     number = va_arg(*args, double);
   }
+  if (isnan(number)) {
+    s21_strncpy(buffer, "nan", 3);
+  } else if (isinf(number) > 0) {
+    s21_strncpy(buffer, "inf", 3);
+  } else if (isinf(number) < 0) {
+    s21_strncpy(buffer, "-inf", 4);
+  } else {
+    // устанавливаем точность
+    if (flags.precision == -1) flags.precision = 6;
 
-  // устанавливаем точность
-  if (flags.precision == -1) flags.precision = 6;
-
-  // преобразуем число в строку с заданной точностью
-  double_to_string(number, buffer, flags);
-
+    // преобразуем число в строку с заданной точностью
+    double_to_string(number, buffer, flags);
+  }
+ 
   apply_flags(buffer, flags);
 
   int buffer_len = (int)s21_strlen(buffer);
@@ -715,10 +723,16 @@ void execute_e(char **p, va_list *args, Flag flags) {
   } else {
     number = va_arg(*args, double);
   }
-
-  // приводим к экспоненциальному формату
-  double_to_exp(buffer, number, flags);
-
+  if (isnan(number)) {
+    s21_strncpy(buffer, "nan", 3);
+  } else if (isinf(number) > 0) {
+    s21_strncpy(buffer, "inf", 3);
+  } else if (isinf(number) < 0) {
+    s21_strncpy(buffer, "-inf", 4);
+  } else {
+    // приводим к экспоненциальному формату
+    double_to_exp(buffer, number, flags);
+  }
   // применяем флаги
   apply_flags(buffer, flags);
 
