@@ -96,7 +96,7 @@ END_TEST
 START_TEST(sscanf_spec_c_9) {
   char format[] = "%c %5c \t%c";
   char str[] = "\t\n\n  1 2 3 \n  \t";
-  char c11, c13, c21, c23;
+  char c11, c13 = 0, c21, c23 = 0;
   char c12[6] = {'\0'};
   char c22[6] = {'\0'};
 
