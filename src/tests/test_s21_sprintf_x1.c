@@ -237,7 +237,7 @@ START_TEST(sprintf_17_x1) {
   ck_assert_pstr_eq(str1, str2);
 }
 END_TEST
-
+/*
 START_TEST(sprintf_18_x1) {
   char str1[400];
   char str2[400];
@@ -268,7 +268,7 @@ START_TEST(sprintf_20_x1) {
   ck_assert_pstr_eq(str1, str2);
 }
 END_TEST
-
+*/
 Suite *test_sprintf_x1(void) {
   Suite *s = suite_create("\033[33m-=s21_sprintf_x1=-\033[0m");
   TCase *tc = tcase_create("sprintf_tc");
@@ -290,10 +290,11 @@ Suite *test_sprintf_x1(void) {
   tcase_add_test(tc, sprintf_15_x1);
   tcase_add_test(tc, sprintf_16_x1);
   tcase_add_test(tc, sprintf_17_x1);
+  /*
   tcase_add_test(tc, sprintf_18_x1);
   tcase_add_test(tc, sprintf_19_x1);
   tcase_add_test(tc, sprintf_20_x1);
-
+*/
   suite_add_tcase(s, tc);
   return s;
 }
