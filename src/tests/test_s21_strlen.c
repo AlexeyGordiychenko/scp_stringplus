@@ -21,14 +21,11 @@ START_TEST(strlen_3) {
 END_TEST
 
 START_TEST(strlen_4) {
-  //  char str[] = "\0";
   ck_assert_int_eq(strlen("\0"), s21_strlen("\0"));
 }
 END_TEST
 
 START_TEST(strlen_5) {
-  // char str[] ="I hate doing tests, it's not funny at
-  // all!!!!!!!!!!!!!!!!!!!!!!!!!";
   ck_assert_int_eq(
       strlen(
           "Po plyam, po polyam, siniy traktor edet k nam!"),
@@ -37,7 +34,6 @@ START_TEST(strlen_5) {
 END_TEST
 
 START_TEST(strlen_6) {
-  // char str[] = "";
   ck_assert_int_eq(strlen(""), s21_strlen(""));
 }
 END_TEST

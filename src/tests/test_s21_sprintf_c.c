@@ -1,11 +1,11 @@
-#include <locale.h>
+//#include <locale.h>
 
 #include "test_s21_string.h"
 
 START_TEST(sprintf_1_c) {
   char str1[100];
   char str2[100];
-  char *str3 = "%c Test %c Test %c Test %c Test %c";
+  char *str3 = "%c!%c!%c!%c!%c";
   int a = 9;
   int b = 10;
   int c = 17;
@@ -20,7 +20,7 @@ END_TEST
 START_TEST(sprintf_2_c) {
   char str1[100];
   char str2[100];
-  char *str3 = "%c Test %c Test %c Test %c Test %c";
+  char *str3 = "%c!%c!%c!%c!%c";
   int a = -6;
   int b = -10;
   int c = -17;
@@ -35,7 +35,7 @@ END_TEST
 START_TEST(sprintf_3_c) {
   char str1[100];
   char str2[100];
-  char *str3 = "%c Test %c Test %c Test %c Test %c";
+  char *str3 = "%c!%c!%c!%c!%c";
   int a = 60;
   int b = 50;
   int c = 1744;
@@ -50,7 +50,7 @@ END_TEST
 START_TEST(sprintf_4_c) {
   char str1[100];
   char str2[100];
-  char *str3 = "%c Test %c Test %c Test %c Test %c";
+  char *str3 = "%c!%c!%c!%c!%c";
   int a = 60;
   int b = 50;
   int c = 1744;
@@ -65,7 +65,7 @@ END_TEST
 START_TEST(sprintf_5_c) {
   char str1[100];
   char str2[100];
-  char *str3 = "%c Test %c Test %c Test %c Test %c";
+  char *str3 = "%c!%c!%c!%c!%c";
   char a = 0;
   ck_assert_int_eq(sprintf(str1, str3, a, a, a, a, a),
                    s21_sprintf(str2, str3, a, a, a, a, a));
@@ -76,7 +76,7 @@ END_TEST
 START_TEST(sprintf_6_c) {
   char str1[100];
   char str2[100];
-  char *str3 = "%05c Test % 5c Test %lc Test";
+  char *str3 = "%05c!% 5c!%lc!";
   int a = 70;
   unsigned long int b = 70;
   ck_assert_int_eq(sprintf(str1, str3, a, a, b),
@@ -88,7 +88,7 @@ END_TEST
 START_TEST(sprintf_7_c) {
   char str1[100];
   char str2[100];
-  char *str3 = "%-010c Test % -10c Test %-lc";
+  char *str3 = "%-010c!% -10c!%-lc";
   int a = 74;
   unsigned long int b = 74;
   ck_assert_int_eq(sprintf(str1, str3, a, a, b),
@@ -100,7 +100,7 @@ END_TEST
 START_TEST(sprintf_8_c) {
   char str1[100];
   char str2[100];
-  char *str3 = "%+010.5c Test % +10.5c Test %-10lc Test %-10lc Test %+10lc";
+  char *str3 = "%+010.5c!% +10.5c!%-10lc!%-10lc!%+10lc";
   char a = 92;
   unsigned long int b = 92;
   unsigned long int c = 92;
@@ -113,7 +113,7 @@ END_TEST
 START_TEST(sprintf_9_c) {
   char str1[100];
   char str2[100];
-  char *str3 = "%6.4c Test %-6.4c Test %4.10lc Test %-4.10lc Test %-0lc";
+  char *str3 = "%6.4c!%-6.4c!%4.10lc!%-4.10lc!%-0lc";
   int a = 10;
   unsigned long int b = 10;
   unsigned long int c = 10;
@@ -126,7 +126,7 @@ END_TEST
 START_TEST(sprintf_10_c) {
   char str1[100];
   char str2[100];
-  char *str3 = "%6.4c Test %-6.4c Test %4.10lc Test %-4.10lc Test %-0lc";
+  char *str3 = "%6.4c!%-6.4c!%4.10lc!%-4.10lc!%-0lc";
   int a = -10;
   unsigned long int b = 10;
   unsigned long int c = 10;
@@ -139,7 +139,7 @@ END_TEST
 START_TEST(sprintf_11_c) {
   char str1[100];
   char str2[100];
-  char *str3 = "%#c Test %#c Test %#c Test %#c Test %#c";
+  char *str3 = "%#c!%#c!%#c!%#c!%#c";
   ck_assert_int_eq(sprintf(str1, str3, ' ', 'n', '5', '%', '\\'),
                    s21_sprintf(str2, str3, ' ', 'n', '5', '%', '\\'));
   ck_assert_pstr_eq(str1, str2);
@@ -149,7 +149,7 @@ END_TEST
 START_TEST(sprintf_12_c) {
   char str1[100];
   char str2[100];
-  char *str3 = "%c Test %c Test %c Test %c Test %c";
+  char *str3 = "%c!%c!%c!%c!%c";
   ck_assert_int_eq(sprintf(str1, str3, '\n', '\0', '\0', '\0', 'c'),
                    s21_sprintf(str2, str3, '\n', '\0', '\0', '\0', 'c'));
   ck_assert_pstr_eq(str1, str2);
@@ -159,7 +159,7 @@ END_TEST
 START_TEST(sprintf_13_c) {
   char str1[100];
   char str2[100];
-  char *str3 = "%c Test %c Test %c Test %c Test %c";
+  char *str3 = "%c!%c!%c!%c!%c";
   ck_assert_int_eq(sprintf(str1, str3, 'b', '4', '#', '@', '\0'),
                    s21_sprintf(str2, str3, 'b', '4', '#', '@', '\0'));
   ck_assert_pstr_eq(str1, str2);
@@ -169,7 +169,7 @@ END_TEST
 START_TEST(sprintf_14_c) {
   char str1[100];
   char str2[100];
-  char *str3 = "%c Test %c Test %c Test %c Test %c";
+  char *str3 = "%c!%c!%c!%c!%c";
   ck_assert_int_eq(sprintf(str1, str3, 'Y', 'G', 123, '\0', 'J'),
                    s21_sprintf(str2, str3, 'Y', 'G', 123, '\0', 'J'));
   ck_assert_pstr_eq(str1, str2);
@@ -179,7 +179,7 @@ END_TEST
 START_TEST(sprintf_15_c) {
   char str1[400];
   char str2[400];
-  char *str3 = "%.7c Test %-7c Test %-50c Test % 54c Test %0188c";
+  char *str3 = "%.7c!%-7c!%-50c!% 54c!%0188c";
   int a = 112;
   ck_assert_int_eq(sprintf(str1, str3, a, a, a, a, a),
                    s21_sprintf(str2, str3, a, a, a, a, a));
@@ -190,7 +190,7 @@ END_TEST
 START_TEST(sprintf_16_c) {
   char str1[400];
   char str2[400];
-  char *str3 = "%.7c Test % -.7c Test %- 050c Test %- 54c Test %-0188c";
+  char *str3 = "%.7c!% -.7c!%- 050c!%- 54c!%-0188c";
   int a = 45;
   ck_assert_int_eq(sprintf(str1, str3, a, a, a, a, a),
                    s21_sprintf(str2, str3, a, a, a, a, a));
@@ -201,7 +201,7 @@ END_TEST
 START_TEST(sprintf_17_c) {
   char str1[400];
   char str2[400];
-  char *str3 = "%70c Test %-90c Test %080c Test %-065c Test %- 60c";
+  char *str3 = "%70c!%-90c!%080c!%-065c!%- 60c";
   int a = 255;
   ck_assert_int_eq(sprintf(str1, str3, a, a, a, a, a),
                    s21_sprintf(str2, str3, a, a, a, a, a));
@@ -212,7 +212,7 @@ END_TEST
 START_TEST(sprintf_18_c) {
   char str1[400];
   char str2[400];
-  char *str3 = "%70c Test %-90c Test %080c Test %-065c Test %- 60c";
+  char *str3 = "%70c!%-90c!%080c!%-065c!%- 60c";
   int a = 255;
   ck_assert_int_eq(sprintf(str1, str3, a, a, a, a, a),
                    s21_sprintf(str2, str3, a, a, a, a, a));
@@ -222,8 +222,8 @@ END_TEST
 
 START_TEST(sprintf_19_c) {
   char str1[100];
-  char str2[100];  //%lc Test %llc Test %hc Test %hhc
-  char *str3 = "%c Test %lc Test %hc";
+  char str2[100];  //%lc!%llc!%hc!%hhc
+  char *str3 = "%c!%lc!%hc";
   int a = 3;
   unsigned long int b = 103;
   unsigned short e = 255;
@@ -234,7 +234,7 @@ START_TEST(sprintf_19_c) {
 END_TEST
 
 START_TEST(sprintf_20_c) {
-  setlocale(LC_ALL, "");
+  //setlocale(LC_ALL, "");
 
   wchar_t str1[100];
   char str2[100];
@@ -254,7 +254,7 @@ START_TEST(sprintf_20_c) {
 END_TEST
 
 START_TEST(sprintf_21_c) {
-  setlocale(LC_ALL, "");
+ // setlocale(LC_ALL, "");
 
   wchar_t str1[100];
   char str2[100];

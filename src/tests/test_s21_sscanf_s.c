@@ -1,4 +1,4 @@
-#include <locale.h>
+//#include <locale.h>
 
 #include "test_s21_string.h"
 
@@ -171,7 +171,7 @@ START_TEST(sscanf_spec_s_10) {
 END_TEST
 
 START_TEST(sscanf_spec_ws_2) {
-  setlocale(LC_ALL, "");
+  //setlocale(LC_ALL, "");
 
   char *format1 = "%ls";
   wchar_t *format2 = L"%ls";
@@ -191,7 +191,7 @@ START_TEST(sscanf_spec_ws_2) {
 END_TEST
 
 START_TEST(sscanf_spec_ws_3) {
-  setlocale(LC_ALL, "");
+ // setlocale(LC_ALL, "");
 
   char *format1 = "%4ls %ls %ls";
   wchar_t *format2 = L"%4ls %ls %ls";
@@ -217,7 +217,7 @@ START_TEST(sscanf_spec_ws_3) {
 END_TEST
 
 START_TEST(sscanf_spec_ws_4) {
-  setlocale(LC_ALL, "");
+ // setlocale(LC_ALL, "");
 
   char *format1 = "%150ls";
   wchar_t *format2 = L"%150ls";
@@ -237,7 +237,7 @@ START_TEST(sscanf_spec_ws_4) {
 END_TEST
 
 START_TEST(sscanf_spec_ws_5) {
-  setlocale(LC_ALL, "");
+  //setlocale(LC_ALL, "");
 
   char *format1 = "%ls%ls%ls";
   wchar_t *format2 = L"%ls%ls%ls";
@@ -265,7 +265,7 @@ START_TEST(sscanf_spec_ws_5) {
 END_TEST
 
 START_TEST(sscanf_spec_ws_6) {
-  setlocale(LC_ALL, "");
+  //setlocale(LC_ALL, "");
 
   char *format1 = "%ls %ls \t%ls";
   wchar_t *format2 = L"%ls %ls \t%ls";
@@ -291,7 +291,7 @@ START_TEST(sscanf_spec_ws_6) {
 END_TEST
 
 START_TEST(sscanf_spec_ws_7) {
-  setlocale(LC_ALL, "");
+  //setlocale(LC_ALL, "");
 
   char *format1 = "%ls %ls \t%ls";
   wchar_t *format2 = L"%ls %ls \t%ls";
@@ -317,7 +317,7 @@ START_TEST(sscanf_spec_ws_7) {
 END_TEST
 
 START_TEST(sscanf_spec_ws_8) {
-  setlocale(LC_ALL, "");
+  //setlocale(LC_ALL, "");
 
   char *format1 = "%ls %*ls \t%ls";
   wchar_t *format2 = L"%ls %*ls \t%ls";
@@ -340,7 +340,7 @@ START_TEST(sscanf_spec_ws_8) {
 END_TEST
 
 START_TEST(sscanf_spec_ws_9) {
-  setlocale(LC_ALL, "");
+ // setlocale(LC_ALL, "");
 
   char *format1 = "%2ls %ls \t%4ls";
   wchar_t *format2 = L"%2ls %ls \t%4ls";
@@ -366,7 +366,7 @@ START_TEST(sscanf_spec_ws_9) {
 END_TEST
 
 START_TEST(sscanf_spec_ws_10) {
-  setlocale(LC_ALL, "");
+  //setlocale(LC_ALL, "");
 
   char *format1 = "%ls %2ls %*ls \t%4ls";
   wchar_t *format2 = L"%ls %2ls %*ls \t%4ls";

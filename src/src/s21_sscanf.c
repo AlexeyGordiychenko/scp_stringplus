@@ -378,67 +378,92 @@ bool process_f_spec_sscanf(SFlags flags, va_list *args, const char **p) {
 void assign_int_value(SFlags flags, va_list *args, long long value) {
   if (flags.double_len) {
     switch (flags.length) {
-      case 'l':
-        long long *l_value = va_arg(*args, long long *);
+      case 'l': {
+        long long *l_value;
+        l_value = va_arg(*args, long long *);
         *l_value = value;
         break;
-      case 'h':
-        signed char *h_value = va_arg(*args, signed char *);
+      }
+      case 'h': {
+        signed char *h_value;
+        h_value = va_arg(*args, signed char *);
         *h_value = (signed char)value;
         break;
-      default:
-        int *p_value = va_arg(*args, int *);
+      }
+      default: {
+        int *p_value;
+        p_value = va_arg(*args, int *);
         *p_value = (int)value;
         break;
+      }
     }
   } else {
     switch (flags.length) {
-      case 'l':
-        long *l_value = va_arg(*args, long *);
+      case 'l': {
+        long *l_value;
+        l_value = va_arg(*args, long *);
         *l_value = (long)value;
         break;
-      case 'h':
-        short *h_value = va_arg(*args, short *);
+      }
+      case 'h': {
+        short *h_value;
+        h_value = va_arg(*args, short *);
         *h_value = (short)value;
         break;
-      default:
-        int *p_value = va_arg(*args, int *);
+      }
+      default: {
+        int *p_value;
+        p_value = va_arg(*args, int *);
         *p_value = (int)value;
         break;
+      }
     }
   }
 }
 
+
 void assign_uint_value(SFlags flags, va_list *args, unsigned long long value) {
   if (flags.double_len) {
     switch (flags.length) {
-      case 'l':
-        unsigned long long *l_value = va_arg(*args, unsigned long long *);
+      case 'l': {
+        unsigned long long *l_value;
+        l_value = va_arg(*args, unsigned long long *);
         *l_value = value;
         break;
-      case 'h':
-        unsigned char *h_value = va_arg(*args, unsigned char *);
+      }
+      case 'h': {
+        unsigned char *h_value;
+        h_value = va_arg(*args, unsigned char *);
         *h_value = (unsigned char)value;
         break;
-      default:
-        unsigned int *p_value = va_arg(*args, unsigned int *);
+      }
+      default: {
+        unsigned int *p_value;
+        p_value = va_arg(*args, unsigned int *);
         *p_value = (unsigned int)value;
         break;
+      }
     }
   } else {
     switch (flags.length) {
-      case 'l':
-        unsigned long *l_value = va_arg(*args, unsigned long *);
+      case 'l': {
+        unsigned long *l_value;
+        l_value = va_arg(*args, unsigned long *);
         *l_value = (unsigned long)value;
         break;
-      case 'h':
-        unsigned short *h_value = va_arg(*args, unsigned short *);
+      }
+      case 'h': {
+        unsigned short *h_value;
+        h_value = va_arg(*args, unsigned short *);
         *h_value = (unsigned short)value;
         break;
-      default:
-        unsigned int *p_value = va_arg(*args, unsigned int *);
+      }
+      default: {
+        unsigned int *p_value;
+        p_value = va_arg(*args, unsigned int *);
         *p_value = (unsigned int)value;
         break;
+      }
     }
   }
 }

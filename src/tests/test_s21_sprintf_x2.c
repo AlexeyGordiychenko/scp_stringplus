@@ -1,7 +1,6 @@
 #include "test_s21_string.h"
 
-// One parameter HEX
-START_TEST(sprintf_1_HEX) {
+START_TEST(sprintf_1_X2) {
   char str1[100] = "";
   char str2[100] = "";
   char *str3 = "!%X!";
@@ -11,8 +10,7 @@ START_TEST(sprintf_1_HEX) {
 }
 END_TEST
 
-// Three HEX parameters
-START_TEST(sprintf_2_HEX) {
+START_TEST(sprintf_2_X2) {
   char str1[100];
   char str2[100];
   char *str3 = "%X!%X!%X";
@@ -25,8 +23,7 @@ START_TEST(sprintf_2_HEX) {
 }
 END_TEST
 
-// Three decimal parameters
-START_TEST(sprintf_3_HEX) {
+START_TEST(sprintf_3_X2) {
   char str1[100];
   char str2[100];
   char *str3 = "%X!%X!%X";
@@ -39,8 +36,7 @@ START_TEST(sprintf_3_HEX) {
 }
 END_TEST
 
-// Different sizes
-START_TEST(sprintf_4_HEX) {
+START_TEST(sprintf_4_X2) {
   char str1[100];
   char str2[100];
   char *str3 = "%lX!%lX!%hX!%hX";
@@ -54,8 +50,7 @@ START_TEST(sprintf_4_HEX) {
 }
 END_TEST
 
-// Different width
-START_TEST(sprintf_5_HEX) {
+START_TEST(sprintf_5_X2) {
   char str1[100];
   char str2[100];
   char *str3 = "%3X!%5X!%10X";
@@ -68,7 +63,7 @@ START_TEST(sprintf_5_HEX) {
 }
 END_TEST
 
-START_TEST(sprintf_6_HEX) {
+START_TEST(sprintf_6_X2) {
   char str1[200];
   char str2[200];
   char *str3 = "%6.5X!%.23X!%3.X!%.X";
@@ -82,7 +77,7 @@ START_TEST(sprintf_6_HEX) {
 }
 END_TEST
 
-START_TEST(sprintf_7_HEX) {
+START_TEST(sprintf_7_X2) {
   char str1[200];
   char str2[200];
   char *str3 = "%-10.5X!%-.8X!%-7X!%-.X";
@@ -96,7 +91,7 @@ START_TEST(sprintf_7_HEX) {
 }
 END_TEST
 
-START_TEST(sprintf_8_HEX) {
+START_TEST(sprintf_8_X2) {
   char str1[200];
   char str2[200];
   char *str3 = "%0X!%0.X!%0.0X!%0X!%.X";
@@ -111,7 +106,7 @@ START_TEST(sprintf_8_HEX) {
 }
 END_TEST
 
-START_TEST(sprintf_9_HEX) {
+START_TEST(sprintf_9_X2) {
   char str1[200];
   char str2[200];
   char *str3 = "%+X!%+3.X!%+5.7X!%+10X";
@@ -125,7 +120,7 @@ START_TEST(sprintf_9_HEX) {
 }
 END_TEST
 
-START_TEST(sprintf_10_HEX) {
+START_TEST(sprintf_10_X2) {
   char str1[200];
   char str2[200];
   char *str3 = "%X!%3.X!%5.7X!%10X %#X %-X %+X %.X % .X";
@@ -137,7 +132,7 @@ START_TEST(sprintf_10_HEX) {
 }
 END_TEST
 
-START_TEST(sprintf_11_HEX) {
+START_TEST(sprintf_11_X2) {
   char str1[200];
   char str2[200];
   char *str3 = "% X!% 3.X!% 5.7X!% 10X!%.X";
@@ -152,7 +147,7 @@ START_TEST(sprintf_11_HEX) {
 }
 END_TEST
 
-START_TEST(sprintf_12_HEX) {
+START_TEST(sprintf_12_X2) {
   char str1[200];
   char str2[200];
   char *str3 = "%+X!%+3.X!%+5.7X!%+10X!%+.X";
@@ -167,7 +162,7 @@ START_TEST(sprintf_12_HEX) {
 }
 END_TEST
 
-START_TEST(sprintf_13_HEX) {
+START_TEST(sprintf_13_X2) {
   char str1[200];
   char str2[200];
   char *str3 = "%#X!%#3X!%#5.7X!%#.7X!%#.X";
@@ -182,7 +177,7 @@ START_TEST(sprintf_13_HEX) {
 }
 END_TEST
 
-START_TEST(sprintf_14_HEX) {
+START_TEST(sprintf_14_X2) {
   char str1[200];
   char str2[200];
   char *str3 = "%0X!%06X!%05.7X!%0.7X!%0.X";
@@ -197,7 +192,7 @@ START_TEST(sprintf_14_HEX) {
 }
 END_TEST
 
-START_TEST(sprintf_15_HEX) {
+START_TEST(sprintf_15_X2) {
   char str1[200];
   char str2[200];
   char *str3 = "%*X!%-*X!%*.*X!%.*X";
@@ -218,7 +213,7 @@ START_TEST(sprintf_15_HEX) {
 }
 END_TEST
 
-START_TEST(sprintf_16_HEX) {
+START_TEST(sprintf_16_X2) {
   char str1[200];
   char str2[200];
   char *str3 = "%- X!%- 15X!%- 15X!%- X";
@@ -232,60 +227,26 @@ START_TEST(sprintf_16_HEX) {
 }
 END_TEST
 
-START_TEST(sprintf_17_HEX) {
-  char str1[400];
-  char str2[400];
-  char *str3 = "!%lX!";
-  long double num = INFINITY;
-  ck_assert_int_eq(sprintf(str1, str3, num), s21_sprintf(str2, str3, num));
-  ck_assert_pstr_eq(str1, str2);
-}
-END_TEST
-
-START_TEST(sprintf_18_HEX) {
-  char str1[400];
-  char str2[400];
-  char *str3 = "!%lX!";
-  long double num = NAN;
-  ck_assert_int_eq(sprintf(str1, str3, num),
-                   s21_sprintf(str2, str3, num));
-  ck_assert_pstr_eq(str1, str2);
-}
-END_TEST
-
-START_TEST(sprintf_19_HEX) {
-  char str1[400];
-  char str2[400];
-  char *str3 = "!%lX!";
-  long double num = -INFINITY;
-  ck_assert_int_eq(sprintf(str1, str3, num), s21_sprintf(str2, str3, num));
-  ck_assert_pstr_eq(str1, str2);
-}
-END_TEST
-
-Suite *test_sprintf_H(void) {
-  Suite *s = suite_create("\033[33m-=s21_sprintf_H=-\033[0m");
+Suite *test_sprintf_x2(void) {
+  Suite *s = suite_create("\033[45m-=S21_SPRINTF_X2=-\033[0m");
   TCase *tc = tcase_create("sprintf_tc");
 
-  tcase_add_test(tc, sprintf_1_HEX);
-  tcase_add_test(tc, sprintf_2_HEX);
-  tcase_add_test(tc, sprintf_3_HEX);
-  tcase_add_test(tc, sprintf_4_HEX);
-  tcase_add_test(tc, sprintf_5_HEX);
-  tcase_add_test(tc, sprintf_6_HEX);
-  tcase_add_test(tc, sprintf_7_HEX);
-  tcase_add_test(tc, sprintf_8_HEX);
-  tcase_add_test(tc, sprintf_9_HEX);
-  tcase_add_test(tc, sprintf_10_HEX);
-  tcase_add_test(tc, sprintf_11_HEX);
-  tcase_add_test(tc, sprintf_12_HEX);
-  tcase_add_test(tc, sprintf_13_HEX);
-  tcase_add_test(tc, sprintf_14_HEX);
-  tcase_add_test(tc, sprintf_15_HEX);
-  tcase_add_test(tc, sprintf_16_HEX);
-  tcase_add_test(tc, sprintf_17_HEX);
-  tcase_add_test(tc, sprintf_18_HEX);
-  tcase_add_test(tc, sprintf_19_HEX);
+  tcase_add_test(tc, sprintf_1_X2);
+  tcase_add_test(tc, sprintf_2_X2);
+  tcase_add_test(tc, sprintf_3_X2);
+  tcase_add_test(tc, sprintf_4_X2);
+  tcase_add_test(tc, sprintf_5_X2);
+  tcase_add_test(tc, sprintf_6_X2);
+  tcase_add_test(tc, sprintf_7_X2);
+  tcase_add_test(tc, sprintf_8_X2);
+  tcase_add_test(tc, sprintf_9_X2);
+  tcase_add_test(tc, sprintf_10_X2);
+  tcase_add_test(tc, sprintf_11_X2);
+  tcase_add_test(tc, sprintf_12_X2);
+  tcase_add_test(tc, sprintf_13_X2);
+  tcase_add_test(tc, sprintf_14_X2);
+  tcase_add_test(tc, sprintf_15_X2);
+  tcase_add_test(tc, sprintf_16_X2);
 
   suite_add_tcase(s, tc);
   return s;

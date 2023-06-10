@@ -28,8 +28,8 @@ Suite *test_strtok(void);
 
 Suite *test_sprintf_d(void);
 Suite *test_sprintf_o(void);
-Suite *test_sprintf_h(void);
-Suite *test_sprintf_H(void);
+Suite *test_sprintf_x1(void);
+Suite *test_sprintf_x2(void);
 Suite *test_sprintf_n(void);
 Suite *test_sprintf_percent(void);
 Suite *test_sprintf_u(void);

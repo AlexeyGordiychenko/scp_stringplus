@@ -1,4 +1,4 @@
-#include <locale.h>
+//#include <locale.h>
 
 #include "test_s21_string.h"
 
