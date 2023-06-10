@@ -228,7 +228,7 @@ START_TEST(sprintf_16_X2) {
 END_TEST
 
 Suite *test_sprintf_x2(void) {
-  Suite *s = suite_create("\033[45m-=S21_SPRINTF_X2=-\033[0m");
+  Suite *s = suite_create("\033[33m-=s21_sprintf_x2=-\033[0m");
   TCase *tc = tcase_create("sprintf_tc");
 
   tcase_add_test(tc, sprintf_1_X2);
