@@ -26,10 +26,10 @@ Suite *test_strrchr(void);
 Suite *test_strstr(void);
 Suite *test_strtok(void);
 
-Suite *test_sprintf_signed(void);
+Suite *test_sprintf_d(void);
 Suite *test_sprintf_o(void);
-Suite *test_sprintf_hex(void);
-Suite *test_sprintf_HEX(void);
+Suite *test_sprintf_h(void);
+Suite *test_sprintf_H(void);
 Suite *test_sprintf_n(void);
 Suite *test_sprintf_percent(void);
 Suite *test_sprintf_u(void);
@@ -37,7 +37,7 @@ Suite *test_sprintf_p(void);
 Suite *test_sprintf_i(void);
 Suite *test_sprintf_f(void);
 Suite *test_sprintf_c(void);
-Suite *test_sprintf_string(void);
+Suite *test_sprintf_s(void);
 Suite *test_sprintf_e(void);
 Suite *test_sprintf_g(void);
 
@@ -56,6 +56,6 @@ Suite *test_sscanf_x(void);
 Suite *test_sscanf_p(void);
 Suite *test_sscanf_n(void);
 Suite *test_sscanf_percent(void);
-Suite *test_sscanf_float(void);
+Suite *test_sscanf_f(void);
 
 #endif  // SRC_TESTS_ME_H
