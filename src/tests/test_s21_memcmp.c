@@ -1,8 +1,8 @@
 #include "test_s21_string.h"
 
 START_TEST(memcmp_1) {
-  char s1[] = "Hello, world!";
-  char s2[] = "Hello, world!";
+  char s1[] = "Tadam, param!";
+  char s2[] = "Tadam, param!";
   s21_size_t n = 7;
   int n1 = memcmp(s1, s2, n);
   n1 = n1 > 0 ? 1 : n1 == 0 ? 0 : -1;
@@ -13,8 +13,8 @@ START_TEST(memcmp_1) {
 END_TEST
 
 START_TEST(memcmp_2) {
-  char s1[] = "Hello, world!";
-  char s2[] = "Hello, world!";
+  char s1[] = "Tadam, param!";
+  char s2[] = "Tadam, param!";
   s21_size_t n = 13;
   int n1 = memcmp(s1, s2, n);
   n1 = n1 > 0 ? 1 : n1 == 0 ? 0 : -1;
@@ -25,8 +25,8 @@ START_TEST(memcmp_2) {
 END_TEST
 
 START_TEST(memcmp_3) {
-  char s1[] = "Hello, world!";
-  char s2[] = "Hello, world!";
+  char s1[] = "Tadam, param!";
+  char s2[] = "Tadam, param!";
   s21_size_t n = 0;
   int n1 = memcmp(s1, s2, n);
   n1 = n1 > 0 ? 1 : n1 == 0 ? 0 : -1;
@@ -37,8 +37,8 @@ START_TEST(memcmp_3) {
 END_TEST
 
 START_TEST(memcmp_4) {
-  char s1[] = "Hello, world!";
-  char s2[] = "Hello, world!";
+  char s1[] = "Tadam, param!";
+  char s2[] = "Tadam, param!";
   s21_size_t n = 14;
   int n1 = memcmp(s1, s2, n);
   n1 = n1 > 0 ? 1 : n1 == 0 ? 0 : -1;
@@ -49,8 +49,8 @@ START_TEST(memcmp_4) {
 END_TEST
 
 START_TEST(memcmp_5) {
-  char s1[] = "Hello, world!";
-  char s2[] = "Hello, world!";
+  char s1[] = "Tadam, param!";
+  char s2[] = "Tadam, param!";
   s21_size_t n = 14;
   int n1 = memcmp(s1, s2, n);
   n1 = n1 > 0 ? 1 : n1 == 0 ? 0 : -1;

@@ -1,21 +1,19 @@
 #include "test_s21_string.h"
 
-// One parameter signed_i
 START_TEST(sprintf_1_signed_i) {
   char str1[100] = "";
   char str2[100] = "";
-  char *str3 = "Test %d Test";
+  char *str3 = "!%d!";
   int val = -12;
   ck_assert_int_eq(sprintf(str1, str3, val), s21_sprintf(str2, str3, val));
   ck_assert_pstr_eq(str1, str2);
 }
 END_TEST
 
-// Three signed_i parameters
 START_TEST(sprintf_2_signed_i) {
   char str1[100];
   char str2[100];
-  char *str3 = "%d Test %d Test %d";
+  char *str3 = "%d!%d!%d";
   int val = 012;
   int val2 = -017;
   int val3 = 07464;
@@ -25,11 +23,10 @@ START_TEST(sprintf_2_signed_i) {
 }
 END_TEST
 
-// Three decimal parameters
 START_TEST(sprintf_3_signed_i) {
   char str1[100];
   char str2[100];
-  char *str3 = "%i Test %i Test %i";
+  char *str3 = "%i!%i!%i";
   int val = 3015;
   int val2 = 712;
   int val3 = 99;
@@ -39,11 +36,10 @@ START_TEST(sprintf_3_signed_i) {
 }
 END_TEST
 
-// Different sizes
 START_TEST(sprintf_4_signed_i) {
   char str1[100];
   char str2[100];
-  char *str3 = "%li Test %li Test %hi GOD %hi";
+  char *str3 = "%li!%li!%hi!%hi";
   long int val = 3088675747373646;
   signed long val2 = -125;
   short int val3 = -22600;
@@ -54,11 +50,10 @@ START_TEST(sprintf_4_signed_i) {
 }
 END_TEST
 
-// Different width
 START_TEST(sprintf_5_signed_i) {
   char str1[100];
   char str2[100];
-  char *str3 = "%3i Test %5i Test %10i";
+  char *str3 = "%3i!%5i!%10i";
   int val = -3015;
   int val2 = -11234;
   int val3 = -99;
@@ -68,11 +63,10 @@ START_TEST(sprintf_5_signed_i) {
 }
 END_TEST
 
-// Different precision and width
 START_TEST(sprintf_6_signed_i) {
   char str1[200];
   char str2[200];
-  char *str3 = "%6.5i Test %.23i Test %3.i TEST %.i";
+  char *str3 = "%6.5i!%.23i!%3.i!%.i";
   int val = -3015;
   int val2 = -712;
   int val3 = -99;
@@ -83,11 +77,10 @@ START_TEST(sprintf_6_signed_i) {
 }
 END_TEST
 
-// Minus flag
 START_TEST(sprintf_7_signed_i) {
   char str1[200];
   char str2[200];
-  char *str3 = "%-10.5i Test %-.8i Test %-7i TEST %-.i";
+  char *str3 = "%-10.5i!%-.8i!%-7i!%-.i";
   int val = -3015;
   int val2 = -712;
   int val3 = -99;
@@ -98,11 +91,10 @@ START_TEST(sprintf_7_signed_i) {
 }
 END_TEST
 
-// Zeroes
 START_TEST(sprintf_8_signed_i) {
   char str1[200];
   char str2[200];
-  char *str3 = "%0i Test %0.i Test %0.0i TEST %0i GOD %.i";
+  char *str3 = "%0i!%0.i!%0.0i!%0i!%.i";
   int val = -3015;
   int val2 = -712;
   int val3 = -99;
@@ -114,11 +106,10 @@ START_TEST(sprintf_8_signed_i) {
 }
 END_TEST
 
-// Pluses
 START_TEST(sprintf_9_signed_i) {
   char str1[200];
   char str2[200];
-  char *str3 = "%+i Test %+3.i Test %+5.7i TEST %+10i";
+  char *str3 = "%+i!%+3.i!%+5.7i!%+10i";
   int val = -3015;
   int val2 = -712;
   int val3 = -99;
@@ -129,11 +120,10 @@ START_TEST(sprintf_9_signed_i) {
 }
 END_TEST
 
-// Zero vals
 START_TEST(sprintf_10_signed_i) {
   char str1[200];
   char str2[200];
-  char *str3 = "%i Test %3.i Test %5.7i TEST %10i %#i %-i %+i %.i % .i";
+  char *str3 = "%i!%3.i!%5.7i!%10i %#i %-i %+i %.i % .i";
   int val = 0;
   ck_assert_int_eq(
       sprintf(str1, str3, val, val, val, val, val, val, val, val, val),
@@ -143,11 +133,10 @@ START_TEST(sprintf_10_signed_i) {
 }
 END_TEST
 
-// Spaces
 START_TEST(sprintf_11_signed_i) {
   char str1[200];
   char str2[200];
-  char *str3 = "% i Test % 3.i Test % 5.7i TEST % 10i GOD %.i";
+  char *str3 = "% i!% 3.i!% 5.7i!% 10i!%.i";
   int val = -32;
   int val2 = -8899;
   int val3 = -91918;
@@ -159,11 +148,10 @@ START_TEST(sprintf_11_signed_i) {
 }
 END_TEST
 
-// Plus
 START_TEST(sprintf_12_signed_i) {
   char str1[200];
   char str2[200];
-  char *str3 = "%+i Test %+3.i Test %+5.7i TEST %+10i GOD %+.i";
+  char *str3 = "%+i!%+3.i!%+5.7i!%+10i!%+.i";
   int val = -32;
   int val2 = -8899;
   int val3 = 91918;
@@ -175,11 +163,10 @@ START_TEST(sprintf_12_signed_i) {
 }
 END_TEST
 
-// Hash
 START_TEST(sprintf_13_signed_i) {
   char str1[200];
   char str2[200];
-  char *str3 = "%#i Test %#3i Test %#5.7i TEST %#.7i Oof %#.i";
+  char *str3 = "%#i!%#3i!%#5.7i!%#.7i!%#.i";
   int val = -32;
   int val2 = 8899;
   int val3 = -91918;
@@ -191,11 +178,10 @@ START_TEST(sprintf_13_signed_i) {
 }
 END_TEST
 
-// ZERO flag
 START_TEST(sprintf_14_signed_i) {
   char str1[200];
   char str2[200];
-  char *str3 = "%0d Test %06i Test %05.7i TEST %0.7i Oof %0.i";
+  char *str3 = "%0d!%06i!%05.7i!%0.7i!%0.i";
   int val = -32;
   int val2 = 8899;
   int val3 = -91918;
@@ -207,11 +193,10 @@ START_TEST(sprintf_14_signed_i) {
 }
 END_TEST
 
-// Asterisk
 START_TEST(sprintf_15_signed_i) {
   char str1[200];
   char str2[200];
-  char *str3 = "%*i Test %-*i Test %*.*i TEST %.*i";
+  char *str3 = "%*i!%-*i!%*.*i!%.*i";
   int val = 32;
   int val2 = 8899;
   int val3 = -919;
@@ -229,7 +214,6 @@ START_TEST(sprintf_15_signed_i) {
 }
 END_TEST
 
-// Simple extra test
 START_TEST(sprintf_16_signed_i) {
   char str1[100] = "";
   char str2[100] = "";
@@ -243,7 +227,7 @@ END_TEST
 START_TEST(sprintf_17_signed_i) {
   char str1[200];
   char str2[200];
-  char *str3 = "%- i Test %- 15i sdasda %- 15i sdsad %- i";
+  char *str3 = "%- i!%- 15i!%- 15i!%- i";
   int val = -3231;
   int val2 = -3231;
   int val3 = 3231;
@@ -257,7 +241,7 @@ END_TEST
 START_TEST(sprintf_18_signed_i) {
   char str1[400];
   char str2[400];
-  char *str3 = "test: %li!\n";
+  char *str3 = "!%li!";
   long double num = INFINITY;
   ck_assert_int_eq(sprintf(str1, str3, num), s21_sprintf(str2, str3, num));
   ck_assert_pstr_eq(str1, str2);
@@ -267,7 +251,7 @@ END_TEST
 START_TEST(sprintf_19_signed_i) {
   char str1[400];
   char str2[400];
-  char *str3 = "test: %li!";
+  char *str3 = "!%li!";
   long double num = NAN;
   ck_assert_int_eq(sprintf(str1, str3, num), s21_sprintf(str2, str3, num));
   ck_assert_pstr_eq(str1, str2);
@@ -277,7 +261,7 @@ END_TEST
 START_TEST(sprintf_20_signed_i) {
   char str1[400];
   char str2[400];
-  char *str3 = "test: %li!\n";
+  char *str3 = "!%li!";
   long double num = -INFINITY;
   ck_assert_int_eq(sprintf(str1, str3, num), s21_sprintf(str2, str3, num));
   ck_assert_pstr_eq(str1, str2);

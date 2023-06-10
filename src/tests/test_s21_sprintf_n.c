@@ -3,7 +3,7 @@
 START_TEST(sprintf_1_n) {
   char str1[100] = "";
   char str2[100] = "";
-  char *str3 = "Test %n Test";
+  char *str3 = "prikol%nvnature";
   int valn1 = 0, valn2 = 0;
   ck_assert_int_eq(sprintf(str1, str3, &valn1),
                    s21_sprintf(str2, str3, &valn2));
@@ -15,7 +15,7 @@ END_TEST
 START_TEST(sprintf_2_n) {
   char str1[100];
   char str2[100];
-  char *str3 = "Test T%nest %n";
+  char *str3 = "prikolT%n!!!%n";
   int valn1 = 0, valn2 = 0, valn3 = 0, valn4 = 0;
   ck_assert_int_eq(sprintf(str1, str3, &valn1, &valn3),
                    s21_sprintf(str2, str3, &valn2, &valn4));
@@ -28,7 +28,7 @@ END_TEST
 START_TEST(sprintf_3_n) {
   char str1[100];
   char str2[100];
-  char *str3 = "%d Test %d Te%-+#nst %d";
+  char *str3 = "%d prikol%d!!%-+#n!!!%d";
   int val = 3015;
   int val2 = 712;
   int val3 = 99;
@@ -43,7 +43,7 @@ END_TEST
 START_TEST(sprintf_4_n) {
   char str1[100];
   char str2[100];
-  char *str3 = "%d Test %d Test %d%34.23n";
+  char *str3 = "%d prikol%d prikol%d%34.23n";
   long int val = 308;
   unsigned long int val2 = 303;
   unsigned short int val3 = 600;

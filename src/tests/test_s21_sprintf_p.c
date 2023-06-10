@@ -1,21 +1,19 @@
 #include "test_s21_string.h"
 
-// One parameter pointer
 START_TEST(sprintf_1_pointer) {
   char str1[100] = "";
   char str2[100] = "";
-  char* str3 = "Test %p Test";
+  char* str3 = "!%p!";
   char* val = "0p32";
   ck_assert_int_eq(sprintf(str1, str3, val), s21_sprintf(str2, str3, val));
   ck_assert_pstr_eq(str1, str2);
 }
 END_TEST
 
-// Three pointer parameters
 START_TEST(sprintf_2_pointer) {
   char str1[100];
   char str2[100];
-  char* str3 = "%p Test %p Test %p";
+  char* str3 = "%p !%p !%p";
   char* val = "0p7a4";
   char* val2 = "0p91ba123f";
   char* val3 = "0p3123";
@@ -25,11 +23,10 @@ START_TEST(sprintf_2_pointer) {
 }
 END_TEST
 
-// Three decimal parameters
 START_TEST(sprintf_3_pointer) {
   char str1[100];
   char str2[100];
-  char* str3 = "%p Test %p Test %p";
+  char* str3 = "%p !%p !%p";
   char* val = "0p3015";
   char* val2 = "0p712";
   char* val3 = "0p99";
@@ -39,11 +36,10 @@ START_TEST(sprintf_3_pointer) {
 }
 END_TEST
 
-// Different sizes
 START_TEST(sprintf_4_pointer) {
   char str1[100];
   char str2[100];
-  char* str3 = "%p Test %p Test %p GOD %p";
+  char* str3 = "%p !%p !%p!%p";
   long int* val = (void*)3088675747373646;
   long long int* val2 = (void*)33030030303;
   unsigned short int* val3 = (void*)22600;
@@ -54,11 +50,10 @@ START_TEST(sprintf_4_pointer) {
 }
 END_TEST
 
-// Different width
 START_TEST(sprintf_5_pointer) {
   char str1[100];
   char str2[100];
-  char* str3 = "%3p Test %5p Test %12p";
+  char* str3 = "%3p !%5p !%12p";
   char* val = "3015";
   char* val2 = "01234";
   char* val3 = "99";
@@ -68,11 +63,10 @@ START_TEST(sprintf_5_pointer) {
 }
 END_TEST
 
-// Different precision and width
 START_TEST(sprintf_6_pointer) {
   char str1[200];
   char str2[200];
-  char* str3 = "%6.5p Test %.23p Test %3.p TEST %.p";
+  char* str3 = "%6.5p !%.23p !%3.p !%.p";
   char* val = "3015";
   char* val2 = "712";
   char* val3 = "99";
@@ -83,11 +77,10 @@ START_TEST(sprintf_6_pointer) {
 }
 END_TEST
 
-// Minus flag
 START_TEST(sprintf_7_pointer) {
   char str1[200];
   char str2[200];
-  char* str3 = "%-10.5p Test %-.4p Test %-16p TEST %-.5p";
+  char* str3 = "%-10.5p !%-.4p !%-16p !%-.5p";
   char* val = "3015";
   char* val2 = "712";
   char* val3 = "99";
@@ -98,11 +91,10 @@ START_TEST(sprintf_7_pointer) {
 }
 END_TEST
 
-// Zeroes
 START_TEST(sprintf_8_pointer) {
   char str1[200];
   char str2[200];
-  char* str3 = "%0p Test %0.p Test %0.0p TEST %0p GOD %.p";
+  char* str3 = "%0p !%0.p !%0.0p !%0p!%.p";
   char* val = "3015";
   char* val2 = "712";
   char* val3 = "99";
@@ -114,11 +106,10 @@ START_TEST(sprintf_8_pointer) {
 }
 END_TEST
 
-// Pluses
 START_TEST(sprintf_9_pointer) {
   char str1[200];
   char str2[200];
-  char* str3 = "%+p Test %+3.p Test %+5.7p TEST %+10p";
+  char* str3 = "%+p !%+3.p !%+5.7p !%+10p";
   char* val = "3015";
   char* val2 = "712";
   char* val3 = "99";
@@ -129,11 +120,10 @@ START_TEST(sprintf_9_pointer) {
 }
 END_TEST
 
-// Zero vals
 START_TEST(sprintf_10_pointer) {
   char str1[200];
   char str2[200];
-  char* str3 = "%p Test %3.p Test %5.7p TEST %10p %#p %-p %+p %.p % .p";
+  char* str3 = "%p !%3.p !%5.7p !%10p %#p %-p %+p %.p % .p";
   char* val = 0;
   ck_assert_int_eq(
       sprintf(str1, str3, val, val, val, val, val, val, val, val, val),
@@ -142,11 +132,10 @@ START_TEST(sprintf_10_pointer) {
 }
 END_TEST
 
-// Spaces
 START_TEST(sprintf_11_pointer) {
   char str1[200];
   char str2[200];
-  char* str3 = "% p Test % 3.p Test % 5.7p TEST % 10p GOD %.p";
+  char* str3 = "% p !% 3.p !% 5.7p !% 10p!%.p";
   char* val = "32";
   char* val2 = "8899";
   char* val3 = "91918";
@@ -158,11 +147,10 @@ START_TEST(sprintf_11_pointer) {
 }
 END_TEST
 
-// Plus
 START_TEST(sprintf_12_pointer) {
   char str1[200];
   char str2[200];
-  char* str3 = "%+p Test %+3.p Test %+5.7p TEST %+10p GOD %+.p";
+  char* str3 = "%+p !%+3.p !%+5.7p !%+10p!%+.p";
   char* val = "32";
   char* val2 = "8899";
   char* val3 = "91918";
@@ -174,11 +162,10 @@ START_TEST(sprintf_12_pointer) {
 }
 END_TEST
 
-// Hash
 START_TEST(sprintf_13_pointer) {
   char str1[200];
   char str2[200];
-  char* str3 = "%#p Test %#3p Test %#5.7p TEST %#.7p Oof %#.p";
+  char* str3 = "%#p !%#3p !%#5.7p !%#.7p ! %#.p";
   char* val = "32";
   char* val2 = "8899";
   char* val3 = "91918";
@@ -190,11 +177,10 @@ START_TEST(sprintf_13_pointer) {
 }
 END_TEST
 
-// ZERO flag
 START_TEST(sprintf_14_pointer) {
   char str1[200];
   char str2[200];
-  char* str3 = "%0p Test %06p Test %05.7p TEST %0.7p Oof %0.p";
+  char* str3 = "%0p !%06p !%05.7p !%0.7p ! %0.p";
   char* val = "32";
   char* val2 = "8899";
   char* val3 = "91918";
@@ -206,11 +192,10 @@ START_TEST(sprintf_14_pointer) {
 }
 END_TEST
 
-// Asterisk
 START_TEST(sprintf_15_pointer) {
   char str1[200];
   char str2[200];
-  char* str3 = "%*p Test %-*p Test %*.*p TEST %.*p Lololol %.*p";
+  char* str3 = "%*p !%-*p !%*.*p !%.*p!%.*p";
   char* val = "32";
   char* val2 = "8899";
   char* val3 = "9193112312312";

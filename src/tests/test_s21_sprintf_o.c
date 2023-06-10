@@ -1,21 +1,19 @@
 #include "test_s21_string.h"
 
-// One parameter octal
 START_TEST(sprintf_1_o) {
   char str1[100] = "";
   char str2[100] = "";
-  char *str3 = "Test %o Test";
+  char *str3 = "!%o!";
   int val = 012;
   ck_assert_int_eq(sprintf(str1, str3, val), s21_sprintf(str2, str3, val));
   ck_assert_pstr_eq(str1, str2);
 }
 END_TEST
 
-// Three octal parameters
 START_TEST(sprintf_2_o) {
   char str1[100];
   char str2[100];
-  char *str3 = "%o Test %o Test %o";
+  char *str3 = "%o !%o !%o";
   int val = 012;
   int val2 = 017;
   int val3 = 07464;
@@ -25,11 +23,10 @@ START_TEST(sprintf_2_o) {
 }
 END_TEST
 
-// Three decimal parameters
 START_TEST(sprintf_3_o) {
   char str1[100];
   char str2[100];
-  char *str3 = "%o Test %o Test %o";
+  char *str3 = "%o !%o !%o";
   int val = 3015;
   int val2 = 712;
   int val3 = 99;
@@ -39,11 +36,10 @@ START_TEST(sprintf_3_o) {
 }
 END_TEST
 
-// Different sizes
 START_TEST(sprintf_4_o) {
   char str1[100];
   char str2[100];
-  char *str3 = "%lo Test %lo Test %ho GOD %ho";
+  char *str3 = "%lo !%lo !%ho ! %ho";
   long int val = 3088675747373646;
   unsigned long int val2 = 33030030303;
   unsigned short int val3 = 22600;
@@ -54,11 +50,10 @@ START_TEST(sprintf_4_o) {
 }
 END_TEST
 
-// Different width
 START_TEST(sprintf_5_o) {
   char str1[100];
   char str2[100];
-  char *str3 = "%3o Test %5o Test %10o";
+  char *str3 = "%3o !%5o !%10o";
   int val = 3015;
   int val2 = 01234;
   int val3 = 99;
@@ -68,11 +63,10 @@ START_TEST(sprintf_5_o) {
 }
 END_TEST
 
-// Different precision and width
 START_TEST(sprintf_6_o) {
   char str1[200];
   char str2[200];
-  char *str3 = "%6.5o Test %.23o Test %3.o TEST %.o";
+  char *str3 = "%6.5o !%.23o !%3.o !%.o";
   int val = 3015;
   int val2 = 712;
   int val3 = 99;
@@ -83,11 +77,10 @@ START_TEST(sprintf_6_o) {
 }
 END_TEST
 
-// Minus flag
 START_TEST(sprintf_7_o) {
   char str1[200];
   char str2[200];
-  char *str3 = "%-10.5o Test %-.8o Test %-7o TEST %-.o";
+  char *str3 = "%-10.5o !%-.8o !%-7o !%-.o";
   int val = 3015;
   int val2 = 712;
   int val3 = 99;
@@ -98,11 +91,10 @@ START_TEST(sprintf_7_o) {
 }
 END_TEST
 
-// Zeroes
 START_TEST(sprintf_8_o) {
   char str1[200];
   char str2[200];
-  char *str3 = "%0o Test %0.o Test %0.0o TEST %0o GOD %.o";
+  char *str3 = "%0o !%0.o !%0.0o !%0o ! %.o";
   int val = 3015;
   int val2 = 712;
   int val3 = 99;
@@ -114,11 +106,10 @@ START_TEST(sprintf_8_o) {
 }
 END_TEST
 
-// Pluses
 START_TEST(sprintf_9_o) {
   char str1[200];
   char str2[200];
-  char *str3 = "%+o Test %+3.o Test %+5.7o TEST %+10o";
+  char *str3 = "%+o !%+3.o !%+5.7o !%+10o";
   int val = 3015;
   int val2 = 712;
   int val3 = 99;
@@ -129,11 +120,10 @@ START_TEST(sprintf_9_o) {
 }
 END_TEST
 
-// Zero vals
 START_TEST(sprintf_10_o) {
   char str1[200];
   char str2[200];
-  char *str3 = "%o Test %3.o Test %5.7o TEST %10o %#o %-o %+o %.o % .o";
+  char *str3 = "%o !%3.o !%5.7o !%10o %#o %-o %+o %.o % .o";
   int val = 0;
   ck_assert_int_eq(
       sprintf(str1, str3, val, val, val, val, val, val, val, val, val),
@@ -142,11 +132,10 @@ START_TEST(sprintf_10_o) {
 }
 END_TEST
 
-// Spaces
 START_TEST(sprintf_11_o) {
   char str1[200];
   char str2[200];
-  char *str3 = "% o Test % 3.o Test % 5.7o TEST % 10o GOD %.o";
+  char *str3 = "% o !% 3.o !% 5.7o !% 10o ! %.o";
   int val = 32;
   int val2 = 8899;
   int val3 = 91918;
@@ -158,11 +147,10 @@ START_TEST(sprintf_11_o) {
 }
 END_TEST
 
-// Plus
 START_TEST(sprintf_12_o) {
   char str1[200];
   char str2[200];
-  char *str3 = "%+o Test %+3.o Test %+5.7o TEST %+10o GOD %+.o";
+  char *str3 = "%+o !%+3.o !%+5.7o !%+10o ! %+.o";
   int val = 32;
   int val2 = 8899;
   int val3 = 91918;
@@ -174,11 +162,10 @@ START_TEST(sprintf_12_o) {
 }
 END_TEST
 
-// Hash
 START_TEST(sprintf_13_o) {
   char str1[200];
   char str2[200];
-  char *str3 = "%#o Test %#3o Test %#5.7o TEST %#.7o Oof %#.o";
+  char *str3 = "%#o !%#3o !%#5.7o !%#.7o ! %#.o";
   int val = 32;
   int val2 = 8899;
   int val3 = 91918;
@@ -190,11 +177,10 @@ START_TEST(sprintf_13_o) {
 }
 END_TEST
 
-// ZERO flag
 START_TEST(sprintf_14_o) {
   char str1[200];
   char str2[200];
-  char *str3 = "%0o Test %06o Test %05.7o TEST %0.7o Oof %0.o";
+  char *str3 = "%0o !%06o !%05.7o !%0.7o ! %0.o";
   int val = 32;
   int val2 = 8899;
   int val3 = 91918;
@@ -206,11 +192,10 @@ START_TEST(sprintf_14_o) {
 }
 END_TEST
 
-// Asterisk
 START_TEST(sprintf_15_o) {
   char str1[200];
   char str2[200];
-  char *str3 = "%*o Test %-*o Test %*.*o TEST %.*o";
+  char *str3 = "%*o !%-*o !%*.*o !%.*o";
   int val = 32;
   int val2 = 8899;
   int val3 = 919;
@@ -228,7 +213,6 @@ START_TEST(sprintf_15_o) {
 }
 END_TEST
 
-// Simple extra test
 START_TEST(sprintf_16_o) {
   char str1[100] = "";
   char str2[100] = "";
@@ -242,7 +226,7 @@ END_TEST
 START_TEST(sprintf_17_o) {
   char str1[200];
   char str2[200];
-  char *str3 = "%- o Test %- 15o sdasda %- 15o sdsad %- o";
+  char *str3 = "%- o !%- 15o ! %- 15o ! %- o";
   int val = -3231;
   int val2 = -3231;
   int val3 = 3231;
@@ -256,7 +240,7 @@ END_TEST
 START_TEST(sprintf_18_o) {
   char str1[200];
   char str2[200];
-  char *str3 = "fdsdsds %lo";
+  char *str3 = "!! %lo";
   long int val = ULONG_MAX;
   ck_assert_int_eq(sprintf(str1, str3, val), s21_sprintf(str2, str3, val));
   ck_assert_pstr_eq(str1, str2);
@@ -266,7 +250,7 @@ END_TEST
 START_TEST(sprintf_19_o) {
   char str1[400];
   char str2[400];
-  char *str3 = "test: %lo!\n";
+  char *str3 = "! %lo!";
   long double num = INFINITY;
   ck_assert_int_eq(sprintf(str1, str3, num), s21_sprintf(str2, str3, num));
   ck_assert_pstr_eq(str1, str2);
@@ -276,7 +260,7 @@ END_TEST
 START_TEST(sprintf_20_o) {
   char str1[400];
   char str2[400];
-  char *str3 = "test: %lo!";
+  char *str3 = "! %lo!";
   long double num = NAN;
   ck_assert_int_eq(sprintf(str1, str3, num),
                    s21_sprintf(str2, str3, num));
@@ -287,7 +271,7 @@ END_TEST
 START_TEST(sprintf_21_o) {
   char str1[400];
   char str2[400];
-  char *str3 = "test: %lo!\n";
+  char *str3 = "! %lo!";
   long double num = -INFINITY;
   ck_assert_int_eq(sprintf(str1, str3, num), s21_sprintf(str2, str3, num));
   ck_assert_pstr_eq(str1, str2);

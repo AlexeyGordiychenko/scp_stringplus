@@ -1,8 +1,8 @@
 #include "test_s21_string.h"
 
 START_TEST(memset_1) {
-  char s1[] = "Hello, world!";
-  char s2[] = "Hello, world!";
+  char s1[] = "Tadam, param!";
+  char s2[] = "Tadam, param!";
   int ch = ' ';
   s21_size_t n = strlen(s1);
   ck_assert_str_eq(memset(s1, ch, n), s21_memset(s2, ch, n));
@@ -10,8 +10,8 @@ START_TEST(memset_1) {
 END_TEST
 
 START_TEST(memset_2) {
-  char s1[] = "Hello, world!";
-  char s2[] = "Hello, world!";
+  char s1[] = "Tadam, param!";
+  char s2[] = "Tadam, param!";
   int ch = ' ';
   s21_size_t n = 5;
   ck_assert_str_eq(memset(s1, ch, n), s21_memset(s2, ch, n));
@@ -19,8 +19,8 @@ START_TEST(memset_2) {
 END_TEST
 
 START_TEST(memset_3) {
-  char s1[] = "Hello, world!";
-  char s2[] = "Hello, world!";
+  char s1[] = "Tadam, param!";
+  char s2[] = "Tadam, param!";
   int ch = ' ';
   s21_size_t n = 0;
   ck_assert_str_eq(memset(s1, ch, n), s21_memset(s2, ch, n));
@@ -37,8 +37,8 @@ START_TEST(memset_4) {
 END_TEST
 
 START_TEST(memset_5) {
-  char s1[] = "Hello";
-  char s2[] = "Hello";
+  char s1[] = "Tadam";
+  char s2[] = "Tadam";
   int ch = '\0';
   s21_size_t n = 4;
   ck_assert_str_eq(memset(s1, ch, n), s21_memset(s2, ch, n));
@@ -46,8 +46,8 @@ START_TEST(memset_5) {
 END_TEST
 
 START_TEST(memset_6) {
-  char s1[] = "Hello, world!";
-  char s2[] = "Hello, world!";
+  char s1[] = "Tadam, param!";
+  char s2[] = "Tadam, param!";
   int ch = 80;
   s21_size_t n = 7;
   ck_assert_str_eq(memset(s1, ch, n), s21_memset(s2, ch, n));

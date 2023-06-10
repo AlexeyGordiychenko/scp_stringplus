@@ -3,7 +3,7 @@
 START_TEST(sprintf_1_e) {
   char str1[100];
   char str2[100];
-  char *str3 = "%e Test %5e Test %5.e";
+  char *str3 = "%e elidacon %5e elidacon %5.e";
   double num = -764231539.;
   ck_assert_int_eq(sprintf(str1, str3, num, num, num),
                    s21_sprintf(str2, str3, num, num, num));
@@ -14,7 +14,7 @@ END_TEST
 START_TEST(sprintf_2_e) {
   char str1[100];
   char str2[100];
-  char *str3 = "%e\n%.e\n%4e\n%4.e\n%5.10e!";
+  char *str3 = "%e!%.e!%4e!%4.e!%5.10e!";
   double num = -764231539.;
   ck_assert_int_eq(sprintf(str1, str3, num, num, num, num, num),
                    s21_sprintf(str2, str3, num, num, num, num, num));
@@ -25,7 +25,7 @@ END_TEST
 START_TEST(sprintf_3_e) {
   char str1[100];
   char str2[100];
-  char *str3 = "%#e\n%#.e\n%#5.e\n%#.0e\n%#0.0e!";
+  char *str3 = "%#e!%#.e!%#5.e!%#.0e!%#0.0e!";
   double num = -665695342471359.;
   ck_assert_int_eq(sprintf(str1, str3, num, num, num, num, num),
                    s21_sprintf(str2, str3, num, num, num, num, num));
@@ -36,7 +36,7 @@ END_TEST
 START_TEST(sprintf_4_e) {
   char str1[300];
   char str2[300];
-  char *str3 = "New test: %020e\nSecond test: %020.e!";
+  char *str3 = "elidacon: %020e! elidacon: %020.e!";
   double num = -5921563224775967.;
   ck_assert_int_eq(sprintf(str1, str3, num, num),
                    s21_sprintf(str2, str3, num, num));
@@ -47,7 +47,7 @@ END_TEST
 START_TEST(sprintf_5_e) {
   char str1[300];
   char str2[300];
-  char *str3 = "Third test: %010e\nForth test: %010.e!";
+  char *str3 = "elidacon: %010e!elidacon: %010.e!";
   double num = -5921563224775967.;
   ck_assert_int_eq(sprintf(str1, str3, num, num),
                    s21_sprintf(str2, str3, num, num));
@@ -58,7 +58,7 @@ END_TEST
 START_TEST(sprintf_6_e) {
   char str1[300];
   char str2[300];
-  char *str3 = "Fifth test: %0.0e!";
+  char *str3 = "elidacon: %0.0e!";
   double num = -5921563224775967.;
   ck_assert_int_eq(sprintf(str1, str3, num), s21_sprintf(str2, str3, num));
   ck_assert_pstr_eq(str1, str2);
@@ -68,7 +68,7 @@ END_TEST
 START_TEST(sprintf_7_e) {
   char str1[300];
   char str2[300];
-  char *str3 = "New test: %020e\nSecond test: %020.e!";
+  char *str3 = "elidacon: %020e!elidacon: %020.e!";
   double num =
       -5921563224775977777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777776.;
   ck_assert_int_eq(sprintf(str1, str3, num, num),
@@ -80,7 +80,7 @@ END_TEST
 START_TEST(sprintf_8_e) {
   char str1[300];
   char str2[300];
-  char *str3 = "Third test: %010e\nForth test: %010.e\nFifth test: %0.0e!";
+  char *str3 = "elidacon: %010e!elidacon: %010.e!elidacon%0.0e!";
   double num =
       -5921563224775977777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777776.;
   ck_assert_int_eq(sprintf(str1, str3, num, num, num),
@@ -92,7 +92,7 @@ END_TEST
 START_TEST(sprintf_9_e) {
   char str1[300];
   char str2[300];
-  char *str3 = "New test: %020e\nSecond test: %020.5e!";
+  char *str3 = "%020e!%020.5e!";
   double num = -592156322477596.;
   ck_assert_int_eq(sprintf(str1, str3, num, num),
                    s21_sprintf(str2, str3, num, num));
@@ -103,7 +103,7 @@ END_TEST
 START_TEST(sprintf_10_e) {
   char str1[300];
   char str2[300];
-  char *str3 = "Third test: %020.4e\nForth test: %020.3e!";
+  char *str3 = "%020.4e!%020.3e!";
   double num = -592156322477596.;
   ck_assert_int_eq(sprintf(str1, str3, num, num),
                    s21_sprintf(str2, str3, num, num));
@@ -114,7 +114,7 @@ END_TEST
 START_TEST(sprintf_11_e) {
   char str1[300];
   char str2[300];
-  char *str3 = "Fifth test: %020.2e\nSixth test: %020.1e!";
+  char *str3 = "!%020.2e!%020.1e!";
   double num = -592156322477596.;
   ck_assert_int_eq(sprintf(str1, str3, num, num),
                    s21_sprintf(str2, str3, num, num));
@@ -125,7 +125,7 @@ END_TEST
 START_TEST(sprintf_12_e) {
   char str1[300];
   char str2[300];
-  char *str3 = "Seventh test: %020.e\n Eighth test: %020.0e!";
+  char *str3 = " ! %020.e!  ! %020.0e!";
   double num = -592156322477596.;
   ck_assert_int_eq(sprintf(str1, str3, num, num),
                    s21_sprintf(str2, str3, num, num));
@@ -136,7 +136,7 @@ END_TEST
 START_TEST(sprintf_13_e) {
   char str1[300];
   char str2[300];
-  char *str3 = "New test: % 20e\nSecond test: % 20.5e!";
+  char *str3 = " ! % 20e! ! % 20.5e!";
   double num = -592156322477596.;
   ck_assert_int_eq(sprintf(str1, str3, num, num),
                    s21_sprintf(str2, str3, num, num));
@@ -147,7 +147,7 @@ END_TEST
 START_TEST(sprintf_14_e) {
   char str1[300];
   char str2[300];
-  char *str3 = "Third test: % 20.4e\nForth test: % 20.3e!";
+  char *str3 = " ! % 20.4e! ! % 20.3e!";
   double num = -592156322477596.;
   ck_assert_int_eq(sprintf(str1, str3, num, num),
                    s21_sprintf(str2, str3, num, num));
@@ -158,7 +158,7 @@ END_TEST
 START_TEST(sprintf_15_e) {
   char str1[300];
   char str2[300];
-  char *str3 = "Fifth test: % 20.2e\nSixth test: % 20.1e!";
+  char *str3 = " ! % 20.2e! ! % 20.1e!";
   double num = -592156322477596.;
   ck_assert_int_eq(sprintf(str1, str3, num, num),
                    s21_sprintf(str2, str3, num, num));
@@ -169,7 +169,7 @@ END_TEST
 START_TEST(sprintf_16_e) {
   char str1[300];
   char str2[300];
-  char *str3 = "Seventh test: % 20.e\n Eighth test: % 20.0e!";
+  char *str3 = " ! % 20.e!  ! % 20.0e!";
   double num = -592156322477596.;
   ck_assert_int_eq(sprintf(str1, str3, num, num),
                    s21_sprintf(str2, str3, num, num));
@@ -180,7 +180,7 @@ END_TEST
 START_TEST(sprintf_17_e) {
   char str1[300];
   char str2[300];
-  char *str3 = "New test: % 31e\nSecond test: % 30.5e!";
+  char *str3 = " ! % 31e! ! % 30.5e!";
   double num = -592156322477596.;
   ck_assert_int_eq(sprintf(str1, str3, num, num),
                    s21_sprintf(str2, str3, num, num));
@@ -191,7 +191,7 @@ END_TEST
 START_TEST(sprintf_18_e) {
   char str1[300];
   char str2[300];
-  char *str3 = "Third test: % 33.4e\nForth test: % 35.3e!";
+  char *str3 = " ! % 33.4e! ! % 35.3e!";
   double num = -592156322477596.;
   ck_assert_int_eq(sprintf(str1, str3, num, num),
                    s21_sprintf(str2, str3, num, num));
@@ -202,7 +202,7 @@ END_TEST
 START_TEST(sprintf_19_e) {
   char str1[300];
   char str2[300];
-  char *str3 = "Fifth test: % 36.2e\nSixth test: % 45.1e!";
+  char *str3 = " ! % 36.2e! ! % 45.1e!";
   double num = -592156322477596.;
   ck_assert_int_eq(sprintf(str1, str3, num, num),
                    s21_sprintf(str2, str3, num, num));
@@ -213,7 +213,7 @@ END_TEST
 START_TEST(sprintf_20_e) {
   char str1[300];
   char str2[300];
-  char *str3 = "Seventh test: % 64.e\n Eighth test: % 80.0e!";
+  char *str3 = " ! % 64.e!  ! % 80.0e!";
   double num = -592156322477596.;
   ck_assert_int_eq(sprintf(str1, str3, num, num),
                    s21_sprintf(str2, str3, num, num));
@@ -226,7 +226,7 @@ START_TEST(sprintf_21_e) {
   char str2[300];
   double num1 = -89435776876.;
   double num2 = -894357768.76;
-  char *str3 = "New test: %e\nSecond test: %e!";
+  char *str3 = " ! %e! ! %e!";
   ck_assert_int_eq(sprintf(str1, str3, num1, num2),
                    s21_sprintf(str2, str3, num1, num2));
   ck_assert_pstr_eq(str1, str2);
@@ -238,7 +238,7 @@ START_TEST(sprintf_22_e) {
   char str2[300];
   double num3 = -89435.776876;
   double num4 = -0.89435776876;
-  char *str3 = "Third test: %e\nForth test: %e\n!";
+  char *str3 = " ! %e! ! %e!!";
   ck_assert_int_eq(sprintf(str1, str3, num3, num4),
                    s21_sprintf(str2, str3, num3, num4));
   ck_assert_pstr_eq(str1, str2);
@@ -250,7 +250,7 @@ START_TEST(sprintf_23_e) {
   char str2[300];
   double num1 = -.89435776876;
   double num2 = -.00089435776876;
-  char *str3 = "New test: %e\nSecond test: %e!";
+  char *str3 = " ! %e! ! %e!";
   ck_assert_int_eq(sprintf(str1, str3, num1, num2),
                    s21_sprintf(str2, str3, num1, num2));
   ck_assert_pstr_eq(str1, str2);
@@ -262,7 +262,7 @@ START_TEST(sprintf_24_e) {
   char str2[300];
   double num3 = -0.000000089435776876;
   double num4 = -0000000000000.89435776876;
-  char *str3 = "Third test: %e\nForth test: %e\n!";
+  char *str3 = " ! %e! ! %e!!";
   ck_assert_int_eq(sprintf(str1, str3, num3, num4),
                    s21_sprintf(str2, str3, num3, num4));
   ck_assert_pstr_eq(str1, str2);
@@ -276,7 +276,7 @@ START_TEST(sprintf_25_e) {
   double num2 = -.00089435776876;
   double num3 = -0.000000089435776876;
   double num4 = -0000000000000.89435776876;
-  char *str3 = "test: %.E!\ntest: %#E!\ntest: %#.E!\ntest: %0.E!\n";
+  char *str3 = "! %.E!!! %#E!!! %#.E!!! %0.E!!";
   ck_assert_int_eq(sprintf(str1, str3, num1, num2, num3, num4),
                    s21_sprintf(str2, str3, num1, num2, num3, num4));
   ck_assert_pstr_eq(str1, str2);
@@ -289,7 +289,7 @@ START_TEST(sprintf_26_e) {
   double num1 = -.3529373967;
   double num2 = -.0003529373967;
   double num3 = -0.00000003529373967;
-  char *str3 = "test: % 013.E\ntest: %#4.9E\ntest: %016.2E!";
+  char *str3 = "! % 013.E!! %#4.9E!! %016.2E!";
   ck_assert_int_eq(sprintf(str1, str3, num1, num2, num3),
                    s21_sprintf(str2, str3, num1, num2, num3));
   ck_assert_pstr_eq(str1, str2);
@@ -301,7 +301,7 @@ START_TEST(sprintf_27_e) {
   char str2[300];
   double num1 = -.3529373967;
   double num4 = -0000000000000.3529373967;
-  char *str3 = "test: %20.E\ntest: %-20.E\n!";
+  char *str3 = "! %20.E!! %-20.E!!";
   ck_assert_int_eq(sprintf(str1, str3, num4, num1),
                    s21_sprintf(str2, str3, num4, num1));
   ck_assert_pstr_eq(str1, str2);
@@ -314,7 +314,7 @@ START_TEST(sprintf_28_e) {
   double num1 = .3529373967;
   double num2 = .0003529373967;
   double num3 = 0.00000003529373967;
-  char *str3 = "test: % 30.1E\ntest: % 30.E\ntest: %030.0E!";
+  char *str3 = "! % 30.1E!! % 30.E!! %030.0E!";
   ck_assert_int_eq(sprintf(str1, str3, num1, num2, num3),
                    s21_sprintf(str2, str3, num1, num2, num3));
   ck_assert_pstr_eq(str1, str2);
@@ -326,7 +326,7 @@ START_TEST(sprintf_29_e) {
   char str2[300];
   double num1 = .3529373967;
   double num4 = 0000000000000.3529373967;
-  char *str3 = "test: %066.E\ntest: %-20.E\n!";
+  char *str3 = "! %066.E!! %-20.E!!";
   ck_assert_int_eq(sprintf(str1, str3, num4, num1),
                    s21_sprintf(str2, str3, num4, num1));
   ck_assert_pstr_eq(str1, str2);
@@ -337,7 +337,7 @@ START_TEST(sprintf_30_e) {
   char str1[300];
   char str2[300];
   double num1 = 53296575676899283734747273752737878257.;
-  char *str3 = "test: %- 17.1E\ntest: % -17.1E!";
+  char *str3 = "! %- 17.1E!! % -17.1E!";
   ck_assert_int_eq(sprintf(str1, str3, num1, num1),
                    s21_sprintf(str2, str3, num1, num1));
   ck_assert_pstr_eq(str1, str2);
@@ -348,7 +348,7 @@ START_TEST(sprintf_31_e) {
   char str1[300];
   char str2[300];
   double num2 = -53296575676899283734747273752737878257.;
-  char *str3 = "test: %# 10.2E\ntest: % #10.0E\ntest: %010.E\n!";
+  char *str3 = "! %# 10.2E!! % #10.0E!! %010.E!!";
   ck_assert_int_eq(sprintf(str1, str3, num2, num2, num2),
                    s21_sprintf(str2, str3, num2, num2, num2));
   ck_assert_pstr_eq(str1, str2);
@@ -359,7 +359,7 @@ START_TEST(sprintf_32_e) {
   char str1[600];
   char str2[600];
   double num1 = 1234567890000.0938217586;
-  char *str3 = "test: %- 67.1E\ntest: % -67.1E!";
+  char *str3 = "! %- 67.1E!! % -67.1E!";
   ck_assert_int_eq(sprintf(str1, str3, num1, num1),
                    s21_sprintf(str2, str3, num1, num1));
   ck_assert_pstr_eq(str1, str2);
@@ -370,7 +370,7 @@ START_TEST(sprintf_33_e) {
   char str1[600];
   char str2[600];
   double num2 = -.12345678900000938217586;
-  char *str3 = "test: %# 100.0E\ntest: % #100.0E\ntest: %0100.E\n!";
+  char *str3 = "! %# 100.0E!! % #100.0E!! %0100.E!!";
   ck_assert_int_eq(sprintf(str1, str3, num2, num2, num2),
                    s21_sprintf(str2, str3, num2, num2, num2));
   ck_assert_pstr_eq(str1, str2);
@@ -382,7 +382,7 @@ START_TEST(sprintf_34_e) {
   char str2[1000];
   double num1 = 1234567890000.0938217586;
   double num2 = -.12345678900000938217586;
-  char *str3 = "test: % 070.10E\ntest: % -67.10E\n!";
+  char *str3 = "! % 070.10E!! % -67.10E!!";
   ck_assert_int_eq(sprintf(str1, str3, num1, num2),
                    s21_sprintf(str2, str3, num1, num2));
   ck_assert_pstr_eq(str1, str2);
@@ -394,7 +394,7 @@ START_TEST(sprintf_35_e) {
   char str2[1000];
   double num1 = -12345678900000938217586.;
   double num2 = .12345678900000938217586;
-  char *str3 = "test: % 070.10E\ntest: % -67.10E\n!";
+  char *str3 = "! % 070.10E!! % -67.10E!!";
   ck_assert_int_eq(sprintf(str1, str3, num1, num2),
                    s21_sprintf(str2, str3, num1, num2));
   ck_assert_pstr_eq(str1, str2);
@@ -405,7 +405,7 @@ START_TEST(sprintf_36_e) {
   char str1[600];
   char str2[600];
   double num1 = 53296575676899283734747273752737878257.;
-  char *str3 = "test: % 10.1E\ntest: %- 10.1E!";
+  char *str3 = "! % 10.1E!! %- 10.1E!";
   ck_assert_int_eq(sprintf(str1, str3, num1, num1),
                    s21_sprintf(str2, str3, num1, num1));
   ck_assert_pstr_eq(str1, str2);
@@ -416,7 +416,7 @@ START_TEST(sprintf_37_e) {
   char str1[600];
   char str2[600];
   double num2 = 53296575676899283.734747273752737878257;
-  char *str3 = "test: % -10.0E\ntest: %- 10.0E\ntest: % -10.E\n!";
+  char *str3 = "! % -10.0E!! %- 10.0E!! % -10.E!!";
   ck_assert_int_eq(sprintf(str1, str3, num2, num2, num2),
                    s21_sprintf(str2, str3, num2, num2, num2));
   ck_assert_pstr_eq(str1, str2);
@@ -428,7 +428,7 @@ START_TEST(sprintf_38_e) {
   char str2[600];
   double num1 = .000000005329657567689928373474727375273787825732159676631957;
   double num2 = 53296575676899283.73474727375273787825732159676631957;
-  char *str3 = "test: % 20E\ntest: %-20E\ntest: %+ 020.E\n!";
+  char *str3 = "! % 20E!! %-20E!! %+ 020.E!!";
   ck_assert_int_eq(sprintf(str1, str3, num1, num2, num1),
                    s21_sprintf(str2, str3, num1, num2, num1));
   ck_assert_pstr_eq(str1, str2);
@@ -440,7 +440,7 @@ START_TEST(sprintf_39_e) {
   char str2[600];
   double num3 = 5329657567689928373474727375.273787825732159676631957;
   double num4 = 53296575676899283734747273752737878257.32159676631957;
-  char *str3 = "test: %#20.E\ntest: %- 20E!";
+  char *str3 = "! %#20.E!! %- 20E!";
   ck_assert_int_eq(sprintf(str1, str3, num3, num4),
                    s21_sprintf(str2, str3, num3, num4));
   ck_assert_pstr_eq(str1, str2);
@@ -450,7 +450,7 @@ END_TEST
 START_TEST(sprintf_40_e) {
   char str1[100];
   char str2[100];
-  char *str3 = "%.e\n%.2e\n%.5E\n%.9E\n%.13E!";
+  char *str3 = "%.e!%.2e!%.5E!%.9E!%.13E!";
   double num = -2599999999.;
   ck_assert_int_eq(sprintf(str1, str3, num, num, num, num, num),
                    s21_sprintf(str2, str3, num, num, num, num, num));
@@ -461,7 +461,7 @@ END_TEST
 START_TEST(sprintf_41_e) {
   char str1[200];
   char str2[200];
-  char *str3 = "%.Le\n%.2Le\n%.5Le\n%.9Le\n%.13LE!";
+  char *str3 = "%.Le!%.2Le!%.5Le!%.9Le!%.13LE!";
   long double num = -2599999999.;
   ck_assert_int_eq(sprintf(str1, str3, num, num, num, num, num),
                    s21_sprintf(str2, str3, num, num, num, num, num));
@@ -469,20 +469,20 @@ START_TEST(sprintf_41_e) {
 }
 END_TEST
 
-// START_TEST(sprintf_45_e) {
-//   char str1[400];
-//   char str2[400];
-//   char *str3 = "test: %Le!\n";
-//   long double num = INFINITY;
-//   ck_assert_int_eq(sprintf(str1, str3, num), s21_sprintf(str2, str3, num));
-//   ck_assert_pstr_eq(str1, str2);
-// }
-// END_TEST
+START_TEST(sprintf_45_e) {
+  char str1[400];
+  char str2[400];
+  char *str3 = "! %Le!!";
+  long double num = INFINITY;
+  ck_assert_int_eq(sprintf(str1, str3, num), s21_sprintf(str2, str3, num));
+  ck_assert_pstr_eq(str1, str2);
+}
+END_TEST
 
 START_TEST(sprintf_46_e) {
   char str1[400];
   char str2[400];
-  char *str3 = "test: %Le!test: %Le!\n";
+  char *str3 = "! %Le!! %Le!!";
   long double num = NAN;
   long double num1 = 1.;
   ck_assert_int_eq(sprintf(str1, str3, num, num1),
@@ -491,15 +491,15 @@ START_TEST(sprintf_46_e) {
 }
 END_TEST
 
-// START_TEST(sprintf_47_e) {
-//   char str1[400];
-//   char str2[400];
-//   char *str3 = "test: %Le!\n";
-//   long double num = -INFINITY;
-//   ck_assert_int_eq(sprintf(str1, str3, num), s21_sprintf(str2, str3, num));
-//   ck_assert_pstr_eq(str1, str2);
-// }
-// END_TEST
+START_TEST(sprintf_47_e) {
+  char str1[400];
+  char str2[400];
+  char *str3 = "! %Le!!";
+  long double num = -INFINITY;
+  ck_assert_int_eq(sprintf(str1, str3, num), s21_sprintf(str2, str3, num));
+  ck_assert_pstr_eq(str1, str2);
+}
+END_TEST
 
 Suite *test_sprintf_e(void) {
   Suite *s = suite_create("\033[33m-=s21_sprintf_e=-\033[0m");

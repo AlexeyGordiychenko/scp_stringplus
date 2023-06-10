@@ -1,8 +1,8 @@
 #include "test_s21_string.h"
 
 START_TEST(test_to_lower_1) {
-  char s1[30] = "hello, world!";
-  char s3[] = "hELLO, WORLD!";
+  char s1[30] = "tadam, param!";
+  char s3[] = "tADAM, PARAM!";
   char *s2 = s21_to_lower(s3);
   ck_assert_pstr_eq(s1, s2);
   if (s2) free(s2);
@@ -19,8 +19,8 @@ START_TEST(test_to_lower_2) {
 END_TEST
 
 START_TEST(test_to_lower_3) {
-  char s1[30] = "already lower";
-  char s3[] = "already lower";
+  char s1[30] = "skuchno";
+  char s3[] = "skuchno";
   char *s2 = s21_to_lower(s3);
   ck_assert_pstr_eq(s1, s2);
   if (s2) free(s2);

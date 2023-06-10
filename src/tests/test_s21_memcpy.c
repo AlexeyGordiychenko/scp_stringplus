@@ -1,8 +1,8 @@
 #include "test_s21_string.h"
 
 START_TEST(memcpy_1) {
-  char s1[] = "Hello, world!";
-  char s2[] = "Hello, world!";
+  char s1[] = "Tadam, param!";
+  char s2[] = "Tadam, param!";
   char s3[] = "Good";
   s21_size_t n = 4;
   ck_assert_str_eq(memcpy(s1, s3, n), s21_memcpy(s2, s3, n));
@@ -10,8 +10,8 @@ START_TEST(memcpy_1) {
 END_TEST
 
 START_TEST(memcpy_2) {
-  char s1[] = "Hello, world!";
-  char s2[] = "Hello, world!";
+  char s1[] = "Tadam, param!";
+  char s2[] = "Tadam, param!";
   char s3[] = "\0";
   s21_size_t n = 1;
   ck_assert_str_eq(memcpy(s1, s3, n), s21_memcpy(s2, s3, n));
@@ -19,8 +19,8 @@ START_TEST(memcpy_2) {
 END_TEST
 
 START_TEST(memcpy_3) {
-  char s1[] = "Hello, world!";
-  char s2[] = "Hello, world!";
+  char s1[] = "Tadam, param!";
+  char s2[] = "Tadam, param!";
   char s3[] = "f";
   s21_size_t n = 0;
   ck_assert_str_eq(memcpy(s1, s3, n), s21_memcpy(s2, s3, n));
@@ -28,8 +28,8 @@ START_TEST(memcpy_3) {
 END_TEST
 
 START_TEST(memcpy_4) {
-  char s1[] = "Hello, world!";
-  char s2[] = "Hello, world!";
+  char s1[] = "Tadam, param!";
+  char s2[] = "Tadam, param!";
   char s3[] = "Hi";
   s21_size_t n = 3;
   ck_assert_str_eq(memcpy(s1, s3, n), s21_memcpy(s2, s3, n));
@@ -37,8 +37,8 @@ START_TEST(memcpy_4) {
 END_TEST
 
 START_TEST(memcpy_5) {
-  char s1[] = "Hello, world!";
-  char s2[] = "Hello, world!";
+  char s1[] = "Tadam, param!";
+  char s2[] = "Tadam, param!";
   char s3[] = "Hi";
   s21_size_t n = 2;
   ck_assert_str_eq(memcpy(s1, s3, n), s21_memcpy(s2, s3, n));

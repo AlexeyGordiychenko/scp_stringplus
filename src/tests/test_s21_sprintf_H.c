@@ -4,7 +4,7 @@
 START_TEST(sprintf_1_HEX) {
   char str1[100] = "";
   char str2[100] = "";
-  char *str3 = "Test %X Test";
+  char *str3 = "!%X!";
   int val = 0X32;
   ck_assert_int_eq(sprintf(str1, str3, val), s21_sprintf(str2, str3, val));
   ck_assert_pstr_eq(str1, str2);
@@ -15,7 +15,7 @@ END_TEST
 START_TEST(sprintf_2_HEX) {
   char str1[100];
   char str2[100];
-  char *str3 = "%X Test %X Test %X";
+  char *str3 = "%X!%X!%X";
   int val = 0X7a4;
   int val2 = 0X9112312f;
   int val3 = 0X3123;
@@ -29,7 +29,7 @@ END_TEST
 START_TEST(sprintf_3_HEX) {
   char str1[100];
   char str2[100];
-  char *str3 = "%X Test %X Test %X";
+  char *str3 = "%X!%X!%X";
   int val = 0X3015;
   int val2 = 0X712;
   int val3 = 0X99;
@@ -43,7 +43,7 @@ END_TEST
 START_TEST(sprintf_4_HEX) {
   char str1[100];
   char str2[100];
-  char *str3 = "%lX Test %lX Test %hX GOD %hX";
+  char *str3 = "%lX!%lX!%hX!%hX";
   unsigned long int val = 3088675747373646;
   unsigned long int val2 = 33030030303;
   unsigned short int val3 = 22600;
@@ -58,7 +58,7 @@ END_TEST
 START_TEST(sprintf_5_HEX) {
   char str1[100];
   char str2[100];
-  char *str3 = "%3X Test %5X Test %10X";
+  char *str3 = "%3X!%5X!%10X";
   int val = 3015;
   int val2 = 01234;
   int val3 = 99;
@@ -68,11 +68,10 @@ START_TEST(sprintf_5_HEX) {
 }
 END_TEST
 
-// Different precision and width
 START_TEST(sprintf_6_HEX) {
   char str1[200];
   char str2[200];
-  char *str3 = "%6.5X Test %.23X Test %3.X TEST %.X";
+  char *str3 = "%6.5X!%.23X!%3.X!%.X";
   int val = 3015;
   int val2 = 712;
   int val3 = 99;
@@ -83,11 +82,10 @@ START_TEST(sprintf_6_HEX) {
 }
 END_TEST
 
-// Minus flag
 START_TEST(sprintf_7_HEX) {
   char str1[200];
   char str2[200];
-  char *str3 = "%-10.5X Test %-.8X Test %-7X TEST %-.X";
+  char *str3 = "%-10.5X!%-.8X!%-7X!%-.X";
   int val = 3015;
   int val2 = 712;
   int val3 = 99;
@@ -98,11 +96,10 @@ START_TEST(sprintf_7_HEX) {
 }
 END_TEST
 
-// Zeroes
 START_TEST(sprintf_8_HEX) {
   char str1[200];
   char str2[200];
-  char *str3 = "%0X Test %0.X Test %0.0X TEST %0X GOD %.X";
+  char *str3 = "%0X!%0.X!%0.0X!%0X!%.X";
   int val = 3015;
   int val2 = 712;
   int val3 = 99;
@@ -114,11 +111,10 @@ START_TEST(sprintf_8_HEX) {
 }
 END_TEST
 
-// Pluses
 START_TEST(sprintf_9_HEX) {
   char str1[200];
   char str2[200];
-  char *str3 = "%+X Test %+3.X Test %+5.7X TEST %+10X";
+  char *str3 = "%+X!%+3.X!%+5.7X!%+10X";
   int val = 3015;
   int val2 = 712;
   int val3 = 99;
@@ -129,11 +125,10 @@ START_TEST(sprintf_9_HEX) {
 }
 END_TEST
 
-// Zero vals
 START_TEST(sprintf_10_HEX) {
   char str1[200];
   char str2[200];
-  char *str3 = "%X Test %3.X Test %5.7X TEST %10X %#X %-X %+X %.X % .X";
+  char *str3 = "%X!%3.X!%5.7X!%10X %#X %-X %+X %.X % .X";
   int val = 0;
   ck_assert_int_eq(
       sprintf(str1, str3, val, val, val, val, val, val, val, val, val),
@@ -142,11 +137,10 @@ START_TEST(sprintf_10_HEX) {
 }
 END_TEST
 
-// Spaces
 START_TEST(sprintf_11_HEX) {
   char str1[200];
   char str2[200];
-  char *str3 = "% X Test % 3.X Test % 5.7X TEST % 10X GOD %.X";
+  char *str3 = "% X!% 3.X!% 5.7X!% 10X!%.X";
   int val = 32;
   int val2 = 8899;
   int val3 = 91918;
@@ -158,11 +152,10 @@ START_TEST(sprintf_11_HEX) {
 }
 END_TEST
 
-// Plus
 START_TEST(sprintf_12_HEX) {
   char str1[200];
   char str2[200];
-  char *str3 = "%+X Test %+3.X Test %+5.7X TEST %+10X GOD %+.X";
+  char *str3 = "%+X!%+3.X!%+5.7X!%+10X!%+.X";
   int val = 32;
   int val2 = 8899;
   int val3 = 91918;
@@ -174,11 +167,10 @@ START_TEST(sprintf_12_HEX) {
 }
 END_TEST
 
-// Hash
 START_TEST(sprintf_13_HEX) {
   char str1[200];
   char str2[200];
-  char *str3 = "%#X Test %#3X Test %#5.7X TEST %#.7X Oof %#.X";
+  char *str3 = "%#X!%#3X!%#5.7X!%#.7X!%#.X";
   int val = 32;
   int val2 = 8899;
   int val3 = 91918;
@@ -190,11 +182,10 @@ START_TEST(sprintf_13_HEX) {
 }
 END_TEST
 
-// ZERO flag
 START_TEST(sprintf_14_HEX) {
   char str1[200];
   char str2[200];
-  char *str3 = "%0X Test %06X Test %05.7X TEST %0.7X Oof %0.X";
+  char *str3 = "%0X!%06X!%05.7X!%0.7X!%0.X";
   int val = 32;
   int val2 = 8899;
   int val3 = 91918;
@@ -206,11 +197,10 @@ START_TEST(sprintf_14_HEX) {
 }
 END_TEST
 
-// Asterisk
 START_TEST(sprintf_15_HEX) {
   char str1[200];
   char str2[200];
-  char *str3 = "%*X Test %-*X Test %*.*X TEST %.*X";
+  char *str3 = "%*X!%-*X!%*.*X!%.*X";
   int val = 32;
   int val2 = 8899;
   int val3 = 919;
@@ -231,7 +221,7 @@ END_TEST
 START_TEST(sprintf_16_HEX) {
   char str1[200];
   char str2[200];
-  char *str3 = "%- X Test %- 15X sdasda %- 15X sdsad %- X";
+  char *str3 = "%- X!%- 15X!%- 15X!%- X";
   int val = -3231;
   int val2 = -3231;
   int val3 = 3231;
@@ -245,7 +235,7 @@ END_TEST
 START_TEST(sprintf_17_HEX) {
   char str1[400];
   char str2[400];
-  char *str3 = "test: %lX!\n";
+  char *str3 = "!%lX!";
   long double num = INFINITY;
   ck_assert_int_eq(sprintf(str1, str3, num), s21_sprintf(str2, str3, num));
   ck_assert_pstr_eq(str1, str2);
@@ -255,7 +245,7 @@ END_TEST
 START_TEST(sprintf_18_HEX) {
   char str1[400];
   char str2[400];
-  char *str3 = "test: %lX!";
+  char *str3 = "!%lX!";
   long double num = NAN;
   ck_assert_int_eq(sprintf(str1, str3, num),
                    s21_sprintf(str2, str3, num));
@@ -266,7 +256,7 @@ END_TEST
 START_TEST(sprintf_19_HEX) {
   char str1[400];
   char str2[400];
-  char *str3 = "test: %lX!\n";
+  char *str3 = "!%lX!";
   long double num = -INFINITY;
   ck_assert_int_eq(sprintf(str1, str3, num), s21_sprintf(str2, str3, num));
   ck_assert_pstr_eq(str1, str2);

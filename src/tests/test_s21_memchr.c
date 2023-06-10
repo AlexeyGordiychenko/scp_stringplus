@@ -1,7 +1,7 @@
 #include "test_s21_string.h"
 
 START_TEST(memchr_1) {
-  char str[] = "Hello, world!";
+  char str[] = "Tadam, param!";
   int ch = ' ';
   s21_size_t len = strlen(str);
   ck_assert_ptr_eq(memchr(str, ch, len), s21_memchr(str, ch, len));
@@ -9,7 +9,7 @@ START_TEST(memchr_1) {
 END_TEST
 
 START_TEST(memchr_2) {
-  char str[] = "Hello, world!";
+  char str[] = "Tadam, param!";
   int ch = 101;
   s21_size_t len = strlen(str);
   ck_assert_ptr_eq(memchr(str, ch, len), s21_memchr(str, ch, len));
@@ -17,7 +17,7 @@ START_TEST(memchr_2) {
 END_TEST
 
 START_TEST(memchr_3) {
-  char str[] = "Hello, world!";
+  char str[] = "Tadam, param!";
   int ch = '1';
   s21_size_t len = strlen(str);
   ck_assert_ptr_eq(memchr(str, ch, len), s21_memchr(str, ch, len));
@@ -25,7 +25,7 @@ START_TEST(memchr_3) {
 END_TEST
 
 START_TEST(memchr_4) {
-  char str[] = "Hello, world!";
+  char str[] = "Tadam, param!";
   int ch = 65;
   s21_size_t len = strlen(str);
   ck_assert_ptr_eq(memchr(str, ch, len), s21_memchr(str, ch, len));
@@ -33,7 +33,7 @@ START_TEST(memchr_4) {
 END_TEST
 
 START_TEST(memchr_5) {
-  char str[] = "Hello, world!";
+  char str[] = "Tadam, param!";
   int ch = 'l';
   s21_size_t len = 10;
   ck_assert_ptr_eq(memchr(str, ch, len), s21_memchr(str, ch, len));
@@ -41,7 +41,7 @@ START_TEST(memchr_5) {
 END_TEST
 
 START_TEST(memchr_6) {
-  char str[] = "Hello, world!";
+  char str[] = "Tadam, param!";
   int ch = 'w';
   s21_size_t len = 5;
   ck_assert_ptr_eq(memchr(str, ch, len), s21_memchr(str, ch, len));

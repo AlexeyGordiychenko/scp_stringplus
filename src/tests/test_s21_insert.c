@@ -1,9 +1,9 @@
 #include "test_s21_string.h"
 
 START_TEST(test_insert_1) {
-  char s1[30] = "hello, world!";
-  char s3[] = "hELLO, WORLD!";
-  char s4[] = "hello, hELLO, WORLD!world!";
+  char s1[30] = "tadam, param!";
+  char s3[] = "TADAM, PARAM!";
+  char s4[] = "tadam, TADAM, PARAM!param!";
   s21_size_t num = 7;
   char *s2 = s21_insert(s1, s3, num);
   ck_assert_pstr_eq(s4, s2);
@@ -35,8 +35,8 @@ END_TEST
 
 START_TEST(test_insert_4) {
   char s1[30] = "abcdefghij";
-  char s3[] = "\'I WAS HERE\'";
-  char s4[] = "abc\'I WAS HERE\'defghij";
+  char s3[] = "...RUSSIAN...'";
+  char s4[] = "abc...RUSSIAN...'defghij";
   s21_size_t num = 3;
   char *s2 = s21_insert(s1, s3, num);
   ck_assert_pstr_eq(s4, s2);
@@ -46,7 +46,7 @@ END_TEST
 
 START_TEST(test_insert_5) {
   char s1[30] = "abc";
-  char s3[] = "333";
+  char s3[] = "666";
   char *s4 = S21_NULL;
   s21_size_t num = 10;
   char *s2 = s21_insert(s1, s3, num);
@@ -56,8 +56,8 @@ START_TEST(test_insert_5) {
 END_TEST
 
 START_TEST(test_insert_6) {
-  char s1[30] = "hello, world!";
-  char s3[] = "hELLO, WORLD!";
+  char s1[30] = "tadam, param!";
+  char s3[] = "TADAM, PARAM!";
   char *s4 = S21_NULL;
   s21_size_t num = -1;
   char *s2 = s21_insert(s1, s3, num);
@@ -89,7 +89,7 @@ START_TEST(test_insert_8) {
 END_TEST
 
 START_TEST(test_insert_9) {
-  char s1[] = "wtf";
+  char s1[] = "hi!";
   char *s3 = S21_NULL;
   char *s4 = S21_NULL;
   s21_size_t num = 0;
