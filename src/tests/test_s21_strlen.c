@@ -1,7 +1,7 @@
 #include "test_s21_string.h"
 
 START_TEST(strlen_1) {
-  char str[] = "Hello, world!";
+  char str[] = "Param, taram!";
   ck_assert_int_eq(strlen(str), s21_strlen(str));
 }
 END_TEST
@@ -15,7 +15,7 @@ START_TEST(strlen_2) {
 END_TEST
 
 START_TEST(strlen_3) {
-  char str[] = "Hello, world!";
+  char str[] = "Param, taram!";
   ck_assert_int_eq(strlen(str), s21_strlen(str));
 }
 END_TEST
@@ -31,9 +31,8 @@ START_TEST(strlen_5) {
   // all!!!!!!!!!!!!!!!!!!!!!!!!!";
   ck_assert_int_eq(
       strlen(
-          "I hate doing tests, it's not funny at all!!!!!!!!!!!!!!!!!!!!!!!!!"),
-      s21_strlen("I hate doing tests, it's not funny at "
-                 "all!!!!!!!!!!!!!!!!!!!!!!!!!"));
+          "Po plyam, po polyam, siniy traktor edet k nam!"),
+      s21_strlen("Po plyam, po polyam, siniy traktor edet k nam!"));
 }
 END_TEST
 
@@ -44,8 +43,6 @@ START_TEST(strlen_6) {
 END_TEST
 
 START_TEST(strlen_7) {
-  // char str[] =
-  // "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
   ck_assert_int_eq(
       strlen("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"),
       s21_strlen(
@@ -54,46 +51,46 @@ START_TEST(strlen_7) {
 END_TEST
 
 START_TEST(strlen_8) {
-  // char str[] = "          00000000           ......  ";
+
   ck_assert_int_eq(strlen("          00000000           ......  "),
                    s21_strlen("          00000000           ......  "));
 }
 END_TEST
 
 START_TEST(strlen_9) {
-  // char str[] = "\n\n\n\n\n\n\n\n\nlololol\n\n\n\n\n";
-  ck_assert_int_eq(strlen("\n\n\n\n\n\n\n\n\nlololol\n\n\n\n\n"),
-                   s21_strlen("\n\n\n\n\n\n\n\n\nlololol\n\n\n\n\n"));
+
+  ck_assert_int_eq(strlen("\n\n\n\n\n\n\n\n\nparam\n\n\n\n\n"),
+                   s21_strlen("\n\n\n\n\n\n\n\n\nparam\n\n\n\n\n"));
 }
 END_TEST
 
 START_TEST(strlen_10) {
-  // char str[] = "\0\0\0\0\n";
+
   ck_assert_int_eq(strlen("\0\0\0\0\n"), s21_strlen("\0\0\0\0\n"));
 }
 END_TEST
 
 START_TEST(strlen_11) {
-  // char str[] = "";
+
   ck_assert_int_eq(strlen(""), s21_strlen(""));
 }
 END_TEST
 
 START_TEST(strlen_12) {
-  // char str[] = "\t\t";
+
   ck_assert_int_eq(strlen("\t\t"), s21_strlen("\t\t"));
 }
 END_TEST
 
 START_TEST(strlen_13) {
-  // char str[] = "\0test";
-  ck_assert_int_eq(strlen("\0test"), s21_strlen("\0test"));
+
+  ck_assert_int_eq(strlen("\0elidacon"), s21_strlen("\0elidacon"));
 }
 END_TEST
 
 START_TEST(strlen_14) {
-  // char str[] = "wtf \0 wtf";
-  ck_assert_int_eq(strlen("wtf \0 wtf"), s21_strlen("wtf \0 wtf"));
+
+  ck_assert_int_eq(strlen("peace \0 peace"), s21_strlen("peace \0 peace"));
 }
 END_TEST
 

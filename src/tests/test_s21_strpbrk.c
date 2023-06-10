@@ -1,14 +1,14 @@
 #include "test_s21_string.h"
 
 START_TEST(strpbrk_1) {
-  char s1[] = "Hello, world!";
-  char s2[] = "Hello, world!";
+  char s1[] = "Param, taram!";
+  char s2[] = "Param, taram!";
   ck_assert_pstr_eq(strpbrk(s1, s2), s21_strpbrk(s1, s2));
 }
 END_TEST
 
 START_TEST(strpbrk_2) {
-  char s1[] = "Hello, world!";
+  char s1[] = "Param, taram!";
   char s2[] = "!";
   ck_assert_pstr_eq(strpbrk(s1, s2), s21_strpbrk(s1, s2));
 }

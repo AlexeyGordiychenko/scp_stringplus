@@ -1,8 +1,8 @@
 #include "test_s21_string.h"
 
 START_TEST(strncmp_1) {
-  char s1[] = "Hello, world!";
-  char s2[] = "Hello, world!";
+  char s1[] = "Param, taram!";
+  char s2[] = "Param, taram!";
   s21_size_t n = 14;
   int n1 = strncmp(s1, s2, n);
   n1 = n1 > 0 ? 1 : n1 == 0 ? 0 : -1;
@@ -13,8 +13,8 @@ START_TEST(strncmp_1) {
 END_TEST
 
 START_TEST(strncmp_2) {
-  char s1[] = "Hello, world!";
-  char s2[] = "Hello, worldj";
+  char s1[] = "Param, taram!";
+  char s2[] = "Param, taramj";
   s21_size_t n = 14;
   int n1 = strncmp(s1, s2, n);
   n1 = n1 > 0 ? 1 : n1 == 0 ? 0 : -1;

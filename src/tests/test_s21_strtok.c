@@ -1,8 +1,8 @@
 #include "test_s21_string.h"
 
 START_TEST(strtok_1) {
-  char s1[] = "Hello, world!";
-  char s2[] = "Hello, world!";
+  char s1[] = "Param, taram!";
+  char s2[] = "Param, taram!";
   char s3[] = "!";
   ck_assert_pstr_eq(strtok(s1, s3), s21_strtok(s2, s3));
 }
@@ -17,34 +17,34 @@ START_TEST(strtok_2) {
 END_TEST
 
 START_TEST(strtok_3) {
-  char s1[] = "Hello, world!";
-  char s2[] = "Hello, world!";
+  char s1[] = "Param, taram!";
+  char s2[] = "Param, taram!";
   char s3[] = "\0";
   ck_assert_pstr_eq(strtok(s1, s3), s21_strtok(s2, s3));
 }
 END_TEST
 
 START_TEST(strtok_4) {
-  char s1[] = "Hello, world!";
-  char s2[] = "Hello, world!";
+  char s1[] = "Param, taram!";
+  char s2[] = "Param, taram!";
   char s3[] = "";
   ck_assert_pstr_eq(strtok(s1, s3), s21_strtok(s2, s3));
 }
 END_TEST
 
 START_TEST(strtok_5) {
-  char s1[] = "Hello, world!";
-  char s2[] = "Hello, world!";
-  char s3[] = "Hello, world!";
+  char s1[] = "Param, taram!";
+  char s2[] = "Param, taram!";
+  char s3[] = "Param, taram!";
   ck_assert_pstr_eq(strtok(s1, s3), s21_strtok(s2, s3));
 }
 END_TEST
 
 START_TEST(strtok_6) {
-  char s1[] = "Hello, world!";
-  char s2[] = "Hello, world!";
+  char s1[] = "Param, taram!";
+  char s2[] = "Param, taram!";
   char s3[] =
-      "My name is Polina. I hate this, maybe I'm not supposed for this.";
+      "i love 21 school.";
   ck_assert_pstr_eq(strtok(s1, s3), s21_strtok(s2, s3));
 }
 END_TEST
@@ -66,28 +66,20 @@ START_TEST(strtok_8) {
 END_TEST
 
 START_TEST(strtok_9) {
-  char s1[] = "\0Hello, world!";
-  char s2[] = "\0Hello, world!";
+  char s1[] = "\0Param, taram!";
+  char s2[] = "\0Param, taram!";
   char s3[] = "\0";
   ck_assert_pstr_eq(strtok(s1, s3), s21_strtok(s2, s3));
 }
 END_TEST
 
 START_TEST(strtok_10) {
-  char s1[] = "\0Hello, world!";
-  char s2[] = "\0Hello, world!";
+  char s1[] = "\0Param, taram!";
+  char s2[] = "\0Param, taram!";
   char s3[] = "";
   ck_assert_pstr_eq(strtok(s1, s3), s21_strtok(s2, s3));
 }
 END_TEST
-
-// START_TEST(strtok_11) {
-//   char *s1 = S21_NULL;
-//   char *s2 = S21_NULL;
-//   char s3[] = "";
-//   ck_assert_pstr_eq(strtok(s1, s3), s21_strtok(s2, s3));
-// }
-// END_TEST
 
 START_TEST(strtok_12) {
   char s1[] = "tuz-tuz-tuz";
@@ -98,8 +90,8 @@ START_TEST(strtok_12) {
 END_TEST
 
 START_TEST(strtok_13) {
-  char s1[] = "Hello, world! And other people";
-  char s2[] = "Hello, world! And other people";
+  char s1[] = "Param, taram! And other people";
+  char s2[] = "Param, taram! And other people";
   char s3[] = "\0Come here";
   char s4[] = "\0Come here";
   char s5[] = "";
@@ -115,8 +107,8 @@ START_TEST(strtok_13) {
 END_TEST
 
 START_TEST(strtok_14) {
-  char s1[] = "Hello,       world! And other people";
-  char s2[] = "Hello,       world! And other people";
+  char s1[] = "Param,       taram! And other people";
+  char s2[] = "Param,       taram! And other people";
   char s3[] = "Come here";
   char s4[] = "Come here";
   char s5[] = " o";
@@ -132,8 +124,8 @@ START_TEST(strtok_14) {
 END_TEST
 
 START_TEST(strtok_15) {
-  char s1[] = "Hello,      worllllllllllld! And lother people      ";
-  char s2[] = "Hello,      worllllllllllld! And lother people      ";
+  char s1[] = "Param,      worllllllllllld! And lother people      ";
+  char s2[] = "Param,      worllllllllllld! And lother people      ";
   char s3[] = "Come here";
   char s4[] = "Come here";
   char s5[] = " l";

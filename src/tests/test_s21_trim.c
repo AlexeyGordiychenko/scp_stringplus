@@ -1,9 +1,9 @@
 #include "test_s21_string.h"
 
 START_TEST(test_trim_1) {
-  char s1[30] = "-?hello, world!";
+  char s1[30] = "-?param, taram!";
   char s3[] = "!?-";
-  char s4[] = "hello, world";
+  char s4[] = "param, taram";
   char *s2 = s21_trim(s1, s3);
   ck_assert_pstr_eq(s4, s2);
   if (s2) free(s2);
@@ -51,9 +51,9 @@ START_TEST(test_trim_5) {
 END_TEST
 
 START_TEST(test_trim_6) {
-  char s1[30] = "hello, world!";
+  char s1[30] = "param, taram!";
   char s3[] = "?!";
-  char *s4 = "hello, world";
+  char *s4 = "param, taram";
   char *s2 = s21_trim(s1, s3);
   ck_assert_pstr_eq(s4, s2);
   if (s2) free(s2);

@@ -1,9 +1,9 @@
 #include "test_s21_string.h"
 
 START_TEST(test_to_upper_1) {
-  char s1[30] = "Hello, world!";
+  char s1[30] = "Param, taram!";
   char *s2 = s21_to_upper(s1);
-  char s3[] = "HELLO, WORLD!";
+  char s3[] = "PARAM, TARAM!";
   ck_assert_pstr_eq(s3, s2);
   if (s2) free(s2);
 }
@@ -19,9 +19,9 @@ START_TEST(test_to_upper_2) {
 END_TEST
 
 START_TEST(test_to_upper_3) {
-  char s1[30] = "ALREADY UPPER";
+  char s1[30] = "DONE!";
   char *s2 = s21_to_upper(s1);
-  char s3[] = "ALREADY UPPER";
+  char s3[] = "DONE!";
   ck_assert_pstr_eq(s3, s2);
   if (s2) free(s2);
 }

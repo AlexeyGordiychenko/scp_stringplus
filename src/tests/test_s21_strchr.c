@@ -1,56 +1,56 @@
 #include "test_s21_string.h"
 
 START_TEST(strchr_1) {
-  char s[] = "Hello, world!";
+  char s[] = "Param, taram!";
   int ch = 'h';
   ck_assert_pstr_eq(strchr(s, ch), s21_strchr(s, ch));
 }
 END_TEST
 
 START_TEST(strchr_2) {
-  char s[] = "Hello, world!";
+  char s[] = "Param, taram!";
   int ch = '\0';
   ck_assert_pstr_eq(strchr(s, ch), s21_strchr(s, ch));
 }
 END_TEST
 
 START_TEST(strchr_3) {
-  char s[] = "Hello, world!";
+  char s[] = "Param, taram!";
   int ch = ',';
   ck_assert_pstr_eq(strchr(s, ch), s21_strchr(s, ch));
 }
 END_TEST
 
 START_TEST(strchr_4) {
-  char s[] = "Hello, world!";
+  char s[] = "Param, taram!";
   int ch = 33;
   ck_assert_pstr_eq(strchr(s, ch), s21_strchr(s, ch));
 }
 END_TEST
 
 START_TEST(strchr_5) {
-  char s[] = "Hello, Polina!";
+  char s[] = "Param, Polina!";
   int ch = 'P';
   ck_assert_pstr_eq(strchr(s, ch), s21_strchr(s, ch));
 }
 END_TEST
 
 START_TEST(strchr_6) {
-  char s[] = "Hello, world!";
+  char s[] = "Param, taram!";
   int ch = 'w';
   ck_assert_pstr_eq(strchr(s, ch), s21_strchr(s, ch));
 }
 END_TEST
 
 START_TEST(strchr_7) {
-  char s[] = "Hello, world!";
+  char s[] = "Param, taram!";
   int ch = '0';
   ck_assert_pstr_eq(strchr(s, ch), s21_strchr(s, ch));
 }
 END_TEST
 
 START_TEST(strchr_8) {
-  char s[] = "Hello, world!";
+  char s[] = "Param, taram!";
   int ch = 'm';
   ck_assert_pstr_eq(strchr(s, ch), s21_strchr(s, ch));
 }

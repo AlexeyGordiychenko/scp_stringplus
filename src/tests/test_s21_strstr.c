@@ -1,21 +1,21 @@
 #include "test_s21_string.h"
 
 START_TEST(strstr_1) {
-  char s1[] = "Hello, world!";
-  char s2[] = "Hello, world!";
+  char s1[] = "Param, taram!";
+  char s2[] = "Param, taram!";
   ck_assert_pstr_eq(strstr(s1, s2), s21_strstr(s1, s2));
 }
 END_TEST
 
 START_TEST(strstr_2) {
-  char s1[] = "Hello, world!";
-  char s2[] = "Hello, P!";
+  char s1[] = "Param, taram!";
+  char s2[] = "Param, P!";
   ck_assert_pstr_eq(strstr(s1, s2), s21_strstr(s1, s2));
 }
 END_TEST
 
 START_TEST(strstr_3) {
-  char s1[] = "Hello, world!";
+  char s1[] = "Param, taram!";
   char s2[] = "!";
   ck_assert_pstr_eq(strstr(s1, s2), s21_strstr(s1, s2));
 }
@@ -23,8 +23,8 @@ END_TEST
 
 START_TEST(strstr_4) {
   char s1[] =
-      "Hello, world!Hello, world!Hello, world!Hello, world!Hello, world!";
-  char s2[] = "world";
+      "Param, taram!Param, taram!Param, taram!Param, taram!Param, taram!";
+  char s2[] = "taram";
   ck_assert_pstr_eq(strstr(s1, s2), s21_strstr(s1, s2));
 }
 END_TEST
@@ -37,7 +37,7 @@ START_TEST(strstr_5) {
 END_TEST
 
 START_TEST(strstr_6) {
-  char s1[] = "Hello, world!";
+  char s1[] = "Param, taram!";
   char s2[] = "";
   ck_assert_pstr_eq(strstr(s1, s2), s21_strstr(s1, s2));
 }
@@ -45,7 +45,7 @@ END_TEST
 
 START_TEST(strstr_7) {
   char s1[] = "";
-  char s2[] = "Hello, P!";
+  char s2[] = "Param, P!";
   ck_assert_pstr_eq(strstr(s1, s2), s21_strstr(s1, s2));
 }
 END_TEST

@@ -2,37 +2,37 @@
 
 START_TEST(strcspn_1) {
   char s1[] =
-      "Hello, world!Hello, world!Hello, world!Hello, world!Hello, world!";
-  char s2[] = "Hello, world!";
+      "Param, taram!Param, taram!Param, taram!Param, taram!Param, taram!";
+  char s2[] = "Param, taram!";
   ck_assert_int_eq(strcspn(s1, s2), s21_strcspn(s1, s2));
 }
 END_TEST
 
 START_TEST(strcspn_2) {
   char s1[] =
-      "Hello, world!Hello, world!Hello, world!Hello, world!Hello, world!";
+      "Param, taram!Param, taram!Param, taram!Param, taram!Param, taram!";
   char s2[] =
-      "Hello, world!Hello, world!Hello, world!Hello, world!Hello, world!";
+      "Param, taram!Param, taram!Param, taram!Param, taram!Param, taram!";
   ck_assert_int_eq(strcspn(s1, s2), s21_strcspn(s1, s2));
 }
 END_TEST
 
 START_TEST(strcspn_3) {
-  char s1[] = "v";
-  char s2[] = "vendetta";
+  char s1[] = "m";
+  char s2[] = "malenaro";
   ck_assert_int_eq(strcspn(s1, s2), s21_strcspn(s1, s2));
 }
 END_TEST
 
 START_TEST(strcspn_4) {
   char s1[] = "";
-  char s2[] = "Hello, world!";
+  char s2[] = "Param, taram!";
   ck_assert_int_eq(strcspn(s1, s2), s21_strcspn(s1, s2));
 }
 END_TEST
 
 START_TEST(strcspn_5) {
-  char s1[] = "Hello, world!";
+  char s1[] = "Param, taram!";
   char s2[] = "";
   ck_assert_int_eq(strcspn(s1, s2), s21_strcspn(s1, s2));
 }
