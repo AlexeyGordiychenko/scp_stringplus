@@ -1,4 +1,4 @@
-//#include <locale.h>
+#include <locale.h>
 
 #include "test_s21_string.h"
 
@@ -240,7 +240,7 @@ START_TEST(sprintf_17_s) {
 END_TEST
 
 START_TEST(sprintf_18_s) {
-  //setlocale(LC_ALL, "");
+  setlocale(LC_ALL, "");
 
   wchar_t str1[1024];
   char str2[1024];
@@ -263,7 +263,7 @@ START_TEST(sprintf_18_s) {
 END_TEST
 
 START_TEST(sprintf_19_s) {
-  //setlocale(LC_ALL, "");
+  setlocale(LC_ALL, "");
 
   wchar_t str1[1024];
   char str2[1024];
@@ -286,7 +286,7 @@ START_TEST(sprintf_19_s) {
 END_TEST
 
 START_TEST(sprintf_20_s) {
-  //setlocale(LC_ALL, "");
+  setlocale(LC_ALL, "");
 
   wchar_t str1[1024];
   char str2[1024];

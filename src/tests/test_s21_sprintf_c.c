@@ -1,4 +1,4 @@
-//#include <locale.h>
+#include <locale.h>
 
 #include "test_s21_string.h"
 
@@ -234,7 +234,7 @@ START_TEST(sprintf_19_c) {
 END_TEST
 
 START_TEST(sprintf_20_c) {
-  //setlocale(LC_ALL, "");
+  setlocale(LC_ALL, "");
 
   wchar_t str1[100];
   char str2[100];
@@ -254,7 +254,7 @@ START_TEST(sprintf_20_c) {
 END_TEST
 
 START_TEST(sprintf_21_c) {
- // setlocale(LC_ALL, "");
+  setlocale(LC_ALL, "");
 
   wchar_t str1[100];
   char str2[100];
