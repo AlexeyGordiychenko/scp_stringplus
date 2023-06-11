@@ -1,5 +1,3 @@
-#include <locale.h>
-
 #include "test_s21_string.h"
 
 START_TEST(sprintf_1_c) {
@@ -222,7 +220,7 @@ END_TEST
 
 START_TEST(sprintf_19_c) {
   char str1[100];
-  char str2[100];  //%lc!%llc!%hc!%hhc
+  char str2[100];
   char *str3 = "%c!%lc!%hc";
   int a = 3;
   unsigned long int b = 103;
@@ -234,8 +232,6 @@ START_TEST(sprintf_19_c) {
 END_TEST
 
 START_TEST(sprintf_20_c) {
-  setlocale(LC_ALL, "");
-
   wchar_t str1[100];
   char str2[100];
   wchar_t str2_w[100];
@@ -245,7 +241,6 @@ START_TEST(sprintf_20_c) {
 
   int len = swprintf(str1, 100, str3_w, a);
   int len21 = s21_sprintf(str2, str3, a);
-  //   printf("%s", str2);
   mbstowcs(str2_w, str2, 100);
 
   ck_assert_int_eq(0, wcscmp(str1, str2_w));
@@ -254,8 +249,6 @@ START_TEST(sprintf_20_c) {
 END_TEST
 
 START_TEST(sprintf_21_c) {
-  setlocale(LC_ALL, "");
-
   wchar_t str1[100];
   char str2[100];
   wchar_t str2_w[100];
@@ -274,7 +267,6 @@ START_TEST(sprintf_21_c) {
 
   int len = swprintf(str1, 100, str3_w, a, b, c, d, e, f, g, h);
   int len21 = s21_sprintf(str2, str3, a, b, c, d, e, f, g, h);
-  //   printf("%s", str2);
   mbstowcs(str2_w, str2, 100);
 
   ck_assert_int_eq(0, wcscmp(str1, str2_w));

@@ -1,5 +1,3 @@
-#include <locale.h>
-
 #include "test_s21_string.h"
 
 START_TEST(sprintf_1_s) {
@@ -240,8 +238,6 @@ START_TEST(sprintf_17_s) {
 END_TEST
 
 START_TEST(sprintf_18_s) {
-  setlocale(LC_ALL, "");
-
   wchar_t str1[1024];
   char str2[1024];
   wchar_t str2_w[1024];
@@ -263,8 +259,6 @@ START_TEST(sprintf_18_s) {
 END_TEST
 
 START_TEST(sprintf_19_s) {
-  setlocale(LC_ALL, "");
-
   wchar_t str1[1024];
   char str2[1024];
   wchar_t str2_w[1024];
@@ -286,8 +280,6 @@ START_TEST(sprintf_19_s) {
 END_TEST
 
 START_TEST(sprintf_20_s) {
-  setlocale(LC_ALL, "");
-
   wchar_t str1[1024];
   char str2[1024];
   wchar_t str2_w[1024];
@@ -317,7 +309,7 @@ Suite *test_sprintf_s(void) {
   tcase_add_test(tc, sprintf_1_s);
   tcase_add_test(tc, sprintf_2_s);
   tcase_add_test(tc, sprintf_3_s);
-  tcase_add_test(tc, sprintf_4_s);  // WCHAR
+  tcase_add_test(tc, sprintf_4_s);
   tcase_add_test(tc, sprintf_5_s);
   tcase_add_test(tc, sprintf_6_s);
   tcase_add_test(tc, sprintf_7_s);

@@ -1,5 +1,3 @@
-//#include <locale.h>
-
 #include "test_s21_string.h"
 
 START_TEST(sscanf_spec_c_2) {
@@ -127,8 +125,6 @@ START_TEST(sscanf_spec_c_10) {
 END_TEST
 
 START_TEST(sscanf_spec_wc_2) {
-  //setlocale(LC_ALL, "");
-
   char *format1 = "%lc";
   wchar_t *format2 = L"%lc";
 
@@ -146,8 +142,6 @@ START_TEST(sscanf_spec_wc_2) {
 END_TEST
 
 START_TEST(sscanf_spec_wc_3) {
-  //setlocale(LC_ALL, "");
-
   char *format1 = "%4lc %lc %lc";
   wchar_t *format2 = L"%4lc %lc %lc";
 
@@ -169,8 +163,6 @@ START_TEST(sscanf_spec_wc_3) {
 END_TEST
 
 START_TEST(sscanf_spec_wc_4) {
-  //setlocale(LC_ALL, "");
-
   char *format1 = "%lc";
   wchar_t *format2 = L"%lc";
 
@@ -188,8 +180,6 @@ START_TEST(sscanf_spec_wc_4) {
 END_TEST
 
 START_TEST(sscanf_spec_wc_5) {
-  //setlocale(LC_ALL, "");
-
   char *format1 = "%lc%lc%lc";
   wchar_t *format2 = L"%lc%lc%lc";
 
@@ -209,8 +199,6 @@ START_TEST(sscanf_spec_wc_5) {
 END_TEST
 
 START_TEST(sscanf_spec_wc_6) {
-  //setlocale(LC_ALL, "");
-
   char *format1 = "%lc %lc \t%lc";
   wchar_t *format2 = L"%lc %lc \t%lc";
 
@@ -230,8 +218,6 @@ START_TEST(sscanf_spec_wc_6) {
 END_TEST
 
 START_TEST(sscanf_spec_wc_7) {
-  //setlocale(LC_ALL, "");
-
   char *format1 = "%lc %lc \t%lc";
   wchar_t *format2 = L"%lc %lc \t%lc";
 
@@ -251,8 +237,6 @@ START_TEST(sscanf_spec_wc_7) {
 END_TEST
 
 START_TEST(sscanf_spec_wc_8) {
-  //setlocale(LC_ALL, "");
-
   char *format1 = "%lc %*lc \t%lc";
   wchar_t *format2 = L"%lc %*lc \t%lc";
 
@@ -271,8 +255,6 @@ START_TEST(sscanf_spec_wc_8) {
 END_TEST
 
 START_TEST(sscanf_spec_wc_9) {
-  //setlocale(LC_ALL, "");
-
   char *format1 = "%lc %2lc \t%4lc";
   wchar_t *format2 = L"%lc %2lc \t%4lc";
 
@@ -296,8 +278,6 @@ START_TEST(sscanf_spec_wc_9) {
 END_TEST
 
 START_TEST(sscanf_spec_wc_10) {
-  //setlocale(LC_ALL, "");
-
   char *format1 = "%lc %2lc %*lc \t%4lc";
   wchar_t *format2 = L"%lc %2lc %*lc \t%4lc";
 

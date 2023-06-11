@@ -1,5 +1,3 @@
-//#include <locale.h>
-
 #include "test_s21_string.h"
 
 START_TEST(sprintf_1_f) {
@@ -584,7 +582,6 @@ END_TEST
 // END_TEST
 
 Suite *test_sprintf_f(void) {
-  //setlocale(LC_NUMERIC, "C");
   Suite *s = suite_create("\033[33m-=s21_sprintf_f=-\033[0m");
   TCase *tc = tcase_create("sprintf_tc");
 
