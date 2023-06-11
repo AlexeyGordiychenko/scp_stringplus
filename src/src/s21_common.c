@@ -9,7 +9,8 @@ void reverse_string(char *str) {
   }
 }
 
-void pos_int_to_string(long long unsigned int number, char *str) {
+void pos_int_to_string(long long unsigned int number, char *str, int base,
+                       bool reg) {
   if (number == 0) {
     str[0] = '0';
     str[1] = '\0';
@@ -17,52 +18,15 @@ void pos_int_to_string(long long unsigned int number, char *str) {
   }
 
   int i = 0;
-  int is_negative = 0;
-
-  //   if (number < 0) {
-  //     is_negative = 1;
-  //     number = -number;
-  //   }
 
   while (number > 0) {
-    int digit = number % 10;
-    str[i++] = '0' + digit;
-    number /= 10;
-  }
-
-  if (is_negative) {
-    str[i++] = '-';
-  }
-
-  str[i] = '\0';
-
-  // Обратный порядок символов
-  reverse_string(str);
-}
-
-void pos_int_to_string_octal(long long unsigned int number, char *str) {
-  if (number == 0) {
-    str[0] = '0';
-    str[1] = '\0';
-    return;
-  }
-
-  int i = 0;
-  int is_negative = 0;
-
-  //   if (number < 0) {
-  //     is_negative = 1;
-  //     number = -number;
-  //   }
-
-  while (number > 0) {
-    int digit = number % 8;
-    str[i++] = '0' + digit;
-    number /= 8;
-  }
-
-  if (is_negative) {
-    str[i++] = '-';
+    int digit = number % base;
+    if (base == 16 && digit >= 10) {
+      str[i++] = ((reg) ? 'A' : 'a') + (digit - 10);
+    } else {
+      str[i++] = '0' + digit;
+    }
+    number /= base;
   }
 
   str[i] = '\0';
@@ -89,7 +53,7 @@ void double_to_string(long double number, char *buffer, Flag flags) {
   }
 
   // занесение целой части в строку
-  pos_int_to_string((long long unsigned int)int_part, buffer);
+  pos_int_to_string((long long unsigned int)int_part, buffer, 10, false);
 
   // обработка дробной части числа
   if ((flags.spec != 'g' || flags.spec != 'G')) {
@@ -141,7 +105,7 @@ void double_to_string(long double number, char *buffer, Flag flags) {
   if (sign == '-') {
     input_char_left(buffer, sign);
   }
- 
+
   // откидываем нули дробной части для gG
   if (!flags.prefix && (flags.spec == 'g' || flags.spec == 'G') &&
       s21_strchr(buffer, '.')) {
@@ -158,34 +122,36 @@ void double_to_string(long double number, char *buffer, Flag flags) {
   }
 }
 
-void int_to_hex(unsigned long int number, char *hex, int reg) {
-  if (number == 0) {
-    hex[0] = '0';
-    hex[1] = '\0';
-    return;
-  }
+void pointer_to_string(void *ptr, char *buffer) {
+  uintptr_t value = (uintptr_t)ptr;  // Преобразуем указатель в целое число
 
   int i = 0;
+  while (value != 0) {
+    int digit = value & 0xF;  // Получаем младшую четырехбитную цифру
+    /*Строка int digit = value & 0xF; выполняет побитовую операцию "И" (AND)
+между значением value и шаблоном 0xF.
 
-  while (number > 0) {
-    int digit = number % 16;
-    if (digit < 10) {
-      hex[i] = '0' + digit;  // Цифры 0-9
-    } else {
-      if (reg) {
-        hex[i] = 'A' + (digit - 10);  // Буквы A-F
-      } else {
-        hex[i] = 'a' + (digit - 10);  // Буквы a-f
-      }
-    }
-    number /= 16;
-    i++;
+Шаблон 0xF представляет собой 4 бита, установленных в единицу: 0000 1111 в
+двоичном представлении. Этот шаблон используется для выделения младшей
+четырехбитной цифры из значения value.
+
+Побитовая операция "И" между двоичными значениями выполняется побитово: каждый
+бит в результирующем значении будет равен 1, только если соответствующие биты
+в обоих операндах равны 1. В противном случае, если хотя бы один из битов
+равен 0, соответствующий бит в результирующем значении будет равен 0.
+
+Таким образом, строка int digit = value & 0xF; сохраняет младшую четырехбитную
+цифру из значения value в переменной digit*/
+
+    buffer[i++] = (digit < 10) ? ('0' + digit) : ('a' + digit - 10);
+    value >>= 4;  // Сдвигаем число на 4 бита вправо
   }
 
-  hex[i] = '\0';
-
-  // Обратный порядок символов
-  reverse_string(hex);
+  if (i == 0) {
+    buffer[i++] = '0';  // Если указатель равен нулю, добавляем цифру 0
+  }
+  buffer[i] = '\0';
+  reverse_string(buffer);
 }
 
 void input_char_left(char *str, char ch) {
@@ -196,15 +162,11 @@ void input_char_left(char *str, char ch) {
   str[0] = ch;
 }
 
-int int_to_str_min_len(long int number, char *str, bool sign, int min_len) {
+int int_to_str_min_len(long int number, char *str, int min_len) {
   char *p = str;
   int len = 0;
   int spec_case = number == LONG_MIN;
   if (number < 0) {
-    if (sign) {
-      *p++ = '-';
-      len++;
-    }
     number = (spec_case) ? LONG_MAX : -number;
   }
 
@@ -255,4 +217,220 @@ bool s21_isdigit(int a) { return (a >= '0' && a <= '9'); }
 bool s21_isspace(int c) {
   return (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f' ||
           c == '\v');
+}
+
+int base16_digit(int c) {
+  int res = -1;
+  if (c >= '0' && c <= '9') {
+    res = c - '0';
+  } else if (c >= 'a' && c <= 'f') {
+    res = c - 'a' + 10;
+  } else if (c >= 'A' && c <= 'F') {
+    res = c - 'A' + 10;
+  }
+  return res;
+}
+
+int char_to_digit(char c, int base) {
+  int digit = -1;
+  if (s21_isdigit(c)) {
+    digit = c - '0';
+  } else if (base == 16) {
+    digit = base16_digit(c);
+  }
+  return digit;
+}
+
+bool str_to_int(const char **str, long long *value, s21_size_t width,
+                int base) {
+  int sign = 1;
+  long long result = 0;
+  bool overflow = false;
+  s21_size_t count = 0;
+
+  bool res = parse_pre_number(&count, &sign, width, &base, str);
+
+  while (count++ < width || width == 0) {
+    int digit = char_to_digit(**str, base);
+
+    if (digit >= 0 && digit < base) {
+      res = true;
+      if (!overflow) {
+        if (result > (LONG_MAX - digit) / base) {
+          overflow = true;
+          result = (sign == 1) ? LONG_MAX : LONG_MIN;
+          sign = 1;
+        } else {
+          result = result * base + digit;
+        }
+      }
+      (*str)++;
+    } else {
+      break;
+    }
+  }
+  *value = sign * result;
+
+  return res;
+}
+
+bool str_to_uint(const char **str, unsigned long long *value, s21_size_t width,
+                 int base) {
+  int sign = 1;
+  unsigned long long result = 0;
+  bool overflow = false;
+  s21_size_t count = 0;
+
+  bool res = parse_pre_number(&count, &sign, width, &base, str);
+
+  while (count++ < width || width == 0) {
+    int digit = char_to_digit(**str, base);
+
+    if (digit >= 0 && digit < base) {
+      res = true;
+      if (!overflow) {
+        if (result > (ULONG_MAX - digit) / base) {
+          overflow = true;
+          result = ULONG_MAX;
+          sign = 1;
+        } else {
+          result = result * base + digit;
+        }
+      }
+      (*str)++;
+    } else {
+      break;
+    }
+  }
+  *value = sign * result;
+
+  return res;
+}
+
+bool str_to_float(const char **str, long double *value, s21_size_t width) {
+  int sign = 1, base = 10;
+  s21_size_t count = 0, decimal_places = 0;
+  long double integer_part = 0, decimal_part = 0;
+  long long exponent = 0;
+
+  bool res = parse_pre_number(&count, &sign, width, &base, str);
+  if (possible_nan_inf(**str)) {
+    return get_nan_inf(str, width, count, sign, value);
+  }
+
+  res = str_to_float_overflow(str, &integer_part, width, &count, &sign, base) ||
+        res;
+
+  if (**str == '.' && (count < width || width == 0)) {
+    (*str)++;
+    count++;
+    decimal_places = count;
+    res =
+        str_to_float_overflow(str, &decimal_part, width, &count, &sign, base) ||
+        res;
+    decimal_places = count - decimal_places;
+  }
+
+  if ((**str == 'e' || **str == 'E') && (count++ < width || width == 0)) {
+    (*str)++;
+    str_to_int(str, &exponent, width - count, 10);
+  }
+
+  *value = sign * ((integer_part + decimal_part / pow(10, decimal_places)) *
+                   pow(10, exponent));
+
+  return res;
+}
+
+bool parse_pre_number(s21_size_t *count, int *sign, s21_size_t width, int *base,
+                      const char **str) {
+  bool res = false;
+
+  // skip whitespace
+  while (s21_isspace(**str)) {
+    (*str)++;
+  }
+
+  // handle sign
+  if (**str == '-' || **str == '+') {
+    if (**str == '-') *sign = -1;
+    (*str)++;
+    (*count)++;
+  }
+
+  // handle base
+  if (*base == 0 || *base == 16) {
+    int new_base = 10;
+    if (**str == '0' && ((*count)++ < width || width == 0)) {
+      res = true;
+      new_base = 8;
+      (*str)++;
+      if ((**str == 'x' || **str == 'X') &&
+          ((*count)++ < width || width == 0)) {
+        new_base = 16;
+        (*str)++;
+      }
+    }
+    if (*base == 0) {
+      *base = new_base;
+    }
+  }
+  return res;
+}
+
+bool possible_nan_inf(char c) {
+  return (c == 'n' || c == 'N' || c == 'i' || c == 'I');
+}
+
+bool get_nan_inf(const char **str, s21_size_t width, s21_size_t count, int sign,
+                 long double *value) {
+  bool res = false;
+  char tmp[9] = {'\0'};
+  char *tmp_lower = s21_to_lower(s21_strncpy(tmp, *str, 8));
+  if (count + 3 <= width || width == 0) {
+    if (s21_strncmp(tmp_lower, "nan", 3) == 0) {
+      (*str) += 3;
+      *value = sign * NAN;
+      res = true;
+    } else if (s21_strncmp(tmp_lower, "inf", 3) == 0) {
+      (*str) += 3;
+      *value = sign * INFINITY;
+      res = true;
+    }
+  } else if (count + 8 <= width || width == 0) {
+    if (s21_strncmp(tmp_lower, "infinity", 8) == 0) {
+      (*str) += 8;
+      *value = sign * INFINITY;
+      res = true;
+    }
+  }
+  free(tmp_lower);
+  return res;
+}
+
+bool str_to_float_overflow(const char **str, long double *value,
+                           s21_size_t width, s21_size_t *count, int *sign,
+                           int base) {
+  bool res = false, overflow = false;
+  while (*count < width || width == 0) {
+    int digit = char_to_digit(**str, base);
+
+    if (digit >= 0 && digit < base) {
+      res = true;
+      (*count)++;
+      if (!overflow) {
+        if (*value > (DBL_MAX - digit) / base) {
+          overflow = true;
+          *value = (*sign == 1) ? DBL_MAX : DBL_MIN;
+          *sign = 1;
+        } else {
+          *value = *value * base + digit;
+        }
+      }
+      (*str)++;
+    } else {
+      break;
+    }
+  }
+  return res;
 }

@@ -1,8 +1,7 @@
 #include "../s21_string.h"
 #include "s21_common.h"
 
-void parse_spec(const char **p, Flag *flags, va_list *args);
-void pointer_to_string(void *ptr, char *buffer);
+void parse_sprintf_spec(const char **p, Flag *flags, va_list *args);
 void apply_flags(char *str, Flag flags);
 void double_to_exp(char *buffer, long double number, Flag flags);
 
@@ -31,7 +30,7 @@ int s21_sprintf(char *str, const char *format, ...) {
     Flag flags = {0};  // ининциализируем или обнуляем структуру флагов
     if (*p == '%') {
       /* парсинг спецификатора */
-      parse_spec(&p, &flags, &args);
+      parse_sprintf_spec(&p, &flags, &args);
 
       // тестовый вывод напарсенных структур
       //      printf("minus = %d, sign = %d, space = %d, prefix = %d, zero = %d,
@@ -95,7 +94,7 @@ int s21_sprintf(char *str, const char *format, ...) {
   return str_p - str - wchar_comp;
 }
 
-void parse_spec(const char **p, Flag *flags, va_list *args) {
+void parse_sprintf_spec(const char **p, Flag *flags, va_list *args) {
   // первоначальное значение -1, т.к. 0 - валидное значение
   flags->precision = -1;
 
@@ -197,8 +196,8 @@ void execute_x(char **p, va_list *args, Flag flags) {
   }
 
   // переводим в 16ый формат и записываем в строку
-  if (flags.spec == 'x') int_to_hex(number, hex, 0);
-  if (flags.spec == 'X') int_to_hex(number, hex, 1);
+  if (flags.spec == 'x') pos_int_to_string(number, hex, 16, false);
+  if (flags.spec == 'X') pos_int_to_string(number, hex, 16, true);
 
   apply_flags(hex, flags);
 
@@ -254,7 +253,7 @@ void process_d_spec(Flag flags, va_list *args, char **p) {
   s21_memset(temp, '\0', temp_size);
   int len = 0;
   if (flags.precision != 0 || value != 0) {
-    len = int_to_str_min_len(value, temp, false, flags.precision);
+    len = int_to_str_min_len(value, temp, flags.precision);
   }
   char sign = '\0';
   if (flags.sign || value < 0) {
@@ -288,7 +287,6 @@ void process_d_spec(Flag flags, va_list *args, char **p) {
 }
 
 void apply_flags(char *str, Flag flags) {
-  
   // обработка +
   if (flags.sign && str[0] != '-' &&
       (flags.spec == 'f' || flags.spec == 'e' || flags.spec == 'E' ||
@@ -301,7 +299,7 @@ void apply_flags(char *str, Flag flags) {
        flags.spec == 'g' || flags.spec == 'G')) {
     input_char_left(str, ' ');
   }
- 
+
   // точность для не десятичных
   if (flags.precision != -1 && flags.spec != 'f' && flags.spec != 'g' &&
       flags.spec != 'G') {  // точность, дополняем нулями слева
@@ -416,7 +414,7 @@ void execute_u(char **p, va_list *args, Flag flags) {
   }
 
   // переводим в 10ый формат и записываем в строку
-  pos_int_to_string(number, udigit);
+  pos_int_to_string(number, udigit, 10, false);
 
   apply_flags(udigit, flags);
 
@@ -439,7 +437,7 @@ void execute_o(char **p, va_list *args, Flag flags) {
   }
 
   // переводим в 8ый формат и записываем в строку
-  pos_int_to_string_octal(number, udigit);
+  pos_int_to_string(number, udigit, 8, false);
 
   apply_flags(udigit, flags);
 
@@ -525,122 +523,6 @@ int process_s_spec(Flag flags, va_list *args, char **p) {
   return res;
 }
 
-void pointer_to_string(void *ptr, char *buffer) {
-  uintptr_t value = (uintptr_t)ptr;  // Преобразуем указатель в целое число
-
-  int i = 0;
-  while (value != 0) {
-    int digit = value & 0xF;  // Получаем младшую четырехбитную цифру
-    /*Строка int digit = value & 0xF; выполняет побитовую операцию "И" (AND)
-между значением value и шаблоном 0xF.
-
-Шаблон 0xF представляет собой 4 бита, установленных в единицу: 0000 1111 в
-двоичном представлении. Этот шаблон используется для выделения младшей
-четырехбитной цифры из значения value.
-
-Побитовая операция "И" между двоичными значениями выполняется побитово: каждый
-бит в результирующем значении будет равен 1, только если соответствующие биты
-в обоих операндах равны 1. В противном случае, если хотя бы один из битов
-равен 0, соответствующий бит в результирующем значении будет равен 0.
-
-Таким образом, строка int digit = value & 0xF; сохраняет младшую четырехбитную
-цифру из значения value в переменной digit*/
-
-    buffer[i++] = (digit < 10) ? ('0' + digit) : ('a' + digit - 10);
-    value >>= 4;  // Сдвигаем число на 4 бита вправо
-  }
-
-  if (flags.length == 'l') {
-    wchar_t wide_char = (wchar_t)va_arg(*args, int);
-    res = put_wchar(p, wide_char);
-  } else {
-    char c = va_arg(*args, int);
-    **p = c;
-    (*p)++;
-  }
-
-  if (flags.width > len && flags.minus) {
-    s21_memset(*p, ' ', flags.width - len);
-    (*p) += flags.width - len;
-  }
-  return res;
-}
-
-int process_s_spec(Flag flags, va_list *args, char **p) {
-  s21_size_t len = 0;
-  s21_size_t width = (s21_size_t)flags.width;
-  s21_size_t precision =
-      (flags.precision < 0) ? 0 : (s21_size_t)flags.precision;
-  bool wchar = (flags.length == 'l') ? true : false;
-  bool null_line = false;
-  int res = 0;
-
-  wchar_t *wline = NULL;
-  const char *line = NULL;
-
-  if (wchar) {
-    wline = va_arg(*args, wchar_t *);
-    if (wline == NULL) {
-      wline = L"(null)";
-      null_line = true;
-    }
-    len = wcslen(wline);
-  } else {
-    line = va_arg(*args, const char *);
-    if (line == NULL) {
-      line = "(null)";
-      null_line = true;
-    }
-    len = s21_strlen(line);
-  }
-
-  // устанавливаем точность
-  if (flags.precision == -1) flags.precision = 6;
-
-  // преобразуем число в строку с заданной точностью
-  double_to_string(number, buffer, flags.precision);
-
-  apply_flags(buffer, flags);
-
-  int buffer_len = (int)s21_strlen(buffer);
-  s21_strncpy(*p, buffer, buffer_len);
-  (*p) += buffer_len;
-}
-
-
-
-void pointer_to_string(void *ptr, char *buffer) {
-  uintptr_t value = (uintptr_t)ptr;  // Преобразуем указатель в целое число
-
-  int i = 0;
-  while (value != 0) {
-    int digit = value & 0xF;  // Получаем младшую четырехбитную цифру
-    /*Строка int digit = value & 0xF; выполняет побитовую операцию "И" (AND)
-между значением value и шаблоном 0xF.
-
-Шаблон 0xF представляет собой 4 бита, установленных в единицу: 0000 1111 в
-двоичном представлении. Этот шаблон используется для выделения младшей
-четырехбитной цифры из значения value.
-
-Побитовая операция "И" между двоичными значениями выполняется побитово: каждый
-бит в результирующем значении будет равен 1, только если соответствующие биты
-в обоих операндах равны 1. В противном случае, если хотя бы один из битов
-равен 0, соответствующий бит в результирующем значении будет равен 0.
-
-Таким образом, строка int digit = value & 0xF; сохраняет младшую четырехбитную
-цифру из значения value в переменной digit*/
-
-    buffer[i++] = (digit < 10) ? ('0' + digit) : ('a' + digit - 10);
-    value >>= 4;  // Сдвигаем число на 4 бита вправо
-  }
-
-  if (i == 0) {
-    buffer[i++] = '0';  // Если указатель равен нулю, добавляем цифру 0
-  }
-  buffer[i] = '\0';
-  reverse_string(buffer);
-}
-
 void execute_p(char **p, va_list *args, Flag flags) {
   char buffer[50];
   void *ptr = va_arg(*args, void *);
@@ -705,7 +587,7 @@ void execute_f(char **p, va_list *args, Flag flags) {
     // преобразуем число в строку с заданной точностью
     double_to_string(number, buffer, flags);
   }
- 
+
   apply_flags(buffer, flags);
 
   int buffer_len = (int)s21_strlen(buffer);
@@ -826,7 +708,7 @@ void double_to_exp(char *buffer, long double number, Flag flags) {
   char exp_count_string[20] = {0};
   char sign = '+';
   if (exp_count < 0) sign = '-';
-  pos_int_to_string(abs(exp_count), exp_count_string);
+  pos_int_to_string(abs(exp_count), exp_count_string, 10, false);
   if ((int)s21_strlen(exp_count_string) < 2) {
     input_char_left(exp_count_string, '0');
   }

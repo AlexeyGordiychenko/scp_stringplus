@@ -9,16 +9,10 @@ typedef struct {
   char spec;
 } SFlags;
 
-void parse_sscanf_spec(const char **p, SFlags *flags);
-bool parse_int(const char **str, long long *value, s21_size_t width, int base);
-bool parse_uint(const char **str, unsigned long long *value, s21_size_t width,
-                int base);
-bool parse_float(const char **str, long double *value, s21_size_t width);
-bool parse_pre_number(s21_size_t *count, int *sign, s21_size_t width, int *base,
-                      const char **str);
+void parse_sscanf_spec(SFlags *flags, const char **p);
 
-bool process_spec(SFlags flags, va_list *args, const char **p, const char **str,
-                  s21_size_t *count);
+bool process_spec_sscanf(SFlags flags, va_list *args, const char **p,
+                         const char **str, s21_size_t *count);
 bool process_dio_spec_sscanf(SFlags flags, va_list *args, int base,
                              const char **p);
 bool process_ux_spec_sscanf(SFlags flags, va_list *args, int base,
@@ -30,19 +24,11 @@ bool process_f_spec_sscanf(SFlags flags, va_list *args, const char **p);
 
 void assign_int_value(SFlags flags, va_list *args, long long value);
 void assign_uint_value(SFlags flags, va_list *args, unsigned long long value);
-void assign_wchars(SFlags flags, const char **p, va_list *args);
-void assign_chars(SFlags flags, const char **p, va_list *args);
+void assign_wchars(SFlags flags, va_list *args, const char **p);
+void assign_chars(SFlags flags, va_list *args, const char **p);
 void assign_float_value(SFlags flags, va_list *args, long double value);
 
 void skip_chars(SFlags flags, const char **p);
-int base16_digit(int c);
-int get_digit(const char **str, int base);
-bool possible_nan_inf(char c);
-bool get_nan_inf(const char **str, s21_size_t width, s21_size_t count, int sign,
-                 long double *value);
-bool str_to_float_overflow(const char **str, long double *value,
-                           s21_size_t width, s21_size_t *count, int *sign,
-                           int base);
 
 int s21_sscanf(const char *str, const char *format, ...) {
   va_list args;
@@ -55,9 +41,9 @@ int s21_sscanf(const char *str, const char *format, ...) {
     SFlags flags = {0};  // ининциализируем или обнуляем структуру флагов
     if (*p == '%') {
       /* парсинг спецификатора */
-      parse_sscanf_spec(&p, &flags);
+      parse_sscanf_spec(&flags, &p);
       /* обработка спецификатора */
-      res = process_spec(flags, &args, &str_p, &str, &count);
+      res = process_spec_sscanf(flags, &args, &str_p, &str, &count);
     } else if (s21_isspace(*p)) {
       while (s21_isspace(*str_p)) {
         str_p++;
@@ -75,8 +61,8 @@ int s21_sscanf(const char *str, const char *format, ...) {
   return count;
 }
 
-bool process_spec(SFlags flags, va_list *args, const char **p, const char **str,
-                  s21_size_t *count) {
+bool process_spec_sscanf(SFlags flags, va_list *args, const char **p,
+                         const char **str, s21_size_t *count) {
   bool res = true;
   switch (flags.spec) {
     case 'd':
@@ -120,7 +106,7 @@ bool process_spec(SFlags flags, va_list *args, const char **p, const char **str,
   return res;
 }
 
-void parse_sscanf_spec(const char **p, SFlags *flags) {
+void parse_sscanf_spec(SFlags *flags, const char **p) {
   // парсим флаги
   (*p)++;
 
@@ -170,147 +156,11 @@ void parse_sscanf_spec(const char **p, SFlags *flags) {
   }
 }
 
-bool parse_int(const char **str, long long *value, s21_size_t width, int base) {
-  int sign = 1;
-  long long result = 0;
-  bool overflow = false;
-  s21_size_t count = 0;
-
-  bool res = parse_pre_number(&count, &sign, width, &base, str);
-
-  while (count++ < width || width == 0) {
-    int digit = get_digit(str, base);
-
-    if (digit >= 0 && digit < base) {
-      res = true;
-      if (!overflow) {
-        if (result > (LONG_MAX - digit) / base) {
-          overflow = true;
-          result = (sign == 1) ? LONG_MAX : LONG_MIN;
-          sign = 1;
-        } else {
-          result = result * base + digit;
-        }
-      }
-      (*str)++;
-    } else {
-      break;
-    }
-  }
-  *value = sign * result;
-
-  return res;
-}
-
-bool parse_uint(const char **str, unsigned long long *value, s21_size_t width,
-                int base) {
-  int sign = 1;
-  unsigned long long result = 0;
-  bool overflow = false;
-  s21_size_t count = 0;
-
-  bool res = parse_pre_number(&count, &sign, width, &base, str);
-
-  while (count++ < width || width == 0) {
-    int digit = get_digit(str, base);
-
-    if (digit >= 0 && digit < base) {
-      res = true;
-      if (!overflow) {
-        if (result > (ULONG_MAX - digit) / base) {
-          overflow = true;
-          result = ULONG_MAX;
-          sign = 1;
-        } else {
-          result = result * base + digit;
-        }
-      }
-      (*str)++;
-    } else {
-      break;
-    }
-  }
-  *value = sign * result;
-
-  return res;
-}
-
-bool parse_float(const char **str, long double *value, s21_size_t width) {
-  int sign = 1, base = 10;
-  s21_size_t count = 0, decimal_places = 0;
-  long double integer_part = 0, decimal_part = 0;
-  long long exponent = 0;
-
-  bool res = parse_pre_number(&count, &sign, width, &base, str);
-  if (possible_nan_inf(**str)) {
-    return get_nan_inf(str, width, count, sign, value);
-  }
-
-  res = str_to_float_overflow(str, &integer_part, width, &count, &sign, base) ||
-        res;
-
-  if (**str == '.' && (count < width || width == 0)) {
-    (*str)++;
-    count++;
-    decimal_places = count;
-    res =
-        str_to_float_overflow(str, &decimal_part, width, &count, &sign, base) ||
-        res;
-    decimal_places = count - decimal_places;
-  }
-
-  if ((**str == 'e' || **str == 'E') && (count++ < width || width == 0)) {
-    (*str)++;
-    parse_int(str, &exponent, width - count, 10);
-  }
-
-  *value = sign * ((integer_part + decimal_part / pow(10, decimal_places)) *
-                   pow(10, exponent));
-
-  return res;
-}
-
-bool parse_pre_number(s21_size_t *count, int *sign, s21_size_t width, int *base,
-                      const char **str) {
-  bool res = false;
-
-  // skip whitespace
-  while (s21_isspace(**str)) {
-    (*str)++;
-  }
-
-  // handle sign
-  if (**str == '-' || **str == '+') {
-    if (**str == '-') *sign = -1;
-    (*str)++;
-    (*count)++;
-  }
-
-  // handle base
-  if (*base == 0 || *base == 16) {
-    int new_base = 10;
-    if (**str == '0' && ((*count)++ < width || width == 0)) {
-      res = true;
-      new_base = 8;
-      (*str)++;
-      if ((**str == 'x' || **str == 'X') &&
-          ((*count)++ < width || width == 0)) {
-        new_base = 16;
-        (*str)++;
-      }
-    }
-    if (*base == 0) {
-      *base = new_base;
-    }
-  }
-  return res;
-}
-
 bool process_dio_spec_sscanf(SFlags flags, va_list *args, int base,
                              const char **p) {
   if (**p == '\0') return false;
   long long value = 0;
-  bool res = parse_int(p, &value, flags.width, base);
+  bool res = str_to_int(p, &value, flags.width, base);
   if (res && !flags.asterisk) {
     assign_int_value(flags, args, value);
   }
@@ -321,7 +171,7 @@ bool process_ux_spec_sscanf(SFlags flags, va_list *args, int base,
                             const char **p) {
   if (**p == '\0') return false;
   unsigned long long value = 0;
-  bool res = parse_uint(p, &value, flags.width, base);
+  bool res = str_to_uint(p, &value, flags.width, base);
   if (res && !flags.asterisk) {
     assign_uint_value(flags, args, value);
   }
@@ -331,7 +181,7 @@ bool process_ux_spec_sscanf(SFlags flags, va_list *args, int base,
 bool process_p_spec_sscanf(SFlags flags, va_list *args, const char **p) {
   if (**p == '\0') return false;
   unsigned long long value = 0;
-  bool res = parse_uint(p, &value, flags.width, 16);
+  bool res = str_to_uint(p, &value, flags.width, 16);
   if (res && !flags.asterisk) {
     void **p_value = va_arg(*args, void **);
     *p_value = (void *)value;
@@ -352,9 +202,9 @@ bool process_cs_spec_sscanf(SFlags flags, va_list *args, const char **p) {
     skip_chars(flags, p);
   } else {
     if (flags.length == 'l' || flags.length == 'L') {
-      assign_wchars(flags, p, args);
+      assign_wchars(flags, args, p);
     } else {
-      assign_chars(flags, p, args);
+      assign_chars(flags, args, p);
     }
   }
   return true;
@@ -368,7 +218,7 @@ bool process_n_spec_sscanf(SFlags flags, va_list *args, s21_size_t count) {
 bool process_f_spec_sscanf(SFlags flags, va_list *args, const char **p) {
   if (**p == '\0') return false;
   long double value = 0;
-  bool res = parse_float(p, &value, flags.width);
+  bool res = str_to_float(p, &value, flags.width);
   if (res && !flags.asterisk) {
     assign_float_value(flags, args, value);
   }
@@ -421,7 +271,6 @@ void assign_int_value(SFlags flags, va_list *args, long long value) {
   }
 }
 
-
 void assign_uint_value(SFlags flags, va_list *args, unsigned long long value) {
   if (flags.double_len) {
     switch (flags.length) {
@@ -468,7 +317,7 @@ void assign_uint_value(SFlags flags, va_list *args, unsigned long long value) {
   }
 }
 
-void assign_wchars(SFlags flags, const char **p, va_list *args) {
+void assign_wchars(SFlags flags, va_list *args, const char **p) {
   bool is_str = flags.spec == 's';
   s21_size_t width = flags.width;
   if (!is_str && width == 0) width = 1;
@@ -489,7 +338,7 @@ void assign_wchars(SFlags flags, const char **p, va_list *args) {
   }
 }
 
-void assign_chars(SFlags flags, const char **p, va_list *args) {
+void assign_chars(SFlags flags, va_list *args, const char **p) {
   bool is_str = flags.spec == 's';
   s21_size_t width = flags.width;
   if (!is_str && width == 0) width = 1;
@@ -535,83 +384,4 @@ void skip_chars(SFlags flags, const char **p) {
       (*p)++;
     }
   } while (**p != '\0' && ((is_str) ? !s21_isspace(**p) : 0));
-}
-
-int base16_digit(int c) {
-  int res = -1;
-  if (c >= '0' && c <= '9') {
-    res = c - '0';
-  } else if (c >= 'a' && c <= 'f') {
-    res = c - 'a' + 10;
-  } else if (c >= 'A' && c <= 'F') {
-    res = c - 'A' + 10;
-  }
-  return res;
-}
-
-int get_digit(const char **str, int base) {
-  int digit = -1;
-  if (s21_isdigit(**str)) {
-    digit = **str - '0';
-  } else if (base == 16) {
-    digit = base16_digit(**str);
-  }
-  return digit;
-}
-
-bool possible_nan_inf(char c) {
-  return (c == 'n' || c == 'N' || c == 'i' || c == 'I');
-}
-
-bool get_nan_inf(const char **str, s21_size_t width, s21_size_t count, int sign,
-                 long double *value) {
-  bool res = false;
-  char tmp[9] = {'\0'};
-  char *tmp_lower = s21_to_lower(s21_strncpy(tmp, *str, 8));
-  if (count + 3 <= width || width == 0) {
-    if (s21_strncmp(tmp_lower, "nan", 3) == 0) {
-      (*str) += 3;
-      *value = sign * NAN;
-      res = true;
-    } else if (s21_strncmp(tmp_lower, "inf", 3) == 0) {
-      (*str) += 3;
-      *value = sign * INFINITY;
-      res = true;
-    }
-  } else if (count + 8 <= width || width == 0) {
-    if (s21_strncmp(tmp_lower, "infinity", 8) == 0) {
-      (*str) += 8;
-      *value = sign * INFINITY;
-      res = true;
-    }
-  }
-  free(tmp_lower);
-  return res;
-}
-
-bool str_to_float_overflow(const char **str, long double *value,
-                           s21_size_t width, s21_size_t *count, int *sign,
-                           int base) {
-  bool res = false, overflow = false;
-  while (*count < width || width == 0) {
-    int digit = get_digit(str, base);
-
-    if (digit >= 0 && digit < base) {
-      res = true;
-      (*count)++;
-      if (!overflow) {
-        if (*value > (DBL_MAX - digit) / base) {
-          overflow = true;
-          *value = (*sign == 1) ? DBL_MAX : DBL_MIN;
-          *sign = 1;
-        } else {
-          *value = *value * base + digit;
-        }
-      }
-      (*str)++;
-    } else {
-      break;
-    }
-  }
-  return res;
 }
