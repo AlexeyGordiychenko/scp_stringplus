@@ -1,5 +1,17 @@
 #include "../s21_string.h"
 
+typedef struct {
+  int minus;
+  int sign;
+  int space;
+  int prefix;
+  int zero;
+  int width;
+  int precision;
+  char length;
+  char spec;
+} Flag;
+
 void reverse_string(char *str);
 void pos_int_to_string(long long unsigned int number, char *str);
 int int_to_str_min_len(long int number, char *str, bool sign, int min_len);
