@@ -352,7 +352,7 @@ void apply_flags(char *str, Flag flags) {
       if (flags.spec == 'E' || flags.spec == 'G')
         position = s21_strchr(str, 'E');
 
-      if (position != NULL) {
+      if (position != S21_NULL) {
         int index = position - str;  // Вычисляем индекс первого вхождения
         int len = (int)s21_strlen(str);
 
