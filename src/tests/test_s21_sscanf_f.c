@@ -454,6 +454,21 @@ START_TEST(sscanf_spec_real_29) {
 }
 END_TEST
 
+START_TEST(sscanf_spec_real_30) {
+  long double n1 = 0, n2 = 0, n3 = 0, n4 = 0;
+
+  const char str[] = "2e+4932 2-4933";
+  const char fstr[] = "%Lf %Lf";
+
+  int16_t res1 = s21_sscanf(str, fstr, &n1, &n2);
+  int16_t res2 = sscanf(str, fstr, &n3, &n4);
+
+  ck_assert_int_eq(res1, res2);
+  ck_assert_ldouble_eq(n1, n3);
+  ck_assert_ldouble_eq(n2, n4);
+}
+END_TEST
+
 Suite *test_sscanf_f(void) {
   Suite *s = suite_create("\033[33m-=s21_sscanf_f=-\033[0m");
   TCase *tc = tcase_create("sscanf_tc");
@@ -485,6 +500,7 @@ Suite *test_sscanf_f(void) {
   tcase_add_test(tc, sscanf_spec_real_27);
   tcase_add_test(tc, sscanf_spec_real_28);
   tcase_add_test(tc, sscanf_spec_real_29);
+  tcase_add_test(tc, sscanf_spec_real_30);
 
   suite_add_tcase(s, tc);
   return s;

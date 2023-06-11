@@ -410,9 +410,9 @@ bool str_to_float_overflow(const char **str, long double *value,
       res = true;
       (*count)++;
       if (!overflow) {
-        if (*value > (DBL_MAX - digit) / base) {
+        if (*value > (LDBL_MAX - digit) / base) {
           overflow = true;
-          *value = (*sign == 1) ? DBL_MAX : DBL_MIN;
+          *value = (*sign == 1) ? LDBL_MAX : LDBL_MIN;
           *sign = 1;
         } else {
           *value = *value * base + digit;
