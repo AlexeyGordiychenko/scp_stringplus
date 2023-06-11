@@ -171,10 +171,6 @@ void parse_sprintf_spec(const char **p, Flag *flags, va_list *args) {
       flags->spec = **p;
       // (*p)++;
       break;
-    default:
-      printf("Ошибка: Некорректный спецификатор %c\n", **p);
-      // exit(0);  // что делаем если некорр. спец?
-      break;
   }
 
   // to not go over the format string
