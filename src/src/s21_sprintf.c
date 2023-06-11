@@ -32,14 +32,7 @@ int s21_sprintf(char *str, const char *format, ...) {
       /* парсинг спецификатора */
       parse_sprintf_spec(&p, &flags, &args);
 
-      // тестовый вывод напарсенных структур
-      //      printf("minus = %d, sign = %d, space = %d, prefix = %d, zero = %d,
-      //      width = %d, precison = %d, spec = %c\n",flags.minus, flags.sign,
-      //      flags.space, flags.prefix, flags.zero,
-      //          flags.width, flags.precision, flags.spec);
-
       // обработка спецификатора и аргумента
-
       switch (flags.spec) {
         case '%':
           execute_percent(&str_p);
@@ -82,8 +75,8 @@ int s21_sprintf(char *str, const char *format, ...) {
           wchar_comp += process_s_spec(flags, &args, &str_p);
           break;
       }
-      // вывод результата в строку
     } else {
+      // вывод результата в строку
       *str_p++ = *p;
     }
   }
@@ -207,28 +200,6 @@ void execute_x(char **p, va_list *args, Flag flags) {
 }
 
 void execute_percent(char **p) {
-  /*
- пока комментирую, т.к. непонятно, нужно это или нет
- void execute_percent(char *str, int *ind, Flag *flags) {
-
-   char percent[1000] = "%";
-
-   if (flags->precision != 0) {  // точность, дополняем нулями слева
-     while ((int)s21_strlen(percent) < flags->precision) {
-       input_char_left(percent, '0');
-     }
-   }
-   if (flags->width != 0 && !flags->minus) {
-     char ch = ' ';
-     if (flags->zero) ch = '0';
-     while ((int)s21_strlen(percent) < flags->width) {
-       input_char_left(percent, ch);
-     }
-   }
-   int percent_len = (int)s21_strlen(percent);
-   s21_strncat(str, percent, percent_len + 1);
-   *ind = *ind + percent_len;
- */
   **p = '%';
   (*p)++;
 }
