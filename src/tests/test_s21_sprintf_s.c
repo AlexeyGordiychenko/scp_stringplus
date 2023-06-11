@@ -302,6 +302,16 @@ START_TEST(sprintf_20_s) {
 }
 END_TEST
 
+START_TEST(sprintf_21_s) {
+  char str1[1024];
+  char str2[1024];
+  char *str3 = "%ls";
+  char *val = NULL;
+  ck_assert_int_eq(s21_sprintf(str2, str3, val), sprintf(str1, str3, val));
+  ck_assert_str_eq(str1, str2);
+}
+END_TEST
+
 Suite *test_sprintf_s(void) {
   Suite *s = suite_create("\033[33m-=s21_sprintf_s=-\033[0m");
   TCase *tc = tcase_create("sprintf_tc");
@@ -326,6 +336,7 @@ Suite *test_sprintf_s(void) {
   tcase_add_test(tc, sprintf_18_s);
   tcase_add_test(tc, sprintf_19_s);
   tcase_add_test(tc, sprintf_20_s);
+  tcase_add_test(tc, sprintf_21_s);
 
   suite_add_tcase(s, tc);
   return s;

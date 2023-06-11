@@ -215,6 +215,16 @@ START_TEST(sprintf_15_pointer) {
 }
 END_TEST
 
+START_TEST(sprintf_16_pointer) {
+  char str1[100] = "";
+  char str2[100] = "";
+  char* str3 = "!%-10p!";
+  char* val = 0;
+  ck_assert_int_eq(sprintf(str1, str3, val), s21_sprintf(str2, str3, val));
+  ck_assert_pstr_eq(str1, str2);
+}
+END_TEST
+
 Suite* test_sprintf_p(void) {
   Suite* s = suite_create("\033[33m-=s21_sprintf_p=-\033[0m");
   TCase* tc = tcase_create("sprintf_tc");
@@ -234,6 +244,7 @@ Suite* test_sprintf_p(void) {
   tcase_add_test(tc, sprintf_13_pointer);
   tcase_add_test(tc, sprintf_14_pointer);
   tcase_add_test(tc, sprintf_15_pointer);
+  tcase_add_test(tc, sprintf_16_pointer);
 
   suite_add_tcase(s, tc);
   return s;
