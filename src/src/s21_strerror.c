@@ -256,7 +256,7 @@ char *s21_strerror(int errnum) {
   if (errnum <= MAX && errnum >= 0) {
     s21_strncpy(buff, s21_err[errnum], BUFF_SIZE);
   } else {
-    s21_sprintf(buff, FORMAT, errnum);  // заменить на нашу реализацию
+    s21_sprintf(buff, FORMAT, errnum);
   }
   return buff;
 }

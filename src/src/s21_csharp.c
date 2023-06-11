@@ -56,7 +56,6 @@ void *s21_insert(const char *src, const char *str, s21_size_t start_index) {
   return new_str;
 }
 
-// char *trim_custom(const char *str, const char *trim_chars) {
 void *s21_trim(const char *src, const char *trim_chars) {
   if (src == S21_NULL) return S21_NULL;
   if (trim_chars == S21_NULL || trim_chars[0] == '\0') {
