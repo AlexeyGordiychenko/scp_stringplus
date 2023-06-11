@@ -242,12 +242,6 @@ void assign_int_value(SFlags flags, va_list *args, long long value) {
         *h_value = (signed char)value;
         break;
       }
-      default: {
-        int *p_value;
-        p_value = va_arg(*args, int *);
-        *p_value = (int)value;
-        break;
-      }
     }
   } else {
     switch (flags.length) {
@@ -286,12 +280,6 @@ void assign_uint_value(SFlags flags, va_list *args, unsigned long long value) {
         unsigned char *h_value;
         h_value = va_arg(*args, unsigned char *);
         *h_value = (unsigned char)value;
-        break;
-      }
-      default: {
-        unsigned int *p_value;
-        p_value = va_arg(*args, unsigned int *);
-        *p_value = (unsigned int)value;
         break;
       }
     }
@@ -334,9 +322,6 @@ void assign_wchars(SFlags flags, va_list *args, const char **p) {
   }
   if (is_str) {
     *c-- = '\0';
-    for (; i != 0 && s21_isspace(*c); i--, c--) {
-      *c = '\0';
-    }
   }
 }
 
@@ -355,9 +340,6 @@ void assign_chars(SFlags flags, va_list *args, const char **p) {
   }
   if (is_str) {
     *c-- = '\0';
-    for (; i != 0 && s21_isspace(*c); i--, c--) {
-      *c = '\0';
-    }
   }
 }
 
