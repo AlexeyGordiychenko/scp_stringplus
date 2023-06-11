@@ -12,7 +12,7 @@ typedef struct {
 void parse_sscanf_spec(SFlags *flags, const char **p);
 
 bool process_spec_sscanf(SFlags flags, va_list *args, const char **p,
-                         const char **str, s21_size_t *count);
+                         const char **str, int *count);
 bool process_dio_spec_sscanf(SFlags flags, va_list *args, int base,
                              const char **p);
 bool process_ux_spec_sscanf(SFlags flags, va_list *args, int base,
@@ -34,7 +34,7 @@ int s21_sscanf(const char *str, const char *format, ...) {
   va_list args;
   va_start(args, format);
   const char *str_p = str;
-  s21_size_t count = 0;
+  int count = 0;
   bool res = true;
 
   for (const char *p = format; *p != '\0' && res; ++p) {
@@ -62,7 +62,7 @@ int s21_sscanf(const char *str, const char *format, ...) {
 }
 
 bool process_spec_sscanf(SFlags flags, va_list *args, const char **p,
-                         const char **str, s21_size_t *count) {
+                         const char **str, int *count) {
   bool res = true;
   switch (flags.spec) {
     case 'd':
@@ -101,8 +101,14 @@ bool process_spec_sscanf(SFlags flags, va_list *args, const char **p,
     case '%':
       (*p)++;
       break;
+    default:
+      res = false;
+      break;
   }
   *count += res && !flags.asterisk && flags.spec != 'n' && flags.spec != '%';
+  if (*count == 0 && **p == '\0' && !res) {
+    *count = -1;
+  }
   return res;
 }
 
@@ -148,10 +154,6 @@ void parse_sscanf_spec(SFlags *flags, const char **p) {
     case 'n':
     case '%':
       flags->spec = **p;
-      break;
-    default:
-      printf("Ошибка: Некорректный спецификатор %c\n", **p);
-      // exit(0);  // что делаем если некорр. спец?
       break;
   }
 }

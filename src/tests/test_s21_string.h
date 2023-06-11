@@ -58,5 +58,6 @@ Suite *test_sscanf_p(void);
 Suite *test_sscanf_n(void);
 Suite *test_sscanf_percent(void);
 Suite *test_sscanf_f(void);
+Suite *test_sscanf_inc(void);
 
 #endif  // SRC_TESTS_ME_H
