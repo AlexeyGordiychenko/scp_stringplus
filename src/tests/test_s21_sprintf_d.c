@@ -124,7 +124,8 @@ END_TEST
 START_TEST(sprintf_10_d) {
   char str1[200];
   char str2[200];
-  char *str3 = "%d malenaro %3.d malenaro %5.7d malenaro %10d %#d %-d %+d %.d % .d";
+  char *str3 =
+      "%d malenaro %3.d malenaro %5.7d malenaro %10d %#d %-d %+d %.d % .d";
   int val = 0;
   ck_assert_int_eq(
       sprintf(str1, str3, val, val, val, val, val, val, val, val, val),
@@ -152,7 +153,8 @@ END_TEST
 START_TEST(sprintf_12_d) {
   char str1[200];
   char str2[200];
-  char *str3 = "%+d malenaro %+3.d malenaro %+5.7d malenaro %+10d malenaro %+.d";
+  char *str3 =
+      "%+d malenaro %+3.d malenaro %+5.7d malenaro %+10d malenaro %+.d";
   int val = -32;
   int val2 = -8899;
   int val3 = 91918;
@@ -229,7 +231,7 @@ START_TEST(sprintf_17_d) {
   char str1[1024] = "";
   char str2[1024] = "";
   int val = -75;
-  sprintf(str1, "malenaro %d %023d", val, val);  // нет нулей перед числом(бонус)
+  sprintf(str1, "malenaro %d %023d", val, val);
   s21_sprintf(str2, "malenaro %d %023d", val, val);
   ck_assert_str_eq(str1, str2);
 }
@@ -238,7 +240,8 @@ END_TEST
 START_TEST(sprintf_18_d) {
   char str1[300];
   char str2[300];
-  char *str3 = "%ld malenaro %ld malenaro %hd malenaro %hd malenaro %d malenaro %d";
+  char *str3 =
+      "%ld malenaro %ld malenaro %hd malenaro %hd malenaro %d malenaro %d";
   long int val = LONG_MAX;
   long val2 = LONG_MIN;
   short int val3 = SHRT_MAX;
@@ -314,7 +317,7 @@ Suite *test_sprintf_d(void) {
   tcase_add_test(tc, sprintf_11_d);
   tcase_add_test(tc, sprintf_12_d);
   tcase_add_test(tc, sprintf_13_d);
-  tcase_add_test(tc, sprintf_14_d);  
+  tcase_add_test(tc, sprintf_14_d);
   tcase_add_test(tc, sprintf_15_d);
   tcase_add_test(tc, sprintf_16_d);
   tcase_add_test(tc, sprintf_17_d);

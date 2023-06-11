@@ -63,7 +63,6 @@ START_TEST(sprintf_5_x1) {
 }
 END_TEST
 
-// Different precision and width
 START_TEST(sprintf_6_x1) {
   char str1[200];
   char str2[200];

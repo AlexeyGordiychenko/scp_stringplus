@@ -43,8 +43,7 @@ END_TEST
 START_TEST(strtok_6) {
   char s1[] = "Param, taram!";
   char s2[] = "Param, taram!";
-  char s3[] =
-      "i love 21 school.";
+  char s3[] = "i love 21 school.";
   ck_assert_pstr_eq(strtok(s1, s3), s21_strtok(s2, s3));
 }
 END_TEST
@@ -228,7 +227,6 @@ Suite *test_strtok(void) {
   tcase_add_test(tc, strtok_8);
   tcase_add_test(tc, strtok_9);
   tcase_add_test(tc, strtok_10);
-  // tcase_add_test(tc, strtok_11);
   tcase_add_test(tc, strtok_12);
   tcase_add_test(tc, strtok_13);
   tcase_add_test(tc, strtok_14);

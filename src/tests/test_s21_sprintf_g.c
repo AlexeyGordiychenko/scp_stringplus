@@ -474,16 +474,6 @@ START_TEST(sprintf_43_g) {
 }
 END_TEST
 
-// START_TEST(sprintf_44_g) {
-//   char str1[400];
-//   char str2[400];
-//   char *str3 = "test: %Lg!\n";
-//   long double num = INFINITY;
-//   ck_assert_int_eq(sprintf(str1, str3, num), s21_sprintf(str2, str3, num));
-//   ck_assert_pstr_eq(str1, str2);
-// }
-// END_TEST
-
 START_TEST(sprintf_45_g) {
   char str1[400];
   char str2[400];
@@ -495,16 +485,6 @@ START_TEST(sprintf_45_g) {
   ck_assert_pstr_eq(str1, str2);
 }
 END_TEST
-
-// START_TEST(sprintf_46_g) {
-//   char str1[400];
-//   char str2[400];
-//   char *str3 = "test: %Lg!\n";
-//   long double num = -INFINITY;
-//   ck_assert_int_eq(sprintf(str1, str3, num), s21_sprintf(str2, str3, num));
-//   ck_assert_pstr_eq(str1, str2);
-// }
-// END_TEST
 
 START_TEST(sprintf_47_g) {
   char str1[400];
@@ -563,9 +543,7 @@ Suite *test_sprintf_g(void) {
   tcase_add_test(tc, sprintf_41_g);
   tcase_add_test(tc, sprintf_42_g);
   tcase_add_test(tc, sprintf_43_g);
-  // tcase_add_test(tc, sprintf_44_g);
   tcase_add_test(tc, sprintf_45_g);
-  // tcase_add_test(tc, sprintf_46_g);
   tcase_add_test(tc, sprintf_47_g);
 
   suite_add_tcase(s, tc);
