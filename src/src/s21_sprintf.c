@@ -23,12 +23,14 @@ int s21_sprintf(char *str, const char *format, ...) {
   va_list args;
   va_start(args, format);
   char *str_p = str;
+  bool is_spec = false;
   // compensation value for len with wide chars
   int wchar_comp = 0;
 
   for (const char *p = format; *p != '\0'; ++p) {
     Flag flags = {0};  // ининциализируем или обнуляем структуру флагов
-    if (*p == '%') {
+    if (is_spec) {
+      is_spec = false;
       /* парсинг спецификатора */
       parse_sprintf_spec(&p, &flags, &args);
 
@@ -75,6 +77,8 @@ int s21_sprintf(char *str, const char *format, ...) {
           wchar_comp += process_s_spec(flags, &args, &str_p);
           break;
       }
+    } else if (*p == '%') {
+      is_spec = true;
     } else {
       // вывод результата в строку
       *str_p++ = *p;
@@ -92,8 +96,7 @@ void parse_sprintf_spec(const char **p, Flag *flags, va_list *args) {
   flags->precision = -1;
 
   // парсим флаги
-  (*p)++;
-  while (true) {
+  while (**p != '\0') {
     if (**p == '-') {
       flags->minus = 1;
     } else if (**p == '+') {
@@ -173,6 +176,9 @@ void parse_sprintf_spec(const char **p, Flag *flags, va_list *args) {
       // exit(0);  // что делаем если некорр. спец?
       break;
   }
+
+  // to not go over the format string
+  if (**p == '\0') (*p)--;
 }
 
 void execute_x(char **p, va_list *args, Flag flags) {
