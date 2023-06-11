@@ -22,7 +22,7 @@ all: s21_string.a
 
 test: $(TEST_OBJS) $(LIB)
 	$(CC) $(CFLAGS) $(TEST_OBJS) $(LIB) $(LDFLAGS) -o $(EXECUTABLE)
-	./test
+	./$(EXECUTABLE)
 
 vlad: $(TEST_OBJS) $(LIB)
 	$(CC) $(CFLAGS) vlad.c $(LIB) $(LDFLAGS) -o vlad -g
@@ -32,13 +32,9 @@ vlad: $(TEST_OBJS) $(LIB)
 s21_string.a: $(OBJS)
 	ar rcs $(LIB) $(OBJS)
 	
-vlad: $(TEST_OBJS) $(LIB)
-	$(CC) $(CFLAGS) vlad.c $(LIB) $(LDFLAGS) -o vlad -g
-	./vlad
-
 gcov_report:
 	mkdir -p $(GCOV_DIR)
-	gcovr --html-details -o $(GCOV_DIR)/index.html --filter "src/*"
+	gcovr --html-details -o $(GCOV_DIR)/index.html --filter "$(SRC_DIR)/*"
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(OBJ_DIR)
@@ -49,15 +45,15 @@ $(OBJ_DIR)/%.o: $(TEST_DIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(OBJ_DIR) $(TEST_OBJS) $(GCOV_DIR) $(EXECUTABLE) $(LIB)
+	rm -rf $(OBJ_DIR) $(GCOV_DIR) $(EXECUTABLE) $(LIB)
 
 rebuild: clean all
 
 clang_n:
-	clang-format -n --style=Google src/*.[ch] tests/*.[ch]
+	clang-format -n --style=Google $(SRC_DIR)/*.[ch] $(TEST_DIR)/*.[ch]
 
 clang_i:
-	clang-format -i --style=Google src/*.[ch] tests/*.[ch]
+	clang-format -i --style=Google $(SRC_DIR)/*.[ch] $(TEST_DIR)/*.[ch]
 
 valgrind:
-	valgrind --tool=memcheck --leak-check=yes ./test
+	valgrind --tool=memcheck --leak-check=yes ./$(EXECUTABLE)
