@@ -22,7 +22,6 @@ int int_to_str_min_len(long int number, char *str, int min_len);
 int put_wchar(char **p, wchar_t wchar);
 bool s21_isdigit(int a);
 bool s21_isspace(int c);
-int base16_digit(int c);
 int char_to_digit(char c, int base);
 bool str_to_int(const char **str, long long *value, s21_size_t width, int base);
 bool str_to_uint(const char **str, unsigned long long *value, s21_size_t width,
