@@ -379,19 +379,18 @@ bool get_nan_inf(const char **str, s21_size_t width, s21_size_t count, int sign,
   bool res = false;
   char tmp[9] = {'\0'};
   char *tmp_lower = s21_to_lower(s21_strncpy(tmp, *str, 8));
-  if (count + 3 <= width || width == 0) {
+  if ((count + 8 <= width || width == 0) &&
+      s21_strncmp(tmp_lower, "infinity", 8) == 0) {
+    (*str) += 8;
+    *value = sign * INFINITY;
+    res = true;
+  } else if (count + 3 <= width || width == 0) {
     if (s21_strncmp(tmp_lower, "nan", 3) == 0) {
       (*str) += 3;
       *value = sign * NAN;
       res = true;
     } else if (s21_strncmp(tmp_lower, "inf", 3) == 0) {
       (*str) += 3;
-      *value = sign * INFINITY;
-      res = true;
-    }
-  } else if (count + 8 <= width || width == 0) {
-    if (s21_strncmp(tmp_lower, "infinity", 8) == 0) {
-      (*str) += 8;
       *value = sign * INFINITY;
       res = true;
     }

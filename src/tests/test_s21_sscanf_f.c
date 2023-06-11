@@ -33,21 +33,30 @@ START_TEST(sscanf_spec_real_2) {
 END_TEST
 
 START_TEST(sscanf_spec_real_3) {
-  char format[] = "%f %f %f %f";
-  char str[] = "NAN nan -INF +inf";
-  float d1, d2;
-  float q1, q2;
-  float z1, z2;
-  float w1, w2;
+  char format[] = "%f %f %f %f %f %f %f";
+  char str[] = "NAN nan -INF +inf +INFINITY -InFiNiTy infinity";
+  float nan11, nan21;
+  float nan12, nan22;
+  float inf11 = 0, inf21 = 0;
+  float inf12 = 0, inf22 = 0;
+  float inf13 = 0, inf23 = 0;
+  float inf14 = 0, inf24 = 0;
+  float inf15 = 0, inf25 = 0;
 
-  int16_t res1 = s21_sscanf(str, format, &d1, &q1, &z1, &w1);
-  int16_t res2 = sscanf(str, format, &d2, &q2, &z2, &w2);
+  int16_t res1 = s21_sscanf(str, format, &nan11, &nan12, &inf11, &inf12, &inf13,
+                            &inf14, &inf15);
+  int16_t res2 = sscanf(str, format, &nan21, &nan22, &inf21, &inf22, &inf23,
+                        &inf24, &inf25);
   ck_assert_int_eq(res1, res2);
-  ck_assert_float_nan(d1);
-  ck_assert_float_nan(d2);
-  ck_assert_float_nan(q1);
-  ck_assert_float_nan(q2);
-  ck_assert_float_eq(z1, z2);
+  ck_assert_float_nan(nan11);
+  ck_assert_float_nan(nan21);
+  ck_assert_float_nan(nan12);
+  ck_assert_float_nan(nan22);
+  ck_assert_ldouble_eq(inf11, inf21);
+  ck_assert_ldouble_eq(inf12, inf22);
+  ck_assert_ldouble_eq(inf13, inf23);
+  ck_assert_ldouble_eq(inf14, inf24);
+  ck_assert_ldouble_eq(inf15, inf25);
 }
 END_TEST
 
