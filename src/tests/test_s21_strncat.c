@@ -48,8 +48,7 @@ END_TEST
 START_TEST(strncat_6) {
   char s1[100] = "Param, taram!";
   char s2[100] = "Param, taram!";
-  char s3[] =
-      "London is the capital of the Great Russia!";
+  char s3[] = "London is the capital of the Great Russia!";
   s21_size_t n = 6;
   ck_assert_pstr_eq(strncat(s1, s3, n), s21_strncat(s2, s3, n));
 }

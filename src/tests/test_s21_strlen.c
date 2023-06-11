@@ -20,22 +20,17 @@ START_TEST(strlen_3) {
 }
 END_TEST
 
-START_TEST(strlen_4) {
-  ck_assert_int_eq(strlen("\0"), s21_strlen("\0"));
-}
+START_TEST(strlen_4) { ck_assert_int_eq(strlen("\0"), s21_strlen("\0")); }
 END_TEST
 
 START_TEST(strlen_5) {
   ck_assert_int_eq(
-      strlen(
-          "Po plyam, po polyam, siniy traktor edet k nam!"),
+      strlen("Po plyam, po polyam, siniy traktor edet k nam!"),
       s21_strlen("Po plyam, po polyam, siniy traktor edet k nam!"));
 }
 END_TEST
 
-START_TEST(strlen_6) {
-  ck_assert_int_eq(strlen(""), s21_strlen(""));
-}
+START_TEST(strlen_6) { ck_assert_int_eq(strlen(""), s21_strlen("")); }
 END_TEST
 
 START_TEST(strlen_7) {
@@ -47,45 +42,34 @@ START_TEST(strlen_7) {
 END_TEST
 
 START_TEST(strlen_8) {
-
   ck_assert_int_eq(strlen("          00000000           ......  "),
                    s21_strlen("          00000000           ......  "));
 }
 END_TEST
 
 START_TEST(strlen_9) {
-
   ck_assert_int_eq(strlen("\n\n\n\n\n\n\n\n\nparam\n\n\n\n\n"),
                    s21_strlen("\n\n\n\n\n\n\n\n\nparam\n\n\n\n\n"));
 }
 END_TEST
 
 START_TEST(strlen_10) {
-
   ck_assert_int_eq(strlen("\0\0\0\0\n"), s21_strlen("\0\0\0\0\n"));
 }
 END_TEST
 
-START_TEST(strlen_11) {
-
-  ck_assert_int_eq(strlen(""), s21_strlen(""));
-}
+START_TEST(strlen_11) { ck_assert_int_eq(strlen(""), s21_strlen("")); }
 END_TEST
 
-START_TEST(strlen_12) {
-
-  ck_assert_int_eq(strlen("\t\t"), s21_strlen("\t\t"));
-}
+START_TEST(strlen_12) { ck_assert_int_eq(strlen("\t\t"), s21_strlen("\t\t")); }
 END_TEST
 
 START_TEST(strlen_13) {
-
   ck_assert_int_eq(strlen("\0elidacon"), s21_strlen("\0elidacon"));
 }
 END_TEST
 
 START_TEST(strlen_14) {
-
   ck_assert_int_eq(strlen("peace \0 peace"), s21_strlen("peace \0 peace"));
 }
 END_TEST

@@ -39,8 +39,7 @@ END_TEST
 START_TEST(strncpy_5) {
   char s1[70] = "";
   char s2[70] = "";
-  char s3[] =
-      "i love ocean!!!!!!!!!!!!";
+  char s3[] = "i love ocean!!!!!!!!!!!!";
   s21_size_t n = strlen(s3);
   ck_assert_pstr_eq(strncpy(s1, s3, n), s21_strncpy(s2, s3, n));
 }
