@@ -1,36 +1,35 @@
 CC := gcc
-CFLAGS := -Wall -Wextra -Werror -std=c11 --coverage
-LDFLAGS := -lcheck -pthread -lm
+CFLAGS := -Wall -Wextra -Werror -std=c11
+LDFLAGS := -lcheck -pthread -lgcov -lm
 ifeq ($(shell uname), Linux)
-	LDFLAGS += -lsubunit -lgcov
+	LDFLAGS += -lsubunit
 endif
+GCOVFLAGS=--coverage
+
 SRC_DIR := src
 OBJ_DIR := obj
 GCOV_DIR := gcov
+GCOV_OBJ_DIR := obj/$(GCOV_DIR)
 TEST_DIR := tests
 
 SRCS := $(wildcard $(SRC_DIR)/*.c)
 OBJS := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
+OBJS_GCOV=$(patsubst $(SRC_DIR)/%.c,$(GCOV_OBJ_DIR)/%.o,$(SRCS))
+
 TEST_SRCS := $(wildcard $(TEST_DIR)/*.c)
-TEST_OBJS := $(patsubst $(TEST_DIR)/%.c,$(OBJ_DIR)/%.o,$(TEST_SRCS))
 LIB := s21_string.a
-EXECUTABLE := test
+TEST := test
 
-.PHONY: all test s21_string.a gcov_report clean rebuild clang_n clang_i valgrind
+.PHONY: all $(TEST) $(LIB) gcov_report clean rebuild clang_n clang_i valgrind
 
-all: s21_string.a
+all: $(LIB)
 
-test: $(TEST_OBJS) $(LIB)
-	$(CC) $(CFLAGS) $(TEST_OBJS) $(LIB) $(LDFLAGS) -o $(EXECUTABLE)
-	./$(EXECUTABLE)
+$(TEST): $(OBJS_GCOV) $(TEST_SRCS)
+	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
+	./$@
 
-vlad: $(TEST_OBJS) $(LIB)
-	$(CC) $(CFLAGS) vlad.c $(LIB) $(LDFLAGS) -o vlad -g
-	./vlad
-
-
-s21_string.a: $(OBJS)
-	ar rcs $(LIB) $(OBJS)
+$(LIB): $(OBJS)
+	ar rcs $(LIB) $^
 	
 gcov_report:
 	mkdir -p $(GCOV_DIR)
@@ -40,12 +39,12 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/%.o: $(TEST_DIR)/%.c
-	@mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+$(GCOV_OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(GCOV_OBJ_DIR)
+	$(CC) $(CFLAGS) $(GCOVFLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(OBJ_DIR) $(GCOV_DIR) $(EXECUTABLE) $(LIB)
+	rm -rf $(OBJ_DIR) $(GCOV_DIR) $(TEST) $(LIB)
 
 rebuild: clean all
 
@@ -56,4 +55,4 @@ clang_i:
 	clang-format -i --style=Google $(SRC_DIR)/*.[ch] $(TEST_DIR)/*.[ch]
 
 valgrind:
-	valgrind --tool=memcheck --leak-check=yes ./$(EXECUTABLE)
+	valgrind --tool=memcheck --leak-check=yes ./$(TEST)
