@@ -687,16 +687,6 @@ void double_to_exp(char *buffer, long double number, Flag flags) {
   }
   input_char_left(exp_count_string, sign);
 
-  // откидываем незначащие нули для gG у дробной части
-  if (!flags.prefix && (flags.spec == 'g' || flags.spec == 'G') &&
-      s21_strchr(buffer, '.')) {
-    int i = (int)s21_strlen(buffer);
-    while (buffer[i - 1] == '0') {
-      buffer[i - 1] = '\0';
-      i--;
-    }
-  }
-
   // собираем строку
   char exp_char = {0};
   if (flags.spec == 'e' || flags.spec == 'g') exp_char = 'e';
