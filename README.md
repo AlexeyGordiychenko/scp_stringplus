@@ -1,5 +1,21 @@
 # s21_string+ (Group project, 2 members)
 
+## My part of the project
+My part was to make:
++ part of sprintf (i, d, c, s specifiers, some misc functions)
++ part 5 (C# functions)
++ sscanf
++ edit and refactor Makefile
+
+So for my code you can check files
++ partially [s21_sprintf.c.c](src/src/s21_sprintf.c)
++ [s21_csharp.c](src/src/s21_csharp.c)
++ [s21_sscanf.c](src/src/s21_sscanf.c)
++ [Makefile](src/makefile)
+
+## Score:
+The final score is 150% (max)
+
 ## Task
 Implementation of the string.h library with additions.
 
