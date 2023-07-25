@@ -1,6 +1,6 @@
 CC := gcc
 CFLAGS := -Wall -Wextra -Werror -std=c11
-LDFLAGS := -lcheck -pthread -lgcov -lm
+LDFLAGS := -lcheck -pthread -lgcov -lm -lrt
 ifeq ($(shell uname), Linux)
 	LDFLAGS += -lsubunit
 endif
@@ -17,7 +17,7 @@ OBJS := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
 OBJS_GCOV=$(patsubst $(SRC_DIR)/%.c,$(GCOV_OBJ_DIR)/%.o,$(SRCS))
 
 TEST_SRCS := $(wildcard $(TEST_DIR)/*.c)
-LIB := s21_string.a
+LIB := scp_string.a
 TEST := test
 
 .PHONY: all $(TEST) $(LIB) gcov_report clean rebuild clang_n clang_i valgrind
